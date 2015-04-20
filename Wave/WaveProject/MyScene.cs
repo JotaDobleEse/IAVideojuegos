@@ -14,12 +14,14 @@ using WaveEngine.Framework.Resources;
 using WaveEngine.Framework.Services;
 using WaveEngine.Framework.UI;
 using WaveProject.Steering;
+using WaveEngine.TiledMap;
 #endregion
 
 namespace WaveProject
 {
     public class MyScene : Scene
     {
+        private TiledMap tiledMap;
         protected override void CreateScene()
         {
             // Create a 2D camera
@@ -62,10 +64,19 @@ namespace WaveProject
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new SteeringVelocidad.Seek(color: Color.Salmon));
 
+            Entity map = new Entity("mapa")
+                .AddComponent(new Transform2D())
+                .AddComponent(this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
+                {
+                    MinLayerDrawOrder = -10,
+                    MaxLayerDrawOrder = -0
+                });
+
             EntityManager.Add(align);
             EntityManager.Add(seek);
             EntityManager.Add(flee);
             EntityManager.Add(mouserFollower);
+            EntityManager.Add(map);
 
         }
 

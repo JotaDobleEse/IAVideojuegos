@@ -24,10 +24,6 @@ namespace WaveProject
         private TiledMap tiledMap;
         protected override void CreateScene()
         {
-            // Create a 2D camera
-            var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.Black }; // Transparent background need this clearFlags.
-            EntityManager.Add(camera2D);
-
             TextBlock text = new TextBlock("axis")
             {
                 Margin = new Thickness((WaveServices.Platform.ScreenWidth / 2f) - 100, 10, 0, 0),
@@ -36,9 +32,13 @@ namespace WaveProject
             };
 
             text.IsVisible = true;
-            EntityManager.Add(text);
-            camera2D.Entity.AddComponent(new InfoDebug(text))
-                .AddComponent(new DebugLines());
+
+            // Create a 2D camera
+            var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.Black }
+                .Entity.AddComponent(new InfoDebug(text))
+                .AddComponent(new DebugLines())
+                .AddComponent(new CameraController()); // Transparent background need this clearFlags.
+            EntityManager.Add(camera2D);
 
             Entity align = new Entity("align")
                 .AddComponent(new Transform2D())

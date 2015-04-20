@@ -47,6 +47,7 @@
     <Reference Include="WaveEngine.TiledMap, Version=1.4.2.0, Culture=neutral, processorArchitecture=x86" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CameraController.cs" />
     <Compile Include="SteeringVelocidad\Arrive.cs" />
     <Compile Include="DebugLines.cs" />
     <Compile Include="SteeringVelocidad\Flee.cs" />

@@ -27,6 +27,7 @@ namespace WaveProject
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 DEBUG = false;
             }
         }

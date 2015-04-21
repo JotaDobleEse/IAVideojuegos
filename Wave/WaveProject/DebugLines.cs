@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
+using WaveEngine.Components.Cameras;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
@@ -15,6 +16,7 @@ namespace WaveProject
     public class DebugLines : Drawable2D
     {
         private IEnumerable<SteeringBehavior> Steerings;
+        private Camera2D Camera;
 
         private bool DEBUG = true;
 
@@ -24,6 +26,7 @@ namespace WaveProject
             try
             {
                 Steerings = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is SteeringBehavior)).Select(s => s.FindComponent<SteeringBehavior>()).ToList();
+                Camera = EntityManager.AllEntities.First(f => f.Name == "Camera2D").FindComponent<Camera2D>();
             }
             catch (Exception e)
             {
@@ -37,7 +40,11 @@ namespace WaveProject
             if (DEBUG)
             {
                 LineBatch2D lb = RenderManager.LineBatch2D;
-                Vector2 mousePosition = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
+                Vector3 mousePosition = new Vector3(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y, 0f);
+                Vector3 project = Camera.Unproject(ref mousePosition);
+                Vector2 mousePositionProject;
+                project.ToVector2(out mousePositionProject);
+
                 foreach (SteeringBehavior steering in Steerings)
                 {
                     lb.DrawLine(steering.Transform.Position, steering.Transform.Position + steering.Speed, Color.Red, 1f);
@@ -47,8 +54,8 @@ namespace WaveProject
                 if (Steerings.Any(a => a.Steering is Arrive))
                 {
                     Arrive arrive = (Arrive)Steerings.First(a => a.Steering is Arrive).Steering;
-                    lb.DrawCircle(mousePosition, arrive.SlowRadius, Color.White, 1f);
-                    lb.DrawCircle(mousePosition, arrive.TargetRadius, Color.Orange, 1f);
+                    lb.DrawCircle(mousePositionProject, arrive.SlowRadius, Color.White, 1f);
+                    lb.DrawCircle(mousePositionProject, arrive.TargetRadius, Color.Orange, 1f);
                 }
             }
         }

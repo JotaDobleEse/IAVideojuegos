@@ -35,7 +35,7 @@ namespace WaveProject.Steering
             float targetRotation;
             if (rotationSize < TargetRadius)
             {
-                Console.WriteLine("Rotation size: {0}, Target Radius: {1}", rotationSize, TargetRadius);
+                //Console.WriteLine("Rotation size: {0}, Target Radius: {1}", rotationSize, TargetRadius);
                 targetRotation = 0f;
                 Angular = 0;
                 Linear = Vector2.Zero;
@@ -54,7 +54,7 @@ namespace WaveProject.Steering
             targetRotation *= rotation / rotationSize;
 
             Angular = targetRotation - origin.Rotation;
-            Console.WriteLine(Angular);
+            //Console.WriteLine(Angular);
             Angular /= TimeToTarget;
 
             float angularAcceleration = Math.Abs(Angular);

@@ -67,6 +67,11 @@ namespace WaveProject.Steering
             Linear = Vector2.Zero;
         }
 
+        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin, Vector2? characterSpeed = null)
+        {
+            throw new NotImplementedException();
+        }
+
         private float MapToRange(float rotation)
         {
             float r = rotation;

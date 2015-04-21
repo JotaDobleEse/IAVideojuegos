@@ -8,24 +8,21 @@ using WaveEngine.Framework.Graphics;
 
 namespace WaveProject.Steering
 {
-    public class Persue : Steering
+    class Evade : Steering
     {
         public float maxPrediction = 10f;
 
         public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin, Vector2? characterSpeed = null)
         {
-            Vector2 direction = target.Transform.Position - origin.Transform.Position;
+            Vector2 direction = origin.Transform.Position - target.Transform.Position;
             float distance = direction.Length();
 
             float speed = ((Vector2)characterSpeed).Length();
 
             // Idea feliz
-            //Linear = direction * (speed * distance);
-            //float T = distance / 0.2f;
-
             Linear = target.Transform.Position + target.Speed * maxPrediction;
 
-            //Delegar en seek?
+            //Delegar en Flee
             Linear.Normalize();
             Linear *= 0.2f;
 
@@ -36,7 +33,5 @@ namespace WaveProject.Steering
         {
             throw new NotImplementedException();
         }
-
     }
-
 }

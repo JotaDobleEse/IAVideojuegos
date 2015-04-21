@@ -26,5 +26,6 @@ namespace WaveProject.Steering
         }
 
         public abstract void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null);
+        public abstract void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin, Vector2? characterSpeed = null);
     }
 }

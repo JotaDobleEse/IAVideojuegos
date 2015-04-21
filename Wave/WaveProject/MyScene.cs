@@ -71,12 +71,18 @@ namespace WaveProject
                     MinLayerDrawOrder = -10,
                     MaxLayerDrawOrder = -0
                 });
+            Entity persue = new Entity("persue")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new SteeringBehavior(new Persue(), Color.Black));
 
             EntityManager.Add(align);
             EntityManager.Add(seek);
             EntityManager.Add(flee);
             EntityManager.Add(mouserFollower);
             EntityManager.Add(map);
+            EntityManager.Add(persue);
 
         }
 
@@ -90,6 +96,9 @@ namespace WaveProject
             align.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f), (WaveServices.Platform.ScreenHeight / 2f));
             Entity flee = EntityManager.Find("flee");
             flee.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
+            Entity persue = EntityManager.Find("persue");
+            persue.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
+
         }
     }
 }

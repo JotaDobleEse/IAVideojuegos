@@ -64,5 +64,11 @@ namespace WaveProject.Steering
 
             Angular = 0;
         }
+        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin, Vector2? characterSpeed = null)
+        {
+            throw new NotImplementedException();
+        }
     }
+
+     
 }

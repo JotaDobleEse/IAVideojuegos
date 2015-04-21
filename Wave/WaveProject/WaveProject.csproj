@@ -59,6 +59,7 @@
     <Compile Include="SteeringVelocidad\SteeringBehavior.cs" />
     <Compile Include="Steering\Align.cs" />
     <Compile Include="Steering\Arrive.cs" />
+    <Compile Include="Steering\Evade.cs" />
     <Compile Include="Steering\Flee.cs" />
     <Compile Include="Steering\Persue.cs" />
     <Compile Include="Steering\Seek.cs" />

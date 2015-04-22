@@ -72,11 +72,18 @@ namespace WaveProject
                     MinLayerDrawOrder = -10,
                     MaxLayerDrawOrder = -0
                 });
+
             Entity persue = new Entity("persue")
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new SteeringBehavior(new Persue(), Color.Black, "arrive"));
+
+            Entity velocityMatching = new Entity("velocity")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new SteeringBehavior(new VelocityMatching(), Color.Khaki, "flee"));
 
             EntityManager.Add(align);
             EntityManager.Add(seek);
@@ -84,6 +91,7 @@ namespace WaveProject
             EntityManager.Add(mouserFollower);
             EntityManager.Add(map);
             EntityManager.Add(persue);
+            EntityManager.Add(velocityMatching);
 
         }
 

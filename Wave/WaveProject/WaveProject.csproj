@@ -57,6 +57,7 @@
     <Compile Include="SteeringVelocidad\Seek.cs" />
     <Compile Include="SteeringVelocidad\Steering.cs" />
     <Compile Include="SteeringVelocidad\SteeringBehavior.cs" />
+    <Compile Include="Steering\AntiAlign.cs" />
     <Compile Include="Steering\Align.cs" />
     <Compile Include="Steering\Arrive.cs" />
     <Compile Include="Steering\Evade.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Steering\Steering.cs" />
     <Compile Include="Steering\SteeringBehavior.cs" />
     <Compile Include="SteeringVelocidad\Wander.cs" />
+    <Compile Include="Steering\VelocityMatching.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources.weproj" />

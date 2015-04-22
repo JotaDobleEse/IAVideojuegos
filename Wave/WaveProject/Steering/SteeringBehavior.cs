@@ -45,19 +45,20 @@ namespace WaveProject.Steering
         protected override void Update(TimeSpan gameTime)
         {
             float dt = (float)gameTime.TotalSeconds;
-            Transform2D targetTransform = null;
+            SteeringBehavior target = null;
             
             if (string.IsNullOrEmpty(Target))
             {
-                targetTransform = new Transform2D();
-                Vector2 target = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
-                targetTransform.Position = target;
+                Transform2D targetTransform = new Transform2D();
+                Vector2 targetMouse = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
+                targetTransform.Position = targetMouse;
+                target = new SteeringBehavior(null, Color.Brown) { Transform = targetTransform };
             }
             else
             {
                 try
                 {
-                    targetTransform = EntityManager.Find(Target).FindComponent<Transform2D>();
+                    target = EntityManager.Find(Target).FindComponent<SteeringBehavior>();
                     //Habria que coger el target como behaviour para coger la velocidad
                 }
                 catch (Exception e)
@@ -67,7 +68,7 @@ namespace WaveProject.Steering
             }
            /* if(Steering.GetType() == Type.GetType("Persue"))
                 Steering.SteeringCalculation()*/
-            Steering.SteeringCalculation(targetTransform, Transform, Speed); //Aqui se le pasa 2 transform, en el pursue 2 behaviours?
+            Steering.SteeringCalculation(target, this); //Aqui se le pasa 2 transform, en el pursue 2 behaviours?
             Transform.Position += Speed * dt;
             Transform.Rotation += Rotation * dt;
             Speed += Steering.Linear * dt;

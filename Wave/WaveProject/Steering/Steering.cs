@@ -26,7 +26,7 @@ namespace WaveProject.Steering
         }
 
         public abstract void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null);
-        public abstract void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin, Vector2? characterSpeed = null);
+        public abstract void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin);
 
         #region Operadores
         public static Steering operator +(Steering s1, Steering s2)
@@ -36,6 +36,14 @@ namespace WaveProject.Steering
             result.Angular = s1.Angular + s2.Angular;
             return result;
         }
+        public static Steering operator +(Steering s1, float d)
+        {
+            Steering result = new NonFuncionalSteering();
+            result.Linear = s1.Linear + new Vector2(d,d);
+            result.Angular = s1.Angular + d;
+            return result;
+        }
+
         public static Steering operator -(Steering s1, Steering s2)
         {
             Steering result = new NonFuncionalSteering();
@@ -43,6 +51,14 @@ namespace WaveProject.Steering
             result.Angular = s1.Angular - s2.Angular;
             return result;
         }
+        public static Steering operator -(Steering s1, float d)
+        {
+            Steering result = new NonFuncionalSteering();
+            result.Linear = s1.Linear - new Vector2(d, d);
+            result.Angular = s1.Angular - d;
+            return result;
+        }
+
         public static Steering operator *(Steering s1, Steering s2)
         {
             Steering result = new NonFuncionalSteering();
@@ -50,11 +66,38 @@ namespace WaveProject.Steering
             result.Angular = s1.Angular * s2.Angular;
             return result;
         }
+        public static Steering operator *(Steering s1, float d)
+        {
+            Steering result = new NonFuncionalSteering();
+            result.Linear = s1.Linear * new Vector2(d, d);
+            result.Angular = s1.Angular * d;
+            return result;
+        }
         public static Steering operator /(Steering s1, Steering s2)
         {
             Steering result = new NonFuncionalSteering();
+            Vector2 aux;
+            if (s2.Linear == Vector2.Zero)
+            {
+                aux = Vector2.One;
+            }
+            else if (s2.Linear.X == 0)
+            {
+                aux = s2.Linear + new Vector2(1, 0);
+            }
+            else if (s2.Linear.Y == 0)
+            {
+                aux = s2.Linear + new Vector2(0, 1);
+            }
             result.Linear = s1.Linear / (s2.Linear == Vector2.Zero ? Vector2.One : s2.Linear);
             result.Angular = s1.Angular / (s2.Angular == 0 ? 1f : s2.Angular);
+            return result;
+        }
+        public static Steering operator /(Steering s1, float d)
+        {
+            Steering result = new NonFuncionalSteering();
+            result.Linear = s1.Linear / (d == 0 ? Vector2.One : new Vector2(d, d));
+            result.Angular = s1.Angular / (d == 0 ? 1 : d);
             return result;
         }
         #endregion
@@ -67,7 +110,7 @@ namespace WaveProject.Steering
                 return;
             }
 
-            public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin, Vector2? characterSpeed = null)
+            public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
             {
                 return;
             }

@@ -62,7 +62,8 @@ namespace WaveProject
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new SteeringVelocidad.Seek(color: Color.Salmon));
+                //.AddComponent(new SteeringVelocidad.Seek(color: Color.Salmon));
+                .AddComponent(new SteeringBehavior(new Seek(), Color.Salmon));
 
             Entity map = new Entity("mapa")
                 .AddComponent(new Transform2D())

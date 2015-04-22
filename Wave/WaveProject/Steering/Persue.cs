@@ -12,12 +12,12 @@ namespace WaveProject.Steering
     {
         public float maxPrediction = 10f;
 
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin, Vector2? characterSpeed = null)
+        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
         {
             Vector2 direction = target.Transform.Position - origin.Transform.Position;
             float distance = direction.Length();
 
-            float speed = ((Vector2)characterSpeed).Length();
+            float speed = origin.Speed.Length();
 
             // Idea feliz
             //Linear = direction * (speed * distance);

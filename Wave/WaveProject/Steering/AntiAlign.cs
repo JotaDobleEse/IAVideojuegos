@@ -24,8 +24,6 @@ namespace WaveProject.Steering
             TargetRadius = (float)(15 * Math.PI / 180);
             SlowRadius = (float)(75 * Math.PI / 180);
         }
-
-        int n = 0;
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
         {
             float rotation = (float)Math.PI + target.Rotation - origin.Rotation;

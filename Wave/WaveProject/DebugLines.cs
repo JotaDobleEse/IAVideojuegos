@@ -41,9 +41,11 @@ namespace WaveProject
             {
                 LineBatch2D lb = RenderManager.LineBatch2D;
                 Vector3 mousePosition = new Vector3(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y, 0f);
-                Vector3 project = Camera.Unproject(ref mousePosition);
+                Vector3 mouse = new Vector3(mousePosition.X, mousePosition.Y, mousePosition.Z);
+                Vector3 project = Camera.Unproject(ref mouse);
                 Vector2 mousePositionProject;
                 project.ToVector2(out mousePositionProject);
+                Console.WriteLine("Original: {0} -- Proyectada: {1}", mousePosition, mousePositionProject);
 
                 foreach (SteeringBehavior steering in Steerings)
                 {

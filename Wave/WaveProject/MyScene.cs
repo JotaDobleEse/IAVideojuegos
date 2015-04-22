@@ -39,6 +39,7 @@ namespace WaveProject
                 .AddComponent(new DebugLines())
                 .AddComponent(new CameraController()); // Transparent background need this clearFlags.
             EntityManager.Add(camera2D);
+            EntityManager.Add(text);
 
             Entity align = new Entity("align")
                 .AddComponent(new Transform2D())

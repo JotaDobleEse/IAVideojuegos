@@ -10,27 +10,36 @@ namespace WaveProject.Steering
 {
     public class Persue : Steering
     {
-        public float maxPrediction = 10f;
+        public float maxPrediction = 1f;
 
         public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
         {
             Vector2 direction = target.Transform.Position - origin.Transform.Position;
+
             float distance = direction.Length();
 
             float speed = origin.Speed.Length();
 
-            // Idea feliz
-            //Linear = direction * (speed * distance);
-            //float T = distance / 0.2f;
+            float prediction = 0f;
 
-            Linear = target.Transform.Position + target.Speed * maxPrediction;
+            if (speed <= distance / maxPrediction)
+                prediction = maxPrediction;
+            else
+                prediction = distance / speed;
 
-            //Delegar en seek?
-            Linear.Normalize();
-            Linear *= 0.2f;
 
+            //Delegar en Seek
+            Seek seek = new Seek();
+
+            Transform2D targetT = target.Transform.Clone() as Transform2D;
+           
+            targetT.Position += target.Speed * prediction;
+            seek.SteeringCalculation(targetT, origin.Transform);
+
+            Linear = seek.Linear;
             Angular = 0f;
-            //throw new NotImplementedException();
+            Console.WriteLine("{0}", speed);
+
         }
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
         {

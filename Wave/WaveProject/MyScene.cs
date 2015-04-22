@@ -76,7 +76,7 @@ namespace WaveProject
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new SteeringBehavior(new Persue(), Color.Black));
+                .AddComponent(new SteeringBehavior(new Persue(), Color.Black, "arrive"));
 
             EntityManager.Add(align);
             EntityManager.Add(seek);

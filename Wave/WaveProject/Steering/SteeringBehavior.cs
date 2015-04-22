@@ -66,16 +66,15 @@ namespace WaveProject.Steering
                     Console.WriteLine(e.Message);
                 }
             }
-           /* if(Steering.GetType() == Type.GetType("Persue"))
-                Steering.SteeringCalculation()*/
-            Steering.SteeringCalculation(target, this); //Aqui se le pasa 2 transform, en el pursue 2 behaviours?
+ 
+            Steering.SteeringCalculation(target, this); 
             Transform.Position += Speed * dt;
             Transform.Rotation += Rotation * dt;
             Speed += Steering.Linear * dt;
-            if (Speed.X > 100)
-                Speed = new Vector2(100, Speed.Y);
-            if (Speed.Y > 100)
-                Speed = new Vector2(Speed.X, 100);
+            if (this.Speed.X > 100)
+                this.Speed = new Vector2(100, this.Speed.Y);
+            if (this.Speed.Y > 100)
+                this.Speed = new Vector2(this.Speed.X, 100);
             Rotation += Steering.Angular * dt;
 
             #region Escenario circular

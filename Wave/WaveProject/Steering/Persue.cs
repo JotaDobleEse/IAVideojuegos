@@ -12,7 +12,7 @@ namespace WaveProject.Steering
     {
         public float maxPrediction = 1f;
 
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
         {
             Vector2 direction = target.Transform.Position - origin.Transform.Position;
 
@@ -43,7 +43,8 @@ namespace WaveProject.Steering
         }
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
         {
-            throw new NotImplementedException();
+            Linear = Vector2.Zero;
+            Angular = 0;
         }
 
     }

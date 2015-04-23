@@ -20,10 +20,11 @@ namespace WaveProject.Steering
 
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
         {
-            throw new NotImplementedException();
+            Linear = Vector2.Zero;
+            Angular = 0;
         }
 
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
         {
             Linear = target.Speed - origin.Speed;
             Linear /= TimeToTarget;

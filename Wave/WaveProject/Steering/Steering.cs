@@ -28,7 +28,7 @@ namespace WaveProject.Steering
         }
 
         public abstract void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null);
-        public abstract void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin);
+        public abstract void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target);
 
         #region Operadores
         public static Steering operator +(Steering s1, Steering s2)
@@ -113,7 +113,7 @@ namespace WaveProject.Steering
                 Linear = Vector2.Zero;
             }
 
-            public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+            public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
             {
                 Angular = 0;
                 Linear = Vector2.Zero;
@@ -127,7 +127,7 @@ namespace WaveProject.Steering
                 Linear = Vector2.Zero;
             }
 
-            public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+            public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
             {
                 var direction = target.Transform.Position - origin.Transform.Position;
                 origin.Transform.Rotation = (float)Math.Atan2(direction.X, -direction.Y);

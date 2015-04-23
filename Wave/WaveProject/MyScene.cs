@@ -41,6 +41,24 @@ namespace WaveProject
             EntityManager.Add(camera2D);
             EntityManager.Add(text);
 
+            Entity wander = new Entity("wander")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new SteeringBehavior(new Wander(), Color.YellowGreen));
+
+            Entity face = new Entity("face")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new SteeringBehavior(new Face(), Color.Salmon, "arrive"));
+
+            Entity lookWhereYouGoing = new Entity("lookWhereYouGoing")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new SteeringBehavior(new LookWhereYouGoing(), Color.Salmon, "arrive"));
+
             Entity align = new Entity("align")
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
@@ -98,8 +116,11 @@ namespace WaveProject
                     MaxLayerDrawOrder = -0
                 });
 
+            EntityManager.Add(wander);
             EntityManager.Add(align);
-            EntityManager.Add(antiAlign);
+            //EntityManager.Add(face);
+            EntityManager.Add(lookWhereYouGoing);
+            //EntityManager.Add(antiAlign);
             EntityManager.Add(arrive);
             //EntityManager.Add(flee);
             //EntityManager.Add(mouserFollower);
@@ -118,8 +139,12 @@ namespace WaveProject
             arrive.FindComponent<Transform2D>().Position = new Vector2(50, 50);
             Entity align = EntityManager.Find("align");
             align.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f), (WaveServices.Platform.ScreenHeight / 2f));
-            Entity antialign = EntityManager.Find("antialign");
-            antialign.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 50);
+            //Entity antialign = EntityManager.Find("antialign");
+            //antialign.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 50);
+            //Entity face = EntityManager.Find("face");
+            //face.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150);
+            Entity lookWhereYouGoing = EntityManager.Find("lookWhereYouGoing");
+            lookWhereYouGoing.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150);
             //Entity flee = EntityManager.Find("flee");
             //flee.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
             Entity persue = EntityManager.Find("persue");

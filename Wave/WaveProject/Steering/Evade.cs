@@ -12,7 +12,7 @@ namespace WaveProject.Steering
     {
         public float maxPrediction = 10f;
 
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
         {
             Vector2 direction = target.Transform.Position - origin.Transform.Position;
 
@@ -28,7 +28,7 @@ namespace WaveProject.Steering
                 prediction = distance / speed;
 
             //Delegar en Flee
-            Flee flee = new Flee();
+            Steering flee = new Flee();
 
             Transform2D targetT = target.Transform.Clone() as Transform2D;
 
@@ -41,7 +41,8 @@ namespace WaveProject.Steering
         }
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
         {
-            throw new NotImplementedException();
+            Linear = Vector2.Zero;
+            Angular = 0;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace WaveProject.Steering
             Angular = 0f;
         }
 
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
         {
             SteeringCalculation(target.Transform, origin.Transform);
         }

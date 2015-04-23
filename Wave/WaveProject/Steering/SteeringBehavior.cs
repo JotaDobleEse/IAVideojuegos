@@ -65,15 +65,22 @@ namespace WaveProject.Steering
                     Console.WriteLine(e.Message);
                 }
             }
- 
-            Steering.SteeringCalculation(target, this); 
+
+            Steering.SteeringCalculation(this, target);
             Transform.Position += Speed * dt;
             Transform.Rotation += Rotation * dt;
+
+            if (Speed.X > 100)
+                Speed = new Vector2(100, Speed.Y);
+            else if (Speed.X < -100)
+                Speed = new Vector2(-100, Speed.Y);
+            if (Speed.Y > 100)
+                Speed = new Vector2(Speed.X, 100);
+            else if (Speed.Y < -100)
+                Speed = new Vector2(Speed.X, -100);
+            Console.WriteLine(Speed);
+
             Speed += Steering.Linear * dt;
-            if (this.Speed.X > 100)
-                this.Speed = new Vector2(100, this.Speed.Y);
-            if (this.Speed.Y > 100)
-                this.Speed = new Vector2(this.Speed.X, 100);
             Rotation += Steering.Angular * dt;
             #region Escenario circular
             if (Transform.Position.X > WaveServices.Platform.ScreenWidth)

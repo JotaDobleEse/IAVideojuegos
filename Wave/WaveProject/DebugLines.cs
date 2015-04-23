@@ -40,24 +40,24 @@ namespace WaveProject
             if (DEBUG)
             {
                 LineBatch2D lb = RenderManager.LineBatch2D;
-                Vector3 mousePosition = new Vector3(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y, 0f);
-                Vector3 mouse = new Vector3(mousePosition.X, mousePosition.Y, mousePosition.Z);
-                Vector3 project = Camera.Unproject(ref mouse);
-                Vector2 mousePositionProject;
-                project.ToVector2(out mousePositionProject);
+                Vector2 mousePosition2d = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
+                Vector3 mousePosition = new Vector3(mousePosition2d, 0f);
+                Vector3 project = Camera.Unproject(ref mousePosition);
+                Vector2 mousePositionProject =  project.ToVector2();
+                
                 //Console.WriteLine("Original: {0} -- Proyectada: {1}", mousePosition, mousePositionProject);
 
                 foreach (SteeringBehavior steering in Steerings)
                 {
-                    lb.DrawLine(steering.Transform.Position, steering.Transform.Position + steering.Speed, Color.Red, 1f);
-                    lb.DrawLine(steering.Transform.Position, steering.Transform.Position + steering.Steering.Linear, Color.Chocolate, 1f);
+                    lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Speed, Color.Red, 1f);
+                    lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Steering.Linear, Color.Chocolate, 1f);
                 }
 
                 if (Steerings.Any(a => a.Steering is Arrive))
                 {
                     Arrive arrive = (Arrive)Steerings.First(a => a.Steering is Arrive).Steering;
-                    lb.DrawCircle(mousePositionProject, arrive.SlowRadius, Color.White, 1f);
-                    lb.DrawCircle(mousePositionProject, arrive.TargetRadius, Color.Orange, 1f);
+                    lb.DrawCircleVM(mousePositionProject, arrive.SlowRadius, Color.White, 1f);
+                    lb.DrawCircleVM(mousePositionProject, arrive.TargetRadius, Color.Orange, 1f);
                 }
             }
         }

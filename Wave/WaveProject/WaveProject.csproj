@@ -61,13 +61,16 @@
     <Compile Include="Steering\Align.cs" />
     <Compile Include="Steering\Arrive.cs" />
     <Compile Include="Steering\Evade.cs" />
+    <Compile Include="Steering\Face.cs" />
     <Compile Include="Steering\Flee.cs" />
+    <Compile Include="Steering\LookWhereYouGoing.cs" />
     <Compile Include="Steering\Persue.cs" />
     <Compile Include="Steering\Seek.cs" />
     <Compile Include="Steering\Steering.cs" />
     <Compile Include="Steering\SteeringBehavior.cs" />
     <Compile Include="SteeringVelocidad\Wander.cs" />
     <Compile Include="Steering\VelocityMatching.cs" />
+    <Compile Include="Steering\Wander.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources.weproj" />

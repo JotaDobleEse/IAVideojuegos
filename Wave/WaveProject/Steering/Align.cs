@@ -31,10 +31,49 @@ namespace WaveProject.Steering
             Linear = Vector2.Zero;
         }
 
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
         {
             Angular = 0;
             float rotationOriginal = target.Transform.Rotation - origin.Transform.Rotation;
+            float rotation = MapToRange(rotationOriginal);
+            float rotationSize = Math.Abs(rotation);
+
+            float targetRotation;
+            if (rotationSize < TargetRadius)
+            {
+                Angular = 0;
+                Linear = Vector2.Zero;
+                return;
+            }
+
+            if (rotationSize > SlowRadius)
+            {
+                targetRotation = MaxRotation;
+            }
+            else
+            {
+                targetRotation = rotationSize / SlowRadius;
+            }
+
+            targetRotation *= rotation / rotationSize;
+
+            Angular = targetRotation - origin.Rotation;
+            Angular /= TimeToTarget;
+
+            float angularAcceleration = Math.Abs(Angular);
+            if (angularAcceleration > MaxAngularAcceleration)
+            {
+                Angular /= angularAcceleration;
+                Angular *= MaxAngularAcceleration;
+            }
+
+            Linear = Vector2.Zero;
+        }
+
+        public void SteeringCalculation(Transform2D target, SteeringBehavior origin)
+        {
+            Angular = 0;
+            float rotationOriginal = target.Rotation - origin.Transform.Rotation;
             float rotation = MapToRange(rotationOriginal);
             float rotationSize = Math.Abs(rotation);
 

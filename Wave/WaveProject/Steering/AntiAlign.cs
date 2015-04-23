@@ -31,7 +31,7 @@ namespace WaveProject.Steering
             Linear = Vector2.Zero;
         }
 
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
         {
             Angular = 0;
             float rotationOriginal = (target.Transform.Rotation + (float)Math.PI) - origin.Transform.Rotation;

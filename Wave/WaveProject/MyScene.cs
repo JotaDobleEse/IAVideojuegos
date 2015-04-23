@@ -45,9 +45,15 @@ namespace WaveProject
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new SteeringBehavior(new Align(), Color.Crimson, "follower"));
+                .AddComponent(new SteeringBehavior(new Align(), Color.Crimson, "look"));
 
-            Entity seek = new Entity("arrive")
+            Entity antiAlign = new Entity("antialign")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new SteeringBehavior(new AntiAlign(), Color.Navy, "look"));
+
+            Entity arrive = new Entity("arrive")
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
@@ -66,14 +72,6 @@ namespace WaveProject
                 //.AddComponent(new SteeringVelocidad.Seek(color: Color.Salmon));
                 .AddComponent(new SteeringBehavior(new Seek(), Color.Salmon));
 
-            Entity map = new Entity("mapa")
-                .AddComponent(new Transform2D())
-                .AddComponent(this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
-                {
-                    MinLayerDrawOrder = -10,
-                    MaxLayerDrawOrder = -0
-                });
-
             Entity persue = new Entity("persue")
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
@@ -86,13 +84,29 @@ namespace WaveProject
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new SteeringBehavior(new VelocityMatching(), Color.Khaki, "flee"));
 
+            Entity lookMouse = new Entity("look")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new SteeringBehavior(Steering.Steering.LookMouse, Color.MediumVioletRed));
+
+            Entity map = new Entity("mapa")
+                .AddComponent(new Transform2D())
+                .AddComponent(this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
+                {
+                    MinLayerDrawOrder = -10,
+                    MaxLayerDrawOrder = -0
+                });
+
             EntityManager.Add(align);
-            EntityManager.Add(seek);
-            EntityManager.Add(flee);
-            EntityManager.Add(mouserFollower);
-            EntityManager.Add(map);
+            EntityManager.Add(antiAlign);
+            EntityManager.Add(arrive);
+            //EntityManager.Add(flee);
+            //EntityManager.Add(mouserFollower);
             EntityManager.Add(persue);
-            EntityManager.Add(velocityMatching);
+            //EntityManager.Add(velocityMatching);
+            EntityManager.Add(lookMouse);
+            EntityManager.Add(map);
 
         }
 
@@ -104,10 +118,14 @@ namespace WaveProject
             arrive.FindComponent<Transform2D>().Position = new Vector2(50, 50);
             Entity align = EntityManager.Find("align");
             align.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f), (WaveServices.Platform.ScreenHeight / 2f));
-            Entity flee = EntityManager.Find("flee");
-            flee.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
+            Entity antialign = EntityManager.Find("antialign");
+            antialign.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 50);
+            //Entity flee = EntityManager.Find("flee");
+            //flee.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
             Entity persue = EntityManager.Find("persue");
             persue.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
+            Entity look = EntityManager.Find("look");
+            look.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) + 50);
 
         }
     }

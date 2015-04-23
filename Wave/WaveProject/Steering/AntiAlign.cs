@@ -24,18 +24,24 @@ namespace WaveProject.Steering
             TargetRadius = (float)(15 * Math.PI / 180);
             SlowRadius = (float)(75 * Math.PI / 180);
         }
+
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
         {
-            float rotation = (float)Math.PI + target.Rotation - origin.Rotation;
-            rotation = MapToRange(rotation);
+            Angular = 0;
+            Linear = Vector2.Zero;
+        }
+
+        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+        {
+            Angular = 0;
+            float rotationOriginal = (target.Transform.Rotation + (float)Math.PI) - origin.Transform.Rotation;
+            float rotation = MapToRange(rotationOriginal);
             float rotationSize = Math.Abs(rotation);
-            
+
             float targetRotation;
             if (rotationSize < TargetRadius)
             {
-                //Console.WriteLine("Rotation size: {0}, Target Radius: {1}", rotationSize, TargetRadius);
-                targetRotation = 0f;
-                Angular = 0;
+                Angular = 0; 
                 Linear = Vector2.Zero;
                 return;
             }
@@ -52,7 +58,6 @@ namespace WaveProject.Steering
             targetRotation *= rotation / rotationSize;
 
             Angular = targetRotation - origin.Rotation;
-            //Console.WriteLine(Angular);
             Angular /= TimeToTarget;
 
             float angularAcceleration = Math.Abs(Angular);
@@ -63,11 +68,6 @@ namespace WaveProject.Steering
             }
 
             Linear = Vector2.Zero;
-        }
-
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
-        {
-            SteeringCalculation(target.Transform, origin.Transform);
         }
 
         private float MapToRange(float rotation)

@@ -45,7 +45,7 @@ namespace WaveProject
                 Vector3 project = Camera.Unproject(ref mouse);
                 Vector2 mousePositionProject;
                 project.ToVector2(out mousePositionProject);
-                Console.WriteLine("Original: {0} -- Proyectada: {1}", mousePosition, mousePositionProject);
+                //Console.WriteLine("Original: {0} -- Proyectada: {1}", mousePosition, mousePositionProject);
 
                 foreach (SteeringBehavior steering in Steerings)
                 {

@@ -59,7 +59,6 @@ namespace WaveProject.Steering
                 try
                 {
                     target = EntityManager.Find(Target).FindComponent<SteeringBehavior>();
-                    //Habria que coger el target como behaviour para coger la velocidad
                 }
                 catch (Exception e)
                 {
@@ -76,7 +75,6 @@ namespace WaveProject.Steering
             if (this.Speed.Y > 100)
                 this.Speed = new Vector2(this.Speed.X, 100);
             Rotation += Steering.Angular * dt;
-
             #region Escenario circular
             if (Transform.Position.X > WaveServices.Platform.ScreenWidth)
             {

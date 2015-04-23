@@ -38,7 +38,7 @@ namespace WaveProject.Steering
 
             Linear = seek.Linear;
             Angular = 0f;
-            Console.WriteLine("{0}", speed);
+            //Console.WriteLine("{0}", speed);
 
         }
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)

@@ -10,6 +10,8 @@ namespace WaveProject.Steering
 {
     public abstract class Steering
     {
+        public static NonFuncionalSteering NonFunctional { get { return new NonFuncionalSteering(); } }
+        public static LookMouseSteering LookMouse { get { return new LookMouseSteering(); } }
         /// <summary>
         /// Get
         /// </summary>
@@ -107,12 +109,30 @@ namespace WaveProject.Steering
         {
             public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
             {
-                return;
+                Angular = 0;
+                Linear = Vector2.Zero;
             }
 
             public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
             {
-                return;
+                Angular = 0;
+                Linear = Vector2.Zero;
+            }
+        }
+        public class LookMouseSteering : Steering
+        {
+            public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
+            {
+                Angular = 0;
+                Linear = Vector2.Zero;
+            }
+
+            public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+            {
+                var direction = target.Transform.Position - origin.Transform.Position;
+                origin.Transform.Rotation = (float)Math.Atan2(direction.X, -direction.Y);
+                Angular = 0;
+                Linear = Vector2.Zero;
             }
         }
         #endregion

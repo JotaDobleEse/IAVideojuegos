@@ -27,15 +27,20 @@ namespace WaveProject.Steering
 
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
         {
-            float rotation = target.Rotation - origin.Rotation;
-            rotation = MapToRange(rotation);
+            Angular = 0;
+            Linear = Vector2.Zero;
+        }
+
+        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
+        {
+            Angular = 0;
+            float rotationOriginal = target.Transform.Rotation - origin.Transform.Rotation;
+            float rotation = MapToRange(rotationOriginal);
             float rotationSize = Math.Abs(rotation);
-            
+
             float targetRotation;
             if (rotationSize < TargetRadius)
             {
-                //Console.WriteLine("Rotation size: {0}, Target Radius: {1}", rotationSize, TargetRadius);
-                targetRotation = 0f;
                 Angular = 0;
                 Linear = Vector2.Zero;
                 return;
@@ -53,7 +58,6 @@ namespace WaveProject.Steering
             targetRotation *= rotation / rotationSize;
 
             Angular = targetRotation - origin.Rotation;
-            //Console.WriteLine(Angular);
             Angular /= TimeToTarget;
 
             float angularAcceleration = Math.Abs(Angular);
@@ -66,24 +70,19 @@ namespace WaveProject.Steering
             Linear = Vector2.Zero;
         }
 
-        public override void SteeringCalculation(SteeringBehavior target, SteeringBehavior origin)
-        {
-            SteeringCalculation(target.Transform, origin.Transform);
-        }
-
         private float MapToRange(float rotation)
         {
             float r = rotation;
             float Pi = (float)Math.PI;
             if (rotation > Pi)
             {
-                r -= 2 * Pi;
+                return r - 2 * Pi;
             }
             else if (rotation < -Pi)
             {
-                r += 2 * Pi;
+                return r + 2 * Pi;
             }
-            return r;
+            else return r;
         }
     }
 }

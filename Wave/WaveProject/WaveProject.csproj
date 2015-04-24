@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraController.cs" />
+    <Compile Include="Path.cs" />
     <Compile Include="SteeringVelocidad\Arrive.cs" />
     <Compile Include="DebugLines.cs" />
     <Compile Include="SteeringVelocidad\Flee.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Steering\Flee.cs" />
     <Compile Include="Steering\LookWhereYouGoing.cs" />
     <Compile Include="Steering\Persue.cs" />
+    <Compile Include="Steering\PredictivePathFollowing.cs" />
     <Compile Include="Steering\Seek.cs" />
     <Compile Include="Steering\Steering.cs" />
     <Compile Include="Steering\SteeringBehavior.cs" />

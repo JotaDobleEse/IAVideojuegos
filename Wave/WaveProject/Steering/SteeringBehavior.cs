@@ -70,15 +70,15 @@ namespace WaveProject.Steering
             Transform.Position += Speed * dt;
             Transform.Rotation += Rotation * dt;
 
-            if (Speed.X > 100)
-                Speed = new Vector2(100, Speed.Y);
-            else if (Speed.X < -100)
-                Speed = new Vector2(-100, Speed.Y);
-            if (Speed.Y > 100)
-                Speed = new Vector2(Speed.X, 100);
-            else if (Speed.Y < -100)
-                Speed = new Vector2(Speed.X, -100);
-            Console.WriteLine(Speed);
+            if (Speed.X > 50)
+                Speed = new Vector2(50, Speed.Y);
+            else if (Speed.X < -50)
+                Speed = new Vector2(-50, Speed.Y);
+            if (Speed.Y > 50)
+                Speed = new Vector2(Speed.X, 50);
+            else if (Speed.Y < -50)
+                Speed = new Vector2(Speed.X, -50);
+            //Console.WriteLine(Speed);
 
             Speed += Steering.Linear * dt;
             Rotation += Steering.Angular * dt;

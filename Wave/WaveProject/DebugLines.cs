@@ -59,6 +59,12 @@ namespace WaveProject
                     lb.DrawCircleVM(mousePositionProject, arrive.SlowRadius, Color.White, 1f);
                     lb.DrawCircleVM(mousePositionProject, arrive.TargetRadius, Color.Orange, 1f);
                 }
+
+                foreach (var steerings in Steerings.Where(w => w.Steering is PredictivePathFollowing))
+                {
+                    var pathFollowing = steerings.Steering as PredictivePathFollowing;
+                    pathFollowing.Path.DrawPath(lb);
+                }
             }
         }
 

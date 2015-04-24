@@ -108,6 +108,20 @@ namespace WaveProject
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new SteeringBehavior(Steering.Steering.LookMouse, Color.MediumVioletRed));
 
+            Path path = new Path();
+            path.AddPosition(new Vector2(200, 200));
+            path.AddPosition(new Vector2(200, 500));
+            path.AddPosition(new Vector2(300, 475));
+            path.AddPosition(new Vector2(450, 550));
+            path.AddPosition(new Vector2(600, 225));
+
+            Entity pathFollowing = new Entity("pathFollowing")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new SteeringBehavior(new PredictivePathFollowing() { Path = path }, Color.Ivory));
+
+
             Entity map = new Entity("mapa")
                 .AddComponent(new Transform2D())
                 .AddComponent(this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
@@ -127,6 +141,7 @@ namespace WaveProject
             EntityManager.Add(persue);
             //EntityManager.Add(velocityMatching);
             EntityManager.Add(lookMouse);
+            EntityManager.Add(pathFollowing);
             EntityManager.Add(map);
 
         }
@@ -151,6 +166,8 @@ namespace WaveProject
             persue.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
             Entity look = EntityManager.Find("look");
             look.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) + 50);
+            Entity pathFollowing = EntityManager.Find("pathFollowing");
+            pathFollowing.FindComponent<Transform2D>().Position = new Vector2(100, 100);
 
         }
     }

@@ -51,6 +51,7 @@ namespace WaveProject
                 {
                     lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Speed, Color.Red, 1f);
                     lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Steering.Linear, Color.Chocolate, 1f);
+                    steering.Collider.DrawDebugLines(lb);
                 }
 
                 if (Steerings.Any(a => a.Steering is Arrive))

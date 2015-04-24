@@ -8,6 +8,7 @@ using WaveEngine.Common.Math;
 using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
+using WaveEngine.Framework.Physics2D;
 using WaveEngine.Framework.Services;
 
 namespace WaveProject.Steering
@@ -17,7 +18,9 @@ namespace WaveProject.Steering
         [RequiredComponent]
         public Transform2D Transform { get; private set; }
         [RequiredComponent]
-        private Sprite Texture;
+        public Sprite Texture { get; private set; }
+        [RequiredComponent]
+        public RectangleCollider Collider { get; private set; }
 
         private float Mass;
         public Steering Steering { get; private set; }
@@ -28,6 +31,7 @@ namespace WaveProject.Steering
 
         public SteeringBehavior(Steering steering, Color color, string target = null)
         {
+            
             Steering = steering;
             Color = color;
             Target = target;
@@ -41,6 +45,9 @@ namespace WaveProject.Steering
             Rotation = 0f;
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
+            Collider.Center = Vector2.Center;
+            Collider.Transform2D = Transform;
+            //Collider.Size = new Vector2(Texture.SourceRectangle.Value.Width, Texture.SourceRectangle.Value.Height);
         }
         protected override void Update(TimeSpan gameTime)
         {

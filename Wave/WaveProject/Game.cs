@@ -16,7 +16,7 @@ namespace WaveProject
 
             // ViewportManager is used to automatically adapt resolution to fit screen size
             ViewportManager vm = WaveServices.ViewportManager;
-            vm.Activate(1280, 720, ViewportManager.StretchMode.UniformToFill);
+            vm.Activate(1280, 720, ViewportManager.StretchMode.Uniform);
 
             ScreenContext screenContext = new ScreenContext(new MyScene());
             WaveServices.ScreenContextManager.To(screenContext);

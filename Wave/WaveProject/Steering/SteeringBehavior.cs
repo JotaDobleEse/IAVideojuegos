@@ -24,10 +24,11 @@ namespace WaveProject.Steering
 
         private float Mass;
         public Steering Steering { get; private set; }
-        public Vector2 Speed { get; private set; }
-        public float Rotation { get; private set; }
+        public Vector2 Speed { get; set; }
+        public float Rotation { get; set; }
         public Color Color { get; set; }
         public string Target { get; set; }
+        public float MaxSpeed { get; private set; }
 
         public SteeringBehavior(Steering steering, Color color, string target = null)
         {
@@ -47,6 +48,7 @@ namespace WaveProject.Steering
             Texture.TintColor = Color;
             Collider.Center = Vector2.Center;
             Collider.Transform2D = Transform;
+            MaxSpeed = 50;
             //Collider.Size = new Vector2(Texture.SourceRectangle.Value.Width, Texture.SourceRectangle.Value.Height);
         }
         protected override void Update(TimeSpan gameTime)
@@ -77,14 +79,14 @@ namespace WaveProject.Steering
             Transform.Position += Speed * dt;
             Transform.Rotation += Rotation * dt;
 
-            if (Speed.X > 50)
+            if (Speed.X > MaxSpeed)
                 Speed = new Vector2(50, Speed.Y);
-            else if (Speed.X < -50)
-                Speed = new Vector2(-50, Speed.Y);
-            if (Speed.Y > 50)
-                Speed = new Vector2(Speed.X, 50);
-            else if (Speed.Y < -50)
-                Speed = new Vector2(Speed.X, -50);
+            else if (Speed.X < -MaxSpeed)
+                Speed = new Vector2(-MaxSpeed, Speed.Y);
+            if (Speed.Y > MaxSpeed)
+                Speed = new Vector2(Speed.X, MaxSpeed);
+            else if (Speed.Y < -MaxSpeed)
+                Speed = new Vector2(Speed.X, -MaxSpeed);
             //Console.WriteLine(Speed);
 
             Speed += Steering.Linear * dt;

@@ -12,7 +12,7 @@ namespace WaveProject.Steering
     public class Separation : Steering
     {
 
-        public SteeringBehavior[] listaObjetivos { get; set; }
+       //public SteeringBehavior[] listaObjetivos { get; set; }
 
         //Variable que nos indica si un target esta close
         protected float threshold = 0.1f;

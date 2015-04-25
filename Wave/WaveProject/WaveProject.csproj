@@ -69,6 +69,7 @@
     <Compile Include="Steering\Persue.cs" />
     <Compile Include="Steering\PredictivePathFollowing.cs" />
     <Compile Include="Steering\Seek.cs" />
+    <Compile Include="Steering\Separation.cs" />
     <Compile Include="Steering\Steering.cs" />
     <Compile Include="Steering\SteeringBehavior.cs" />
     <Compile Include="SteeringVelocidad\Wander.cs" />

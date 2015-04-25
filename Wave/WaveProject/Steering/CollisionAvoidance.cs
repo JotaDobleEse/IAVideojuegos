@@ -19,7 +19,7 @@ namespace WaveProject.Steering
         public CollisionAvoidance(EntityManager entityManager)
         {
             EntityManager = entityManager;
-            MinBoxLength = 30;
+            MinBoxLength = 100;
         }
 
         public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
@@ -79,24 +79,18 @@ namespace WaveProject.Steering
                 var objectTransform = closetObstacle.FindComponent<Transform2D>();
                 float objectRadius = Math.Max(objectTransform.Rectangle.Width, objectTransform.Rectangle.Height) * 0.75f;
 
-                steeringLocal.X = (objectRadius - (float)Math.Abs(x)) * factorX;
-                steeringLocal.Y = (objectRadius - (float)Math.Abs(y)) * factorY;
+                steeringLocal.X = (objectRadius - x) * factorX;
+                steeringLocal.Y = (objectRadius - y) * factorY;
 
-                Vector2 repulsion = ConvertGlobalPos(origin.Transform, steeringLocal);
-                //origin.Speed = repulsion;
-                //origin.Rotation = (float)Math.Atan2(repulsion.X, -repulsion.Y);
+                Vector2 repulsion = ConvertGlobalRotation(origin.Transform, steeringLocal);
                 Linear = repulsion;
-                Linear.Normalize();
-                Linear *= 0.2f;
                 origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
 
             }
             else
             {
-                //origin.Speed = new Vector2(0, -50); ;
-                //origin.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
-                //Linear = new Vector2(0, -50);
-                //Angular = (float)Math.Atan2(Linear.X, -Linear.Y);
+                if (Linear == Vector2.Zero)
+                    Linear = new Vector2(0, -50);   
                 origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
             }
 
@@ -128,10 +122,9 @@ namespace WaveProject.Steering
             //    }
             //}
         }
-        private Vector2 ConvertGlobalPos(Transform2D origin, Vector2 position)
+        private Vector2 ConvertGlobalRotation(Transform2D origin, Vector2 position)
         {
-            var globalPos = position + origin.Position;
-            globalPos += RotationToVector(origin.Rotation);
+            var globalPos = position + RotationToVector(origin.Rotation);
             return globalPos;
         }
 

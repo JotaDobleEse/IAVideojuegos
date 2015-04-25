@@ -42,6 +42,13 @@ namespace WaveProject
             EntityManager.Add(camera2D);
             EntityManager.Add(text);
 
+            Entity collisionAvoidance = new Entity("collisionAvoidance")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new RectangleCollider())
+                .AddComponent(new SteeringBehavior(new CollisionAvoidance(EntityManager), Color.Azure));
+
             Entity wander = new Entity("wander")
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
@@ -143,6 +150,7 @@ namespace WaveProject
                     MaxLayerDrawOrder = -0
                 });
 
+            EntityManager.Add(collisionAvoidance);
             EntityManager.Add(wander);
             EntityManager.Add(align);
             //EntityManager.Add(face);
@@ -163,6 +171,9 @@ namespace WaveProject
         {
             base.Start();
             // This method is called after the CreateScene and Initialize methods and before the first Update.
+            Entity collisionAvoidance = EntityManager.Find("collisionAvoidance");
+            collisionAvoidance.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 200);
+            
             Entity arrive = EntityManager.Find("arrive");
             arrive.FindComponent<Transform2D>().Position = new Vector2(50, 50);
             Entity align = EntityManager.Find("align");

@@ -47,7 +47,7 @@ namespace WaveProject
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new CollisionAvoidance(EntityManager), Color.Azure));
+                .AddComponent(new SteeringBehavior(new CollisionAvoidanceRT(EntityManager), Color.Azure));
 
             Entity wander = new Entity("wander")
                 .AddComponent(new Transform2D())

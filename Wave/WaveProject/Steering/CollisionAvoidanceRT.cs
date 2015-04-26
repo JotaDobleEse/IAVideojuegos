@@ -20,7 +20,7 @@ namespace WaveProject.Steering
         public CollisionAvoidanceRT(EntityManager entityManager)
         {
             EntityManager = entityManager;
-            MaxAcceleration = 0.2f;
+            MaxAcceleration = 5f;
             Radius = 20f;
         }
 
@@ -79,6 +79,12 @@ namespace WaveProject.Steering
                 }
                 relativeP.Normalize();
                 Linear = relativeP * MaxAcceleration;
+                origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
+            }
+            else
+            {
+                if (Linear == Vector2.Zero)
+                    Linear = new Vector2(0, -50);
                 origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
             }
         }

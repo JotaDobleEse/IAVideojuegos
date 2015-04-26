@@ -23,7 +23,7 @@ namespace WaveProject.Steering
             PathOffset = 1;
         }
 
-        public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
+        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
         {
             Linear = Vector2.Zero;
             Angular = 0;
@@ -42,7 +42,7 @@ namespace WaveProject.Steering
             //Console.WriteLine("Curr: {0}, Pos: {1}",targetParam, seekTarget.Position);
 
             Seek seek = new Seek();
-            seek.SteeringCalculation(seekTarget, origin.Transform);
+            seek.SteeringCalculation(origin.Transform, seekTarget);
             Linear = seek.Linear;
 
             //Arrive arrive = new Arrive();

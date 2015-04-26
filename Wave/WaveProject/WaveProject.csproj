@@ -62,6 +62,7 @@
     <Compile Include="Steering\Align.cs" />
     <Compile Include="Steering\Arrive.cs" />
     <Compile Include="Steering\CollisionAvoidance.cs" />
+    <Compile Include="Steering\CollisionAvoidanceRT.cs" />
     <Compile Include="Steering\Evade.cs" />
     <Compile Include="Steering\Face.cs" />
     <Compile Include="Steering\Flee.cs" />

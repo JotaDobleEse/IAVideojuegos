@@ -10,7 +10,7 @@ namespace WaveProject.Steering
 {
     class LookWhereYouGoing : Steering
     {
-        public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
+        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
         {
             Linear = Vector2.Zero;
             Angular = 0;

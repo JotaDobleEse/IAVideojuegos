@@ -31,7 +31,7 @@ namespace WaveProject.Steering
             this.entityManager = entityManager;
         }
 
-        public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
+        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
         {
             Vector2 direction = target.Position - origin.Position;
             float distance = direction.Length();
@@ -56,8 +56,8 @@ namespace WaveProject.Steering
             //var prueba = entityManager.AllEntities;
             IEnumerable<SteeringBehavior> Steerings = entityManager.AllEntities.Where(w => w.Components.Any(a => a is SteeringBehavior)).Select(s => s.FindComponent<SteeringBehavior>()).ToList();
             foreach(var targets in Steerings){
-                
-                    SteeringCalculation(targets.Transform, origin.Transform);
+
+                SteeringCalculation(origin.Transform, targets.Transform);
             }
             //A la salida del foreach tendremos en linearAcc el vector resultante de la suma de los vectores 
             Linear = linearAcc;

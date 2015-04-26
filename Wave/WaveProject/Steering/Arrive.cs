@@ -25,7 +25,7 @@ namespace WaveProject.Steering
             SlowRadius = 150f;
         }
 
-        public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed)
+        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed)
         {
             if (characterSpeed == null)
                 throw new NotSupportedException("characterSpeed not optional");
@@ -66,7 +66,7 @@ namespace WaveProject.Steering
         }
         public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
         {
-            SteeringCalculation(target.Transform, origin.Transform, origin.Speed);
+            SteeringCalculation(origin.Transform, target.Transform, origin.Speed);
         }
     }
 

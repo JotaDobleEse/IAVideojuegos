@@ -34,14 +34,14 @@ namespace WaveProject.Steering
             Transform2D targetT = target.Transform.Clone() as Transform2D;
            
             targetT.Position += target.Speed * prediction;
-            seek.SteeringCalculation(targetT, origin.Transform);
+            seek.SteeringCalculation(origin.Transform, targetT);
 
             Linear = seek.Linear;
             Angular = 0f;
             //Console.WriteLine("{0}", speed);
 
         }
-        public override void SteeringCalculation(Transform2D target, Transform2D origin, Vector2? characterSpeed = null)
+        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
         {
             Linear = Vector2.Zero;
             Angular = 0;

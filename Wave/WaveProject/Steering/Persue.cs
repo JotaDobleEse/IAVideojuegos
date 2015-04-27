@@ -41,11 +41,6 @@ namespace WaveProject.Steering
             //Console.WriteLine("{0}", speed);
 
         }
-        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-        {
-            Linear = Vector2.Zero;
-            Angular = 0;
-        }
 
     }
 

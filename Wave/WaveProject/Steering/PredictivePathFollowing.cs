@@ -23,12 +23,6 @@ namespace WaveProject.Steering
             PathOffset = 1;
         }
 
-        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-        {
-            Linear = Vector2.Zero;
-            Angular = 0;
-        }
-
         public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
         {
             Vector2 futurePos = origin.Transform.Position + origin.Speed * PredictTime;

@@ -15,17 +15,13 @@ namespace WaveProject.Steering
     {
         public EntityManager EntityManager { get; set; }
         public float MinBoxLength { get; set; }
+        public float MaxAcceleration { get; set; }
 
         public CollisionAvoidance(EntityManager entityManager)
         {
             EntityManager = entityManager;
-            MinBoxLength = 100;
-        }
-
-        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-        {
-            Linear = Vector2.Zero;
-            Angular = 0;
+            MinBoxLength = 80;
+            MaxAcceleration = 20f;
         }
 
         public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
@@ -76,7 +72,8 @@ namespace WaveProject.Steering
                 steeringLocal.Y = (objectRadius - y) * factorY;
 
                 Vector2 repulsion = ConvertGlobalRotation(origin.Transform, steeringLocal);
-                Linear = repulsion;
+                repulsion.Normalize();
+                Linear = repulsion * MaxAcceleration;
                 origin.Transform.Rotation = origin.Speed.ToRotation();
 
             }

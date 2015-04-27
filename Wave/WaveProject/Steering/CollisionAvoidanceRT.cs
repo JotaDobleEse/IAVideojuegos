@@ -24,12 +24,6 @@ namespace WaveProject.Steering
             Radius = 20f;
         }
 
-        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-        {
-            Linear = Vector2.Zero;
-            Angular = 0;
-        }
-
         public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
         {
             Radius = (float)Math.Max(origin.Texture.Texture.Width, origin.Texture.Texture.Height) / 2;

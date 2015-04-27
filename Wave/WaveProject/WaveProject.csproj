@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraController.cs" />
+    <Compile Include="Extensiones.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="SteeringVelocidad\Arrive.cs" />
     <Compile Include="DebugLines.cs" />

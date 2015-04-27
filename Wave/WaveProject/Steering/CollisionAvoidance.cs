@@ -34,16 +34,12 @@ namespace WaveProject.Steering
             Entity closetObstacle = null;
             float boxLength = MinBoxLength + (origin.Speed.Length() / new Vector2(origin.MaxSpeed, origin.MaxSpeed).Length()) * MinBoxLength;
             List<Entity> objects = GetCollisionCandidates(origin).ToList();
-            //Console.WriteLine(objects.Count);
             foreach (var obstacle in objects)
             {
-                var localPos = ConvertLocalPos(origin.Transform, obstacle.FindComponent<Transform2D>().Position);
-                //Console.WriteLine("{0} -- {1}", localPos, obstacle.FindComponent<Transform2D>().Position);
+                var localPos = origin.Transform.ConvertToLocalPos(obstacle.FindComponent<Transform2D>().Position);
                 if (localPos.X >= 0)
                 {
-                    var objectTransform = obstacle.FindComponent<Transform2D>();
-                    float objectRadius = Math.Max(objectTransform.Rectangle.Width, objectTransform.Rectangle.Height) * 0.75f;
-                    //Console.WriteLine("{0}: {1}", obstacle.Name, objectRadius);
+                    float objectRadius = obstacle.BRadius();
                     float sumRadius = objectRadius + objectRadius; // +origin.Texture.Texture.Width / 2;
                     if (Math.Abs(localPos.Y) < sumRadius)
                     {
@@ -53,11 +49,9 @@ namespace WaveProject.Steering
                         {
                             intersection = localPos.X + sqrtPart;
                         }
-                        //if (obstacle.Name == "look")
-                        //    Console.WriteLine("{0}: {1} - {2}", obstacle.Name, minIntersection, intersection);
+
                         if (minIntersection < intersection)
                         {
-                            //Console.WriteLine("{0}: {1} - {2}", obstacle.Name, minIntersection, intersection);
                             minIntersection = intersection;
                             closetObstacle = obstacle;
                         }
@@ -68,30 +62,29 @@ namespace WaveProject.Steering
 
             if (closetObstacle != null)
             {
-                Vector2 localPos = ConvertLocalPos(origin.Transform, closetObstacle.FindComponent<Transform2D>().Position);
-                float x = localPos.X;// closetObstacle.FindComponent<Transform2D>().LocalPosition.X;
-                float y = localPos.Y;// closetObstacle.FindComponent<Transform2D>().LocalPosition.Y;
+                Vector2 localPos = origin.Transform.ConvertToLocalPos(closetObstacle.FindComponent<Transform2D>().Position);
+                float x = localPos.X;
+                float y = localPos.Y;
 
                 Vector2 steeringLocal = Vector2.Zero;
                 float factorX = 0.2f;
                 float factorY = 1 + (boxLength - x) / boxLength;
 
-                var objectTransform = closetObstacle.FindComponent<Transform2D>();
-                float objectRadius = Math.Max(objectTransform.Rectangle.Width, objectTransform.Rectangle.Height) * 0.75f;
+                float objectRadius = closetObstacle.BRadius();
 
                 steeringLocal.X = (objectRadius - x) * factorX;
                 steeringLocal.Y = (objectRadius - y) * factorY;
 
                 Vector2 repulsion = ConvertGlobalRotation(origin.Transform, steeringLocal);
                 Linear = repulsion;
-                origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
+                origin.Transform.Rotation = origin.Speed.ToRotation();
 
             }
             else
             {
                 if (Linear == Vector2.Zero)
                     Linear = new Vector2(0, -50);   
-                origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
+                origin.Transform.Rotation = origin.Speed.ToRotation();
             }
 
         }
@@ -99,45 +92,12 @@ namespace WaveProject.Steering
         private IEnumerable<Entity> GetCollisionCandidates(SteeringBehavior origin)
         {
             return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null && w.FindComponent<SteeringBehavior>() != origin);
-            //if (origin.Speed.X > 0)
-            //{
-            //    if (origin.Speed.Y > 0)
-            //    {
-            //        return EntityManager.AllEntities.Where(w => w.FindComponent<Transform2D>() != null && w.FindComponent<Transform2D>().Position.X > origin.Transform.Position.X && w.FindComponent<Transform2D>().Position.Y > origin.Transform.Position.Y);
-            //    }
-            //    else
-            //    {
-            //        return EntityManager.AllEntities.Where(w => w.FindComponent<Transform2D>() != null && w.FindComponent<Transform2D>().Position.X > origin.Transform.Position.X && w.FindComponent<Transform2D>().Position.Y < origin.Transform.Position.Y);
-            //    }
-            //}
-            //else
-            //{
-            //    if (origin.Speed.Y > 0)
-            //    {
-            //        return EntityManager.AllEntities.Where(w => w.FindComponent<Transform2D>() != null && w.FindComponent<Transform2D>().Position.X < origin.Transform.Position.X && w.FindComponent<Transform2D>().Position.Y > origin.Transform.Position.Y);
-            //    }
-            //    else
-            //    {
-            //        return EntityManager.AllEntities.Where(w => w.FindComponent<Transform2D>() != null && w.FindComponent<Transform2D>().Position.X < origin.Transform.Position.X && w.FindComponent<Transform2D>().Position.Y < origin.Transform.Position.Y);
-            //    }
-            //}
         }
+
         private Vector2 ConvertGlobalRotation(Transform2D origin, Vector2 position)
         {
-            var globalPos = position + RotationToVector(origin.Rotation);
+            var globalPos = position + origin.RotationAsVector();
             return globalPos;
-        }
-
-        private Vector2 ConvertLocalPos(Transform2D origin, Vector2 position)
-        {
-            var localPos = position - origin.Position;
-            localPos -= RotationToVector(origin.Rotation);
-            return localPos;
-        }
-
-        private Vector2 RotationToVector(float rotation)
-        {
-            return new Vector2((float)Math.Sin(rotation), -(float)Math.Cos(rotation));
         }
     }
 }

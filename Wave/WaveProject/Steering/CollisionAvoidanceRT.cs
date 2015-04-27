@@ -79,13 +79,13 @@ namespace WaveProject.Steering
                 }
                 relativeP.Normalize();
                 Linear = relativeP * MaxAcceleration;
-                origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
+                origin.Transform.Rotation = origin.Speed.ToRotation();
             }
             else
             {
                 if (Linear == Vector2.Zero)
                     Linear = new Vector2(0, -50);
-                origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
+                origin.Transform.Rotation = origin.Speed.ToRotation();
             }
         }
 

@@ -66,6 +66,11 @@ namespace WaveProject
                     var pathFollowing = steerings.Steering as PredictivePathFollowing;
                     pathFollowing.Path.DrawPath(lb);
                 }
+
+                foreach (var wall in CollisionDetector.Detector.Walls)
+                {
+                    lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1);
+                }
             }
         }
 

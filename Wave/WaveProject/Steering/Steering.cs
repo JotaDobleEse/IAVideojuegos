@@ -27,7 +27,11 @@ namespace WaveProject.Steering
             Angular = 0f;
         }
 
-        public abstract void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null);
+        public virtual void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
+        {
+            Linear = Vector2.Zero;
+            Angular = 0;
+        }
         public abstract void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target);
 
         #region Operadores
@@ -107,11 +111,6 @@ namespace WaveProject.Steering
         #region SteeringContenedor
         public class NonFuncionalSteering : Steering
         {
-            public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-            {
-                Angular = 0;
-                Linear = Vector2.Zero;
-            }
 
             public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
             {
@@ -121,11 +120,6 @@ namespace WaveProject.Steering
         }
         public class LookMouseSteering : Steering
         {
-            public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-            {
-                Angular = 0;
-                Linear = Vector2.Zero;
-            }
 
             public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
             {

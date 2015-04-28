@@ -42,6 +42,13 @@ namespace WaveProject
             EntityManager.Add(camera2D);
             EntityManager.Add(text);
 
+            Entity wallAvoidance = new Entity("wallAvoidance")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new RectangleCollider())
+                .AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
+
             Entity collisionAvoidance = new Entity("collisionAvoidance")
                 .AddComponent(new Transform2D())
                 .AddComponent(new Sprite("Content/Textures/triangle"))
@@ -103,7 +110,6 @@ namespace WaveProject
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
-                //.AddComponent(new SteeringVelocidad.Seek(color: Color.Salmon));
                 .AddComponent(new SteeringBehavior(new Seek(), Color.Salmon));
 
             Entity persue = new Entity("persue")
@@ -150,6 +156,7 @@ namespace WaveProject
                     MaxLayerDrawOrder = -0
                 });
 
+            EntityManager.Add(wallAvoidance);
             EntityManager.Add(collisionAvoidance);
             EntityManager.Add(wander);
             EntityManager.Add(align);
@@ -173,7 +180,9 @@ namespace WaveProject
             // This method is called after the CreateScene and Initialize methods and before the first Update.
             Entity collisionAvoidance = EntityManager.Find("collisionAvoidance");
             collisionAvoidance.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 200);
-            
+
+            Entity wall = EntityManager.Find("wallAvoidance");
+            wall.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 50, (WaveServices.Platform.ScreenHeight / 2f) - 100);
             Entity arrive = EntityManager.Find("arrive");
             arrive.FindComponent<Transform2D>().Position = new Vector2(50, 50);
             Entity align = EntityManager.Find("align");

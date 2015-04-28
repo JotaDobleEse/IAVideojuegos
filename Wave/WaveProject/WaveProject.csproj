@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraController.cs" />
+    <Compile Include="Extensiones.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="SteeringsCombinados\BlendedSteering.cs" />
     <Compile Include="SteeringVelocidad\Arrive.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Steering\Arrive.cs" />
     <Compile Include="Steering\CollisionAvoidance.cs" />
     <Compile Include="Steering\CollisionAvoidanceRT.cs" />
+    <Compile Include="Steering\CollisionDetector.cs" />
     <Compile Include="Steering\Evade.cs" />
     <Compile Include="Steering\Face.cs" />
     <Compile Include="Steering\Flee.cs" />
@@ -76,7 +78,9 @@
     <Compile Include="Steering\SteeringBehavior.cs" />
     <Compile Include="SteeringVelocidad\Wander.cs" />
     <Compile Include="Steering\VelocityMatching.cs" />
+    <Compile Include="Steering\WallAvoidance.cs" />
     <Compile Include="Steering\Wander.cs" />
+    <Compile Include="Wall.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources.weproj" />

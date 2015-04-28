@@ -24,12 +24,6 @@ namespace WaveProject.Steering
             Radius = 20f;
         }
 
-        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-        {
-            Linear = Vector2.Zero;
-            Angular = 0;
-        }
-
         public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
         {
             Radius = (float)Math.Max(origin.Texture.Texture.Width, origin.Texture.Texture.Height) / 2;
@@ -79,13 +73,13 @@ namespace WaveProject.Steering
                 }
                 relativeP.Normalize();
                 Linear = relativeP * MaxAcceleration;
-                origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
+                origin.Transform.Rotation = origin.Speed.ToRotation();
             }
             else
             {
                 if (Linear == Vector2.Zero)
                     Linear = new Vector2(0, -50);
-                origin.Transform.Rotation = (float)Math.Atan2(origin.Speed.X, -origin.Speed.Y);
+                origin.Transform.Rotation = origin.Speed.ToRotation();
             }
         }
 

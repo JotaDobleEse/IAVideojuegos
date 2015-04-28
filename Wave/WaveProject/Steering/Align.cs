@@ -25,19 +25,17 @@ namespace WaveProject.Steering
             SlowRadius = (float)(75 * Math.PI / 180);
         }
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
+        public override SteeringOutput GetSteering()
         {
-            Angular = 0;
-            float rotationOriginal = target.Transform.Rotation - origin.Transform.Rotation;
+            SteeringOutput steering = new SteeringOutput();
+            float rotationOriginal = Target.Orientation - Character.Orientation;
             float rotation = MapToRange(rotationOriginal);
             float rotationSize = Math.Abs(rotation);
 
             float targetRotation;
             if (rotationSize < TargetRadius)
             {
-                Angular = 0;
-                Linear = Vector2.Zero;
-                return;
+                return steering;
             }
 
             if (rotationSize > SlowRadius)
@@ -50,57 +48,18 @@ namespace WaveProject.Steering
             }
 
             targetRotation *= rotation / rotationSize;
+            steering.Angular = targetRotation - Character.Rotation;
+            steering.Angular /= TimeToTarget;
 
-            Angular = targetRotation - origin.Rotation;
-            Angular /= TimeToTarget;
-
-            float angularAcceleration = Math.Abs(Angular);
+            float angularAcceleration = Math.Abs(steering.Angular);
             if (angularAcceleration > MaxAngularAcceleration)
             {
-                Angular /= angularAcceleration;
-                Angular *= MaxAngularAcceleration;
+                steering.Angular /= angularAcceleration;
+                steering.Angular *= MaxAngularAcceleration;
             }
 
-            Linear = Vector2.Zero;
-        }
-
-        public void SteeringCalculation(Transform2D target, SteeringBehavior origin)
-        {
-            Angular = 0;
-            float rotationOriginal = target.Rotation - origin.Transform.Rotation;
-            float rotation = MapToRange(rotationOriginal);
-            float rotationSize = Math.Abs(rotation);
-
-            float targetRotation;
-            if (rotationSize < TargetRadius)
-            {
-                Angular = 0;
-                Linear = Vector2.Zero;
-                return;
-            }
-
-            if (rotationSize > SlowRadius)
-            {
-                targetRotation = MaxRotation;
-            }
-            else
-            {
-                targetRotation = rotationSize / SlowRadius;
-            }
-
-            targetRotation *= rotation / rotationSize;
-
-            Angular = targetRotation - origin.Rotation;
-            Angular /= TimeToTarget;
-
-            float angularAcceleration = Math.Abs(Angular);
-            if (angularAcceleration > MaxAngularAcceleration)
-            {
-                Angular /= angularAcceleration;
-                Angular *= MaxAngularAcceleration;
-            }
-
-            Linear = Vector2.Zero;
+            steering.Linear = Vector2.Zero;
+            return steering;
         }
 
         private float MapToRange(float rotation)

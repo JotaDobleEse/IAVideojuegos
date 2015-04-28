@@ -18,18 +18,20 @@ namespace WaveProject.Steering
             TimeToTarget = 0.1f;
         }
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
+        public override SteeringOutput GetSteering()
         {
-            Linear = target.Speed - origin.Speed;
-            Linear /= TimeToTarget;
+            SteeringOutput steering = new SteeringOutput();
+            steering.Linear = Target.Velocity - Character.Velocity;
+            steering.Linear /= TimeToTarget;
 
-            if (Linear.Length() > MaxAceleration)
+            if (steering.Linear.Length() > MaxAceleration)
             {
-                Linear.Normalize();
-                Linear *= MaxAceleration;
+                steering.Linear.Normalize();
+                steering.Linear *= MaxAceleration;
             }
 
-            Angular = 0f;
+            steering.Angular = 0f;
+            return steering;
         }
     }
 }

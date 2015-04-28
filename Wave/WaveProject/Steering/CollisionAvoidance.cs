@@ -24,19 +24,20 @@ namespace WaveProject.Steering
             MaxAcceleration = 20f;
         }
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
+        public override SteeringOutput GetSteering()
         {
+
             float minIntersection = 0;
             Entity closetObstacle = null;
-            float boxLength = MinBoxLength + (origin.Speed.Length() / new Vector2(origin.MaxSpeed, origin.MaxSpeed).Length()) * MinBoxLength;
-            List<Entity> objects = GetCollisionCandidates(origin).ToList();
+            float boxLength = MinBoxLength + (Character.Velocity.Length() / new Vector2(Character.MaxVelocity, Character.MaxVelocity).Length()) * MinBoxLength;
+            List<Entity> objects = GetCollisionCandidates(Character).ToList();
             foreach (var obstacle in objects)
             {
-                var localPos = origin.Transform.ConvertToLocalPos(obstacle.FindComponent<Transform2D>().Position);
+                var localPos = Character.ConvertToLocalPos(obstacle.FindComponent<Transform2D>().Position);
                 if (localPos.X >= 0)
                 {
                     float objectRadius = obstacle.BRadius();
-                    float sumRadius = objectRadius + objectRadius; // +origin.Texture.Texture.Width / 2;
+                    float sumRadius = objectRadius + objectRadius; // +Character.Texture.Texture.Width / 2;
                     if (Math.Abs(localPos.Y) < sumRadius)
                     {
                         float sqrtPart = (float)Math.Sqrt((sumRadius * sumRadius) - (localPos.Y * localPos.Y));
@@ -58,7 +59,7 @@ namespace WaveProject.Steering
 
             if (closetObstacle != null)
             {
-                Vector2 localPos = origin.Transform.ConvertToLocalPos(closetObstacle.FindComponent<Transform2D>().Position);
+                Vector2 localPos = Character.ConvertToLocalPos(closetObstacle.FindComponent<Transform2D>().Position);
                 float x = localPos.X;
                 float y = localPos.Y;
 
@@ -68,33 +69,34 @@ namespace WaveProject.Steering
 
                 float objectRadius = closetObstacle.BRadius();
 
+
                 steeringLocal.X = (objectRadius - x) * factorX;
                 steeringLocal.Y = (objectRadius - y) * factorY;
 
-                Vector2 repulsion = ConvertGlobalRotation(origin.Transform, steeringLocal);
+                Vector2 repulsion = ConvertGlobalRotation(Character, steeringLocal);
                 repulsion.Normalize();
-                Linear = repulsion * MaxAcceleration;
-                origin.Transform.Rotation = origin.Speed.ToRotation();
+
+                SteeringOutput steering = new SteeringOutput();
+                steering.Linear = repulsion * MaxAcceleration;
+                Character.Orientation = Character.Velocity.ToRotation(); //Despues
+
+                steering.Angular = 0;
+                return steering;
 
             }
-            else
-            {
-                if (Linear == Vector2.Zero)
-                    Linear = new Vector2(0, -50);   
-                origin.Transform.Rotation = origin.Speed.ToRotation();
-            }
+            return new SteeringOutput();
 
         }
 
-        private IEnumerable<Entity> GetCollisionCandidates(SteeringBehavior origin)
+        private Vector2 ConvertGlobalRotation(Kinematic Character, Vector2 position)
         {
-            return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null && w.FindComponent<SteeringBehavior>() != origin);
-        }
-
-        private Vector2 ConvertGlobalRotation(Transform2D origin, Vector2 position)
-        {
-            var globalPos = position + origin.RotationAsVector();
+            var globalPos = position + Character.RotationAsVector();
             return globalPos;
+        }
+
+        private IEnumerable<Entity> GetCollisionCandidates(Kinematic Character)
+        {
+            return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null);
         }
     }
 }

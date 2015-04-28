@@ -49,8 +49,8 @@ namespace WaveProject
 
                 foreach (SteeringBehavior steering in Steerings)
                 {
-                    lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Speed, Color.Red, 1f);
-                    lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Steering.Linear, Color.Chocolate, 1f);
+                    lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Kinematic.Velocity, Color.Red, 1f);
+                    //lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Kinematic.Linear, Color.Chocolate, 1f);
                     //steering.Collider.DrawDebugLines(lb);
                 }
 

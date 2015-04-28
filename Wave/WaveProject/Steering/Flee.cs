@@ -12,18 +12,15 @@ namespace WaveProject.Steering
     {
         protected float MaxAceleration = 0.2f;
 
-        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
+        public override SteeringOutput GetSteering()
         {
-            Linear = origin.Position - target.Position;
-            Linear.Normalize();
-            Linear *= MaxAceleration;
+            SteeringOutput steering = new SteeringOutput();
+            steering.Linear = Character.Position - Target.Position;
+            steering.Linear.Normalize();
+            steering.Linear *= MaxAceleration;
 
-            Angular = 0f;
-        }
-
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
-        {
-            SteeringCalculation(origin.Transform, target.Transform);
+            steering.Angular = 0f;
+            return steering;
         }
     }
 }

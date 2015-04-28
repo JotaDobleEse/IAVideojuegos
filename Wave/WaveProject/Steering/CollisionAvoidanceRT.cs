@@ -24,23 +24,20 @@ namespace WaveProject.Steering
             Radius = 20f;
         }
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
+        public override SteeringOutput GetSteering()
         {
-            Radius = (float)Math.Max(origin.Texture.Texture.Width, origin.Texture.Texture.Height) / 2;
-
             float shortestTime = float.MaxValue;
 
-            Entity firstTarget = null;
+            Kinematic firstTarget = null;
             float firstMinSeparation = 0f;
             float firstDistance = 0f;
             Vector2 firstRelativePos = Vector2.Zero;
             Vector2 firstRelativeVel = Vector2.Zero;
-            var targets = GetCollisionCandidates(origin);
-            foreach (var targ in targets)
+            var targets = GetCollisionCandidates(Character);
+            foreach (var target in targets)
             {
-                var targetSteering = targ.FindComponent<SteeringBehavior>();
-                Vector2 relativePos = targetSteering.Transform.Position - origin.Transform.Position;
-                Vector2 relativeVel = targetSteering.Speed - origin.Speed;
+                Vector2 relativePos = target.Position - Character.Position;
+                Vector2 relativeVel = target.Velocity - Character.Velocity;
                 float relativeSpeed = relativeVel.Length();
                 float timeToCollision = Vector2.Dot(relativePos, relativeVel) / (relativeSpeed * relativeSpeed);
 
@@ -52,7 +49,7 @@ namespace WaveProject.Steering
                 if (timeToCollision > 0 && timeToCollision < shortestTime)
                 {
                     shortestTime = timeToCollision;
-                    firstTarget = targ;
+                    firstTarget = target;
                     firstMinSeparation = minSeparation;
                     firstDistance = distance;
                     firstRelativePos = relativePos;
@@ -65,49 +62,29 @@ namespace WaveProject.Steering
                 Vector2 relativeP = Vector2.Zero;
                 if (firstMinSeparation <= 0 || firstDistance < 2 * Radius)
                 {
-                    relativeP = firstTarget.FindComponent<Transform2D>().Position - origin.Transform.Position;
+                    relativeP = firstTarget.Position - Character.Position;
                 }
                 else
                 {
                     relativeP = firstRelativePos + firstRelativeVel * shortestTime;
                 }
                 relativeP.Normalize();
-                Linear = relativeP * MaxAcceleration;
-                origin.Transform.Rotation = origin.Speed.ToRotation();
+
+                SteeringOutput steering = new SteeringOutput();
+                steering.Linear = relativeP * MaxAcceleration;
+                steering.Angular = 0;
+
+                Character.Orientation = Character.Velocity.ToRotation(); // Despues
+
+                return steering;
             }
-            else
-            {
-                if (Linear == Vector2.Zero)
-                    Linear = new Vector2(0, -50);
-                origin.Transform.Rotation = origin.Speed.ToRotation();
-            }
+            return new SteeringOutput();
         }
 
-        private IEnumerable<Entity> GetCollisionCandidates(SteeringBehavior origin)
+        private IEnumerable<Kinematic> GetCollisionCandidates(Kinematic origin)
         {
-            return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null && w.FindComponent<SteeringBehavior>() != origin);
-            //if (origin.Speed.X > 0)
-            //{
-            //    if (origin.Speed.Y > 0)
-            //    {
-            //        return EntityManager.AllEntities.Where(w => w.FindComponent<Transform2D>() != null && w.FindComponent<Transform2D>().Position.X > origin.Transform.Position.X && w.FindComponent<Transform2D>().Position.Y > origin.Transform.Position.Y);
-            //    }
-            //    else
-            //    {
-            //        return EntityManager.AllEntities.Where(w => w.FindComponent<Transform2D>() != null && w.FindComponent<Transform2D>().Position.X > origin.Transform.Position.X && w.FindComponent<Transform2D>().Position.Y < origin.Transform.Position.Y);
-            //    }
-            //}
-            //else
-            //{
-            //    if (origin.Speed.Y > 0)
-            //    {
-            //        return EntityManager.AllEntities.Where(w => w.FindComponent<Transform2D>() != null && w.FindComponent<Transform2D>().Position.X < origin.Transform.Position.X && w.FindComponent<Transform2D>().Position.Y > origin.Transform.Position.Y);
-            //    }
-            //    else
-            //    {
-            //        return EntityManager.AllEntities.Where(w => w.FindComponent<Transform2D>() != null && w.FindComponent<Transform2D>().Position.X < origin.Transform.Position.X && w.FindComponent<Transform2D>().Position.Y < origin.Transform.Position.Y);
-            //    }
-            //}
+            return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null && w.FindComponent<SteeringBehavior>().Kinematic != origin).Select(s => s.FindComponent<SteeringBehavior>().Kinematic);
         }
+
     }
 }

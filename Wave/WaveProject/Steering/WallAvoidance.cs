@@ -21,29 +21,23 @@ namespace WaveProject.Steering
             LookAhead = 20;
         }
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
+        public override SteeringOutput GetSteering()
         {
-            var rayVector = origin.Speed;
+            var rayVector = Character.Velocity;
             rayVector.Normalize();
             rayVector *= LookAhead;
 
-            Collision collision = CollisionDetector.GetCollision(origin.Transform.Position, rayVector);
+            Collision collision = CollisionDetector.GetCollision(Character.Position, rayVector);
             if (collision != null)
             {
-                var targ = collision.Position + collision.Normal * AvoidDistance;
-                Transform2D targetTransform = new Transform2D();
-                targetTransform.Position = targ;
+                var target = collision.Position + collision.Normal * AvoidDistance;
 
                 Seek seek = new Seek();
-                seek.SteeringCalculation(origin.Transform, targetTransform);
-                Linear = seek.Linear;
-                Angular = seek.Angular;
+                seek.Character = Character;
+                seek.Target = new Kinematic() { Position = target };
+                return seek.GetSteering();
             }
-            else
-            {
-                Linear = new Vector2(-50, 0);
-                origin.Transform.Rotation = origin.Speed.ToRotation();
-            }
+            return new SteeringOutput() { Linear = new Vector2(-50, 0) };
         }
     }
 }

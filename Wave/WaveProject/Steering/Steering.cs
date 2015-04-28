@@ -8,125 +8,82 @@ using WaveEngine.Framework.Graphics;
 
 namespace WaveProject.Steering
 {
-    public abstract class Steering
+
+    public struct SteeringOutput 
     {
-        public static NonFuncionalSteering NonFunctional { get { return new NonFuncionalSteering(); } }
-        public static LookMouseSteering LookMouse { get { return new LookMouseSteering(); } }
-        /// <summary>
-        /// Get
-        /// </summary>
-        public Vector2 Linear { get; protected set; }
-        /// <summary>
-        /// Get
-        /// </summary>
-        public float Angular { get; protected set; }
+        public Vector2 Linear { get; set; }
+        public float Angular { get; set; }
 
-        public Steering()
+        public static SteeringOutput operator +(SteeringOutput s1, SteeringOutput s2)
         {
-            Linear = Vector2.Zero;
-            Angular = 0f;
-        }
-
-        public virtual void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-        {
-            Linear = Vector2.Zero;
-            Angular = 0;
-        }
-        public abstract void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target);
-
-        #region Operadores
-        public static Steering operator +(Steering s1, Steering s2)
-        {
-            Steering result = new NonFuncionalSteering();
+            SteeringOutput result = new SteeringOutput();
             result.Linear = s1.Linear + s2.Linear;
             result.Angular = s1.Angular + s2.Angular;
             return result;
         }
-        public static Steering operator +(Steering s1, float d)
+        public static SteeringOutput operator -(SteeringOutput s1, SteeringOutput s2)
         {
-            Steering result = new NonFuncionalSteering();
-            result.Linear = s1.Linear + new Vector2(d,d);
-            result.Angular = s1.Angular + d;
-            return result;
-        }
-
-        public static Steering operator -(Steering s1, Steering s2)
-        {
-            Steering result = new NonFuncionalSteering();
+            SteeringOutput result = new SteeringOutput();
             result.Linear = s1.Linear - s2.Linear;
             result.Angular = s1.Angular - s2.Angular;
             return result;
         }
-        public static Steering operator -(Steering s1, float d)
+        public static SteeringOutput operator *(SteeringOutput s1, SteeringOutput s2)
         {
-            Steering result = new NonFuncionalSteering();
-            result.Linear = s1.Linear - new Vector2(d, d);
-            result.Angular = s1.Angular - d;
-            return result;
-        }
-
-        public static Steering operator *(Steering s1, Steering s2)
-        {
-            Steering result = new NonFuncionalSteering();
+            SteeringOutput result = new SteeringOutput();
             result.Linear = s1.Linear * s2.Linear;
             result.Angular = s1.Angular * s2.Angular;
             return result;
         }
-        public static Steering operator *(Steering s1, float d)
+        public static SteeringOutput operator /(SteeringOutput s1, SteeringOutput s2)
         {
-            Steering result = new NonFuncionalSteering();
-            result.Linear = s1.Linear * new Vector2(d, d);
-            result.Angular = s1.Angular * d;
+            SteeringOutput result = new SteeringOutput();
+            result.Linear = s1.Linear / s2.Linear;
+            result.Angular = s1.Angular / s2.Angular;
             return result;
         }
-        public static Steering operator /(Steering s1, Steering s2)
+        public static SteeringOutput operator *(SteeringOutput s1, float s2)
         {
-            Steering result = new NonFuncionalSteering();
-            Vector2 aux;
-            if (s2.Linear == Vector2.Zero)
-            {
-                aux = Vector2.One;
-            }
-            else if (s2.Linear.X == 0)
-            {
-                aux = s2.Linear + new Vector2(1, 0);
-            }
-            else if (s2.Linear.Y == 0)
-            {
-                aux = s2.Linear + new Vector2(0, 1);
-            }
-            result.Linear = s1.Linear / (s2.Linear == Vector2.Zero ? Vector2.One : s2.Linear);
-            result.Angular = s1.Angular / (s2.Angular == 0 ? 1f : s2.Angular);
+            SteeringOutput result = new SteeringOutput();
+            result.Linear = s1.Linear * s2;
+            result.Angular = s1.Angular * s2;
             return result;
         }
-        public static Steering operator /(Steering s1, float d)
+        public static SteeringOutput operator /(SteeringOutput s1, float s2)
         {
-            Steering result = new NonFuncionalSteering();
-            result.Linear = s1.Linear / (d == 0 ? Vector2.One : new Vector2(d, d));
-            result.Angular = s1.Angular / (d == 0 ? 1 : d);
+            SteeringOutput result = new SteeringOutput();
+            result.Linear = s1.Linear / s2;
+            result.Angular = s1.Angular / s2;
             return result;
         }
-        #endregion
+    };
+
+    public abstract class Steering
+    {
+        public static LookMouseSteering LookMouse { get { return new LookMouseSteering(); } }
+
+        public Kinematic Character { get; set; }
+
+        public Kinematic Target { get; set; }
+
+        public float Weight { get; set; }
+
+        public Steering(float weight = 0)
+        {
+
+            Weight = weight;
+        }
+
+        public abstract SteeringOutput GetSteering();
 
         #region SteeringContenedor
-        public class NonFuncionalSteering : Steering
-        {
-
-            public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
-            {
-                Angular = 0;
-                Linear = Vector2.Zero;
-            }
-        }
         public class LookMouseSteering : Steering
         {
-
-            public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
+            public override SteeringOutput GetSteering()
             {
-                var direction = target.Transform.Position - origin.Transform.Position;
-                origin.Transform.Rotation = (float)Math.Atan2(direction.X, -direction.Y);
-                Angular = 0;
-                Linear = Vector2.Zero;
+                var direction = Target.Position - Character.Position;
+                Character.Orientation = direction.ToRotation();
+                return new SteeringOutput();
             }
         }
         #endregion

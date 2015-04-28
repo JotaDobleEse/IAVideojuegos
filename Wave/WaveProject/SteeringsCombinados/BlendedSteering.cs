@@ -56,34 +56,13 @@ namespace WaveProject.Steering
         {
             float dt = (float)gameTime.TotalSeconds;
             SteeringBehavior target = null;
-            SteeringBehavior final = new SteeringBehavior(null, Color.Beige);
+            SteeringOutput final = new SteeringOutput();// Steering.NonFunctional;
 
             foreach (var x in Steerings)
             {
-                final = x.SteeringCalculation(tran)
+                final += x.GetSteering();
             }
             
-
-            if (string.IsNullOrEmpty(Target))
-            {
-                Transform2D targetTransform = new Transform2D();
-                Vector2 targetMouse = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
-                targetTransform.Position = targetMouse;
-                target = new SteeringBehavior(null, Color.Brown) { Transform = targetTransform };
-            }
-            else
-            {
-                try
-                {
-                    target = EntityManager.Find(Target).FindComponent<SteeringBehavior>();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-
-            Steering.SteeringCalculation(this, target);
             Transform.Position += Speed * dt;
             Transform.Rotation += Rotation * dt;
 
@@ -97,8 +76,8 @@ namespace WaveProject.Steering
                 Speed = new Vector2(Speed.X, -MaxSpeed);
             //Console.WriteLine(Speed);
 
-            Speed += Steering.Linear * dt;
-            Rotation += Steering.Angular * dt;
+            Speed += final.Linear * dt;
+            Rotation += final.Angular * dt;
             #region Escenario circular
             if (Transform.Position.X > WaveServices.Platform.ScreenWidth)
             {

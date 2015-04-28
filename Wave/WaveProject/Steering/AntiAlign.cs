@@ -25,19 +25,17 @@ namespace WaveProject.Steering
             SlowRadius = (float)(75 * Math.PI / 180);
         }
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
+        public override SteeringOutput GetSteering()
         {
-            Angular = 0;
-            float rotationOriginal = (target.Transform.Rotation + (float)Math.PI) - origin.Transform.Rotation;
+            SteeringOutput steering = new SteeringOutput();
+            float rotationOriginal = (Target.Orientation + (float)Math.PI) - Character.Orientation;
             float rotation = MapToRange(rotationOriginal);
             float rotationSize = Math.Abs(rotation);
 
             float targetRotation;
             if (rotationSize < TargetRadius)
             {
-                Angular = 0; 
-                Linear = Vector2.Zero;
-                return;
+                return steering;
             }
 
             if (rotationSize > SlowRadius)
@@ -50,18 +48,18 @@ namespace WaveProject.Steering
             }
 
             targetRotation *= rotation / rotationSize;
+            steering.Angular = targetRotation - Character.Rotation;
+            steering.Angular /= TimeToTarget;
 
-            Angular = targetRotation - origin.Rotation;
-            Angular /= TimeToTarget;
-
-            float angularAcceleration = Math.Abs(Angular);
+            float angularAcceleration = Math.Abs(steering.Angular);
             if (angularAcceleration > MaxAngularAcceleration)
             {
-                Angular /= angularAcceleration;
-                Angular *= MaxAngularAcceleration;
+                steering.Angular /= angularAcceleration;
+                steering.Angular *= MaxAngularAcceleration;
             }
 
-            Linear = Vector2.Zero;
+            steering.Linear = Vector2.Zero;
+            return steering;
         }
 
         private float MapToRange(float rotation)
@@ -70,13 +68,13 @@ namespace WaveProject.Steering
             float Pi = (float)Math.PI;
             if (rotation > Pi)
             {
-                r -= 2 * Pi;
+                return r - 2 * Pi;
             }
             else if (rotation < -Pi)
             {
-                r += 2 * Pi;
+                return r + 2 * Pi;
             }
-            return r;
+            else return r;
         }
     }
 }

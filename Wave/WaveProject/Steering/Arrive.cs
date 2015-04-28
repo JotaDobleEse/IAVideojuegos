@@ -25,21 +25,19 @@ namespace WaveProject.Steering
             SlowRadius = 150f;
         }
 
-        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed)
+        public override SteeringOutput GetSteering()
         {
-            if (characterSpeed == null)
-                throw new NotSupportedException("characterSpeed not optional");
-            
-            Vector2 direction = target.Position - origin.Position;
+            SteeringOutput steering = new SteeringOutput();
+            Vector2 direction = Target.Position - Character.Position;
             float distance = direction.Length();
 
             if (distance < TargetRadius)
             {
-                Linear = Vector2.Zero;
+                steering.Linear = Vector2.Zero;
             }
 
             Vector2 targetSpeed, targetVelocity;
-            
+
             if (distance > SlowRadius)
             {
                 targetSpeed = MaxSpeed;
@@ -53,20 +51,17 @@ namespace WaveProject.Steering
             targetVelocity.Normalize();
             targetVelocity *= targetSpeed;
 
-            Linear = targetVelocity - (Vector2)characterSpeed;
-            Linear /= TimeToTarget;
+            steering.Linear = targetVelocity - Character.Velocity;
+            steering.Linear /= TimeToTarget;
 
-            if (Linear.Length() > MaxAceleration)
+            if (steering.Linear.Length() > MaxAceleration)
             {
-                Linear.Normalize();
-                Linear *= MaxAceleration;
+                steering.Linear.Normalize();
+                steering.Linear *= MaxAceleration;
             }
 
-            Angular = 0;
-        }
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
-        {
-            SteeringCalculation(origin.Transform, target.Transform, origin.Speed);
+            steering.Angular = 0;
+            return steering;
         }
     }
 

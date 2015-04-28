@@ -23,29 +23,19 @@ namespace WaveProject.Steering
             PathOffset = 1;
         }
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
+        public override SteeringOutput GetSteering()
         {
-            Vector2 futurePos = origin.Transform.Position + origin.Speed * PredictTime;
+            Vector2 futurePos = Character.Position + Character.Velocity * PredictTime;
 
             CurrentParam = Path.GetParam(futurePos, CurrentParam);
             int targetParam = CurrentParam + PathOffset;
 
-            Transform2D seekTarget = new Transform2D();
-            seekTarget.Position = Path.GetPosition(targetParam);
-
-            //Console.WriteLine("Curr: {0}, Pos: {1}",targetParam, seekTarget.Position);
-
             Seek seek = new Seek();
-            seek.SteeringCalculation(origin.Transform, seekTarget);
-            Linear = seek.Linear;
-
-            //Arrive arrive = new Arrive();
-            //arrive.SteeringCalculation(seekTarget, origin.Transform, origin.Speed);
-            //Linear = arrive.Linear;
-
             Face face = new Face();
-            face.SteeringCalculation(origin, seekTarget);
-            Angular = face.Angular;
+            seek.Character = face.Character = Character;
+            seek.Target = face.Target = new Kinematic() { Position = Path.GetPosition(targetParam) };
+
+            return seek.GetSteering() + face.GetSteering();
         }
     }
 }

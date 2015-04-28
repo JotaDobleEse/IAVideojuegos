@@ -23,6 +23,19 @@ namespace WaveProject
             return Math.Max(objectTexture.Texture.Width, objectTexture.Texture.Height) * 0.8f;
         }
 
+        public static Vector2 ConvertToLocalPos(this Kinematic origin, Vector2 position)
+        {
+            var localPos = position - origin.Position;
+            localPos -= origin.Rotation.RotationToVector();
+            return localPos;
+        }
+
+        public static Vector2 ConvertToGlobalPos(this Kinematic origin, Vector2 position)
+        {
+            var localPos = position + origin.Position;
+            localPos += origin.RotationAsVector();
+            return localPos;
+        }
         public static Vector2 ConvertToLocalPos(this Transform2D origin, Vector2 position)
         {
             var localPos = position - origin.Position;
@@ -43,6 +56,11 @@ namespace WaveProject
         }
 
         public static Vector2 RotationAsVector(this Transform2D transform)
+        {
+            return new Vector2((float)Math.Sin(transform.Rotation), -(float)Math.Cos(transform.Rotation));
+        }
+
+        public static Vector2 RotationAsVector(this Kinematic transform)
         {
             return new Vector2((float)Math.Sin(transform.Rotation), -(float)Math.Cos(transform.Rotation));
         }

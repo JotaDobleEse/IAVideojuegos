@@ -11,44 +11,19 @@ namespace WaveProject.Steering
     class Face : Steering
     {
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
+        public override SteeringOutput GetSteering()
         {
-            var direction = target.Transform.Position - origin.Transform.Position;
+            var direction = Target.Position - Character.Position;
 
             if (direction.Length() == 0)
             {
-                Linear = Vector2.Zero;
-                Angular = 0;
-                return;
+                return new SteeringOutput();
             }
 
             Align align = new Align();
-            Transform2D newTarget = target.Transform.Clone() as Transform2D;
-            newTarget.Rotation = (float)Math.Atan2(direction.X, -direction.Y);
-            align.SteeringCalculation(newTarget, origin);
-
-            Angular = align.Angular;
-            Linear = Vector2.Zero;
-        }
-
-        public void SteeringCalculation(SteeringBehavior origin, Transform2D target)
-        {
-            var direction = target.Position - origin.Transform.Position;
-
-            if (direction.Length() == 0)
-            {
-                Linear = Vector2.Zero;
-                Angular = 0;
-                return;
-            }
-
-            Align align = new Align();
-            Transform2D newTarget = target.Clone() as Transform2D;
-            newTarget.Rotation = (float)Math.Atan2(direction.X, -direction.Y);
-            align.SteeringCalculation(newTarget, origin);
-
-            Angular = align.Angular;
-            Linear = Vector2.Zero;
+            align.Character = Character;
+            align.Target = new Kinematic() { Orientation = direction.ToRotation() };
+            return align.GetSteering();
         }
     }
 }

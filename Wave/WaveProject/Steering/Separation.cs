@@ -15,54 +15,47 @@ namespace WaveProject.Steering
        //public SteeringBehavior[] listaObjetivos { get; set; }
 
         //Variable que nos indica si un target esta close
-        protected float threshold = 0.1f;
+        protected float Threshold = 0.1f;
 
         //Variable positiva, coeficiente de repulsion
-        protected float decayCoefficient = 1f;
-        protected float maxAcceleration = 0.1f;
+        protected float DecayCoefficient = 1f;
+        protected float MaxAcceleration = 0.1f;
 
         //Variable donde se iran acumulando la velocidad linear de cada uno de los targets
-        public static Vector2 linearAcc { get; set; }
+        public static Vector2 LinearAcc { get; set; }
 
-        public EntityManager entityManager { get; set; }
+        public EntityManager EntityManager { get; set; }
 
         public Separation(EntityManager entityManager)
         {
-            this.entityManager = entityManager;
+            this.EntityManager = entityManager;
         }
 
-        public override void SteeringCalculation(Transform2D origin, Transform2D target, Vector2? characterSpeed = null)
-        {
-            Vector2 direction = target.Position - origin.Position;
-            float distance = direction.Length();
 
-            if (distance < threshold)
+        public override SteeringOutput GetSteering()
+        {
+            LinearAcc = new Vector2();
+
+            //var prueba = EntityManager.AllEntities;
+            IEnumerable<SteeringBehavior> Steerings = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is SteeringBehavior)).Select(s => s.FindComponent<SteeringBehavior>()).ToList();
+            foreach (var targets in Steerings)
             {
-                //Calculo de strength
-                float strength = Math.Min((float)(decayCoefficient / Math.Pow(distance, 2)), maxAcceleration);
+                Vector2 direction = targets.Transform.Position - Character.Position;
+                float distance = direction.Length();
 
-                //añadir la aceleracion
-                direction.Normalize();
-                // linearAcc += strength * direction;
-                linearAcc += strength * direction;
+                if (distance < Threshold)
+                {
+                    //Calculo de strength
+                    float strength = Math.Min((float)(DecayCoefficient / Math.Pow(distance, 2)), MaxAcceleration);
+
+                    //añadir la aceleracion
+                    direction.Normalize();
+                    // LinearAcc += strength * direction;
+                    LinearAcc += strength * direction;
+                }
             }
+            //A la salida del foreach tendremos en LinearAcc el vector resultante de la suma de los vectores 
+            return new SteeringOutput() { Linear = LinearAcc };
         }
-
-
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
-        {
-            linearAcc = new Vector2();
-            
-            //var prueba = entityManager.AllEntities;
-            IEnumerable<SteeringBehavior> Steerings = entityManager.AllEntities.Where(w => w.Components.Any(a => a is SteeringBehavior)).Select(s => s.FindComponent<SteeringBehavior>()).ToList();
-            foreach(var targets in Steerings){
-
-                SteeringCalculation(origin.Transform, targets.Transform);
-            }
-            //A la salida del foreach tendremos en linearAcc el vector resultante de la suma de los vectores 
-            Linear = linearAcc;
-            Angular = 0f;
-        }
-
     }
 }

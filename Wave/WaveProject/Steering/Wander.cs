@@ -25,33 +25,25 @@ namespace WaveProject.Steering
             MaxAcceleration = 25f;
         }
 
-        public float BinomialRandom()
-        {
-            return (float)(WaveServices.Random.NextDouble() - WaveServices.Random.NextDouble());
-        }
-
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target = null)
+        public override SteeringOutput GetSteering()
         {
             WanderOrientation += BinomialRandom() * WanderRate;
 
-            float targetOrientation = WanderOrientation + origin.Transform.Rotation;
+            float targetOrientation = WanderOrientation + Character.Orientation;
 
-            Vector2 targetPosition = origin.Transform.Position + WanderOffset * RotationToVector(origin.Transform.Rotation);
-            targetPosition += WanderRadius * RotationToVector(targetOrientation);
-
-            Transform2D faceTarget = new Transform2D();
-            faceTarget.Position = targetPosition;
+            Vector2 targetPosition = Character.Position + WanderOffset * Character.RotationAsVector();
+            targetPosition += WanderRadius * targetOrientation.RotationToVector();
 
             Face face = new Face();
-            face.SteeringCalculation(origin, faceTarget);
-            Angular = face.Angular;
-
-            Linear = MaxAcceleration * RotationToVector(origin.Transform.Rotation);
+            face.Character = Character;
+            face.Target = new Kinematic() { Position = targetPosition };
+            SteeringOutput steering = new SteeringOutput() { Linear = MaxAcceleration * Character.RotationAsVector() };
+            return face.GetSteering() + steering;
         }
 
-        private Vector2 RotationToVector(float rotation)
+        public float BinomialRandom()
         {
-            return new Vector2((float)Math.Sin(rotation), -(float)Math.Cos(rotation));
+            return (float)(WaveServices.Random.NextDouble() - WaveServices.Random.NextDouble());
         }
     }
 }

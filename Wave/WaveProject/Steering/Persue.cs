@@ -12,13 +12,13 @@ namespace WaveProject.Steering
     {
         public float maxPrediction = 1f;
 
-        public override void SteeringCalculation(SteeringBehavior origin, SteeringBehavior target)
+        public override SteeringOutput GetSteering()
         {
-            Vector2 direction = target.Transform.Position - origin.Transform.Position;
+            Vector2 direction = Target.Position - Character.Position;
 
             float distance = direction.Length();
 
-            float speed = origin.Speed.Length();
+            float speed = Character.Velocity.Length();
 
             float prediction = 0f;
 
@@ -30,18 +30,10 @@ namespace WaveProject.Steering
 
             //Delegar en Seek
             Seek seek = new Seek();
-
-            Transform2D targetT = target.Transform.Clone() as Transform2D;
-           
-            targetT.Position += target.Speed * prediction;
-            seek.SteeringCalculation(origin.Transform, targetT);
-
-            Linear = seek.Linear;
-            Angular = 0f;
-            //Console.WriteLine("{0}", speed);
-
+            seek.Character = Character;
+            seek.Target = new Kinematic() { Position = Target.Position + Target.Velocity * prediction };
+            return seek.GetSteering();
         }
-
     }
 
 }

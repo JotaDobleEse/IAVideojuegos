@@ -24,16 +24,16 @@ namespace WaveProject.Steering
 
         private float Mass;
         public Steering Steering { get; private set; }
-        public Vector2 Speed { get; set; }
-        public float Rotation { get; set; }
+        public Kinematic Kinematic { get; private set; }
         public Color Color { get; set; }
         public string Target { get; set; }
         public float MaxSpeed { get; private set; }
 
         public SteeringBehavior(Steering steering, Color color, string target = null)
         {
-            
+            Kinematic = new Kinematic();
             Steering = steering;
+            Steering.Character = Kinematic;
             Color = color;
             Target = target;
         }
@@ -42,55 +42,52 @@ namespace WaveProject.Steering
         {
             base.Initialize();
             Mass = 1f;
-            Speed = Vector2.Zero;
-            Rotation = 0f;
+            Kinematic.Velocity = Vector2.Zero;
+            Kinematic.Rotation = 0f;
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
             Collider.Center = Vector2.Center;
             Collider.Transform2D = Transform;
             MaxSpeed = 50;
-            //Collider.Size = new Vector2(Texture.SourceRectangle.Value.Width, Texture.SourceRectangle.Value.Height);
-        }
-        protected override void Update(TimeSpan gameTime)
-        {
-            float dt = (float)gameTime.TotalSeconds;
-            SteeringBehavior target = null;
-            
+
+            Kinematic target = null;
             if (string.IsNullOrEmpty(Target))
             {
-                Transform2D targetTransform = new Transform2D();
+                target = new Kinematic();
                 Vector2 targetMouse = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
-                targetTransform.Position = targetMouse;
-                target = new SteeringBehavior(null, Color.Brown) { Transform = targetTransform };
+                target.Position = targetMouse;
             }
             else
             {
                 try
                 {
-                    target = EntityManager.Find(Target).FindComponent<SteeringBehavior>();
+                    target = EntityManager.Find(Target).FindComponent<SteeringBehavior>().Kinematic;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
             }
+            Steering.Target = target;
+            //Collider.Size = new Vector2(Texture.SourceRectangle.Value.Width, Texture.SourceRectangle.Value.Height);
+        }
+        protected override void Update(TimeSpan gameTime)
+        {
+            Kinematic.Position = Transform.Position;
+            Kinematic.Orientation = Transform.Rotation;
+            float dt = (float)gameTime.TotalSeconds;
+            if (string.IsNullOrEmpty(Target))
+            {
+                Vector2 targetMouse = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
+                Steering.Target.Position = targetMouse;
+            }
 
-            Steering.SteeringCalculation(this, target);
-            Transform.Position += Speed * dt;
-            Transform.Rotation += Rotation * dt;
+            SteeringOutput output = Steering.GetSteering();
 
-            if (Speed.X > MaxSpeed)
-                Speed = new Vector2(50, Speed.Y);
-            else if (Speed.X < -MaxSpeed)
-                Speed = new Vector2(-MaxSpeed, Speed.Y);
-            if (Speed.Y > MaxSpeed)
-                Speed = new Vector2(Speed.X, MaxSpeed);
-            else if (Speed.Y < -MaxSpeed)
-                Speed = new Vector2(Speed.X, -MaxSpeed);
-            //Console.WriteLine(Speed);
+            Kinematic.Update(output, dt);
+            Transform.Position = Kinematic.Position;
+            Transform.Rotation = Kinematic.Orientation;
 
-            Speed += Steering.Linear * dt;
-            Rotation += Steering.Angular * dt;
             #region Escenario circular
             if (Transform.Position.X > WaveServices.Platform.ScreenWidth)
             {

@@ -69,5 +69,31 @@ namespace WaveProject
         {
             return (float)Math.Atan2(rotation.X, -rotation.Y);
         }
+
+        public static float MapToRange(this float rotation)
+        {
+            float r = rotation;
+            float Pi = (float)Math.PI;
+            if (rotation > Pi)
+            {
+                return r - 2 * Pi;
+            }
+            else if (rotation < -Pi)
+            {
+                return r + 2 * Pi;
+            }
+            else return r;
+        }
+
+        public static float Abs(this float rotation)
+        {
+            return (float)Math.Abs(rotation);
+        }
+
+        private const double Epsilon = 1e-10;
+        public static bool IsZero(this float d)
+        {
+            return Math.Abs(d) < Epsilon;
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace WaveProject
             EntityManager.Add(text);
 
             Entity wallAvoidance = new Entity("wallAvoidance")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2(400,220) })
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
@@ -54,7 +54,7 @@ namespace WaveProject
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new CollisionAvoidanceRT(EntityManager), Color.Pink));
+                .AddComponent(new SteeringBehavior(new CollisionAvoidanceRT(), Color.Pink));
 
             Entity wander = new Entity("wander")
                 .AddComponent(new Transform2D())
@@ -170,7 +170,7 @@ namespace WaveProject
                 .AddComponent(new RectangleCollider)
                 .AddComponent(new BlendedSteering(listaSteerings,Color.Red));*/
 
-            //EntityManager.Add(wallAvoidance);
+            EntityManager.Add(wallAvoidance);
             EntityManager.Add(collisionAvoidance);
             EntityManager.Add(wander);
             EntityManager.Add(align);
@@ -195,8 +195,6 @@ namespace WaveProject
             Entity collisionAvoidance = EntityManager.Find("collisionAvoidance");
             collisionAvoidance.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 200);
 
-            //Entity wall = EntityManager.Find("wallAvoidance");
-            //wall.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 50, (WaveServices.Platform.ScreenHeight / 2f) - 100);
             Entity arrive = EntityManager.Find("arrive");
             arrive.FindComponent<Transform2D>().Position = new Vector2(50, 50);
             Entity align = EntityManager.Find("align");

@@ -17,8 +17,8 @@ namespace WaveProject.Steering
         public WallAvoidance()
         {
             CollisionDetector = CollisionDetector.Detector;
-            AvoidDistance = 50;
-            LookAhead = 20;
+            AvoidDistance = 100;
+            LookAhead = 80;
         }
 
         public override SteeringOutput GetSteering()
@@ -37,7 +37,11 @@ namespace WaveProject.Steering
                 seek.Target = new Kinematic() { Position = target };
                 return seek.GetSteering();
             }
-            return new SteeringOutput() { Linear = new Vector2(-50, 0) };
+            if (Character.Velocity == Vector2.Zero)
+            {
+                return new SteeringOutput() { Linear = new Vector2(-50, 0) };
+            }
+            return new SteeringOutput() { Linear = Character.Velocity };
         }
     }
 }

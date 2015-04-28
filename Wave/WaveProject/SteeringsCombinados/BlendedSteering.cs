@@ -22,18 +22,18 @@ namespace WaveProject.Steering
         [RequiredComponent]
         public RectangleCollider Collider { get; private set; }
 
-        private float Mass;
         public Steering[] Steerings { get; private set; }
-        public Vector2 Speed { get; set; }
-        public float Rotation { get; set; }
+        public Kinematic Kinematic { get; set; }
+
         public Color Color { get; set; }
         public string Target { get; set; }
         public float MaxSpeed { get; private set; }
 
         public BlendedSteering(Steering[] steerings, Color color, string target = null)
         {
-            
+            Kinematic = new Kinematic();
             Steerings = steerings;
+           
             Color = color;
             Target = target;
         }
@@ -41,43 +41,37 @@ namespace WaveProject.Steering
         protected override void Initialize()
         {
             base.Initialize();
-            Mass = 1f;
-            Speed = Vector2.Zero;
-            Rotation = 0f;
+
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
             Collider.Center = Vector2.Center;
             Collider.Transform2D = Transform;
             MaxSpeed = 50;
+
+
             //Collider.Size = new Vector2(Texture.SourceRectangle.Value.Width, Texture.SourceRectangle.Value.Height);
         }
 
         protected override void Update(TimeSpan gameTime)
         {
+
+            Kinematic.Position = Transform.Position;
+            Kinematic.Orientation = Transform.Rotation;
+
             float dt = (float)gameTime.TotalSeconds;
-            SteeringBehavior target = null;
+            
             SteeringOutput final = new SteeringOutput();// Steering.NonFunctional;
 
             foreach (var x in Steerings)
             {
-                final += x.GetSteering();
+                final += x.GetSteering() * x.Weight;
             }
-            
-            Transform.Position += Speed * dt;
-            Transform.Rotation += Rotation * dt;
 
-            if (Speed.X > MaxSpeed)
-                Speed = new Vector2(50, Speed.Y);
-            else if (Speed.X < -MaxSpeed)
-                Speed = new Vector2(-MaxSpeed, Speed.Y);
-            if (Speed.Y > MaxSpeed)
-                Speed = new Vector2(Speed.X, MaxSpeed);
-            else if (Speed.Y < -MaxSpeed)
-                Speed = new Vector2(Speed.X, -MaxSpeed);
-            //Console.WriteLine(Speed);
+            Kinematic.Update(final, dt);
 
-            Speed += final.Linear * dt;
-            Rotation += final.Angular * dt;
+            Transform.Position += Kinematic.Position * dt;
+            Transform.Rotation += Kinematic.Rotation * dt;
+
             #region Escenario circular
             if (Transform.Position.X > WaveServices.Platform.ScreenWidth)
             {

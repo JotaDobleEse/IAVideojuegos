@@ -156,6 +156,20 @@ namespace WaveProject
                     MaxLayerDrawOrder = -0
                 });
 
+            
+            //Steering o steering behavior? no se cual poner T_T
+
+           // Steering[] listaSteerings = new Steering[] {new SteeringBehavior(new Seek(), Color.Red)};
+           
+          
+
+           /* Entity flocko = new Entity("flocko")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                .AddComponent(new RectangleCollider)
+                .AddComponent(new BlendedSteering(listaSteerings,Color.Red));*/
+
             //EntityManager.Add(wallAvoidance);
             EntityManager.Add(collisionAvoidance);
             EntityManager.Add(wander);

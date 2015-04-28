@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="CameraController.cs" />
     <Compile Include="Path.cs" />
+    <Compile Include="SteeringsCombinados\BlendedSteering.cs" />
     <Compile Include="SteeringVelocidad\Arrive.cs" />
     <Compile Include="DebugLines.cs" />
     <Compile Include="SteeringVelocidad\Flee.cs" />

@@ -17,17 +17,16 @@ namespace WaveProject.Steering
     {
         private static CollisionDetector detector = new CollisionDetector();
         public static CollisionDetector Detector { get { return detector; } }
-        public IEnumerable<Wall> Walls { get; set; }
 
         public CollisionDetector()
         {
-            Walls = new Wall[] { new Wall(100, 100, 50, 300) };
+            new Wall(100, 100, 50, 300, true);
         }
 
         public Collision GetCollision(Vector2 position, Vector2 moveAmount)
         {
             Collision firstCollision = null;
-            foreach (var wall in Walls)
+            foreach (var wall in Wall.Walls)
             {
                 RectangleF rect = new RectangleF(position.X, position.Y, moveAmount.X, moveAmount.Y);
 

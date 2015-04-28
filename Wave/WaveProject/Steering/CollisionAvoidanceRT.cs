@@ -15,12 +15,10 @@ namespace WaveProject.Steering
     {
         public float MaxAcceleration { get; set; }
         public float Radius { get; set; }
-        public EntityManager EntityManager { get; set; }
 
-        public CollisionAvoidanceRT(EntityManager entityManager)
+        public CollisionAvoidanceRT()
         {
-            EntityManager = entityManager;
-            MaxAcceleration = 5f;
+            MaxAcceleration = 8f;
             Radius = 20f;
         }
 
@@ -83,7 +81,8 @@ namespace WaveProject.Steering
 
         private IEnumerable<Kinematic> GetCollisionCandidates(Kinematic origin)
         {
-            return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null && w.FindComponent<SteeringBehavior>().Kinematic != origin).Select(s => s.FindComponent<SteeringBehavior>().Kinematic);
+            return Kinematic.Kinematics.Where(w => w != origin);
+            //return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null && w.FindComponent<SteeringBehavior>().Kinematic != origin).Select(s => s.FindComponent<SteeringBehavior>().Kinematic);
         }
 
     }

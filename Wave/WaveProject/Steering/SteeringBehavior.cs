@@ -31,7 +31,7 @@ namespace WaveProject.Steering
 
         public SteeringBehavior(Steering steering, Color color, string target = null)
         {
-            Kinematic = new Kinematic();
+            Kinematic = new Kinematic(true);
             Steering = steering;
             Steering.Character = Kinematic;
             Color = color;

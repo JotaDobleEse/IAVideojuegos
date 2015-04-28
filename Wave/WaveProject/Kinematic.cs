@@ -10,15 +10,28 @@ namespace WaveProject
 {
     public class Kinematic
     {
+        private static List<Kinematic> kinematics = new List<Kinematic>();
+        public static List<Kinematic> Kinematics { get { return kinematics; } }
         public Vector2 Position { get; set; }
         public float Orientation { get; set; }
         public Vector2 Velocity { get; set; }
         public float Rotation { get; set; }
         public float MaxVelocity { get; set; }
 
-        public Kinematic()
+        /// <summary>
+        /// Crea un Kinematic.
+        /// </summary>
+        /// <param name="stable">Establece si el Kinematic se introduce en la colección de muros del sistema.</param>
+        public Kinematic(bool stable = false)
         {
+            if (stable)
+                kinematics.Add(this);
             MaxVelocity = 50;
+        }
+
+        ~Kinematic()
+        {
+            kinematics.Remove(this);
         }
 
         public void Update(SteeringOutput steering, float deltaTime)

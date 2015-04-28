@@ -47,11 +47,9 @@ namespace WaveProject
                 
                 //Console.WriteLine("Original: {0} -- Proyectada: {1}", mousePosition, mousePositionProject);
 
-                foreach (SteeringBehavior steering in Steerings)
+                foreach (var kinematic in Kinematic.Kinematics)
                 {
-                    lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Kinematic.Velocity, Color.Red, 1f);
-                    //lb.DrawLineVM(steering.Transform.Position, steering.Transform.Position + steering.Kinematic.Linear, Color.Chocolate, 1f);
-                    //steering.Collider.DrawDebugLines(lb);
+                    lb.DrawLineVM(kinematic.Position, kinematic.Position + kinematic.Velocity, Color.Red, 1f);
                 }
 
                 if (Steerings.Any(a => a.Steering is Arrive))
@@ -67,7 +65,7 @@ namespace WaveProject
                     pathFollowing.Path.DrawPath(lb);
                 }
 
-                foreach (var wall in CollisionDetector.Detector.Walls)
+                foreach (var wall in Wall.Walls)
                 {
                     lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1);
                 }

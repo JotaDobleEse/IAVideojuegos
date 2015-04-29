@@ -50,6 +50,7 @@
     <Compile Include="CameraController.cs" />
     <Compile Include="Extensiones.cs" />
     <Compile Include="Kinematic.cs" />
+    <Compile Include="Obstacle.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="SteeringsCombinados\BlendedSteering.cs" />
     <Compile Include="SteeringVelocidad\Arrive.cs" />

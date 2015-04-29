@@ -43,85 +43,85 @@ namespace WaveProject
             EntityManager.Add(text);
 
             Entity wallAvoidance = new Entity("wallAvoidance")
-                .AddComponent(new Transform2D() { Position = new Vector2(400,220) })
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Transform2D() { Position = new Vector2(0,220) })
+                .AddComponent(new Sprite("Content/Textures/juggernaut"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
 
             Entity collisionAvoidance = new Entity("collisionAvoidance")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/lagarto"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new CollisionAvoidanceRT(), Color.Pink));
 
             Entity wander = new Entity("wander")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/soldado"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Wander(), Color.Red));
+                .AddComponent(new SteeringBehavior(new Wander(), Color.White));
 
             Entity face = new Entity("face")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/soldado"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Face(), Color.Salmon, "arrive"));
+                .AddComponent(new SteeringBehavior(new Face(), Color.Blue, "arrive"));
 
             Entity lookWhereYouGoing = new Entity("lookWhereYouGoing")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/juggernaut"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new LookWhereYouGoing(), Color.Salmon, "arrive"));
 
             Entity align = new Entity("align")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/soldado"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new Align(), Color.Crimson, "look"));
 
             Entity antiAlign = new Entity("antialign")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/soldado"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new AntiAlign(), Color.Navy, "look"));
 
             Entity arrive = new Entity("arrive")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/lagarto"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new Arrive(), Color.Green));
 
             Entity flee = new Entity("flee")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/malabestia"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new Flee(), Color.Gold));
 
             Entity mouserFollower = new Entity("follower")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/lagarto"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new Seek(), Color.Salmon));
 
             Entity persue = new Entity("persue")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/lagarto"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Persue(), Color.Black, "arrive"));
+                .AddComponent(new SteeringBehavior(new Persue(), Color.Green, "arrive"));
 
             Entity velocityMatching = new Entity("velocity")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/malabestia"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new VelocityMatching(), Color.Khaki, "flee"));
@@ -142,7 +142,7 @@ namespace WaveProject
 
             Entity pathFollowing = new Entity("pathFollowing")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
+                .AddComponent(new Sprite("Content/Textures/malabestia"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new PredictivePathFollowing() { Path = path }, Color.Ivory));

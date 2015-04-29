@@ -28,16 +28,16 @@ namespace WaveProject.Steering
         {
 
             float minIntersection = 0;
-            Entity closetObstacle = null;
+            Obstacle closetObstacle = null;
             float boxLength = MinBoxLength + (Character.Velocity.Length() / new Vector2(Character.MaxVelocity, Character.MaxVelocity).Length()) * MinBoxLength;
-            List<Entity> objects = GetCollisionCandidates(Character).ToList();
-            foreach (var obstacle in objects)
+            List<Obstacle> obstacles = GetCollisionCandidates(Character).ToList();
+            foreach (var obstacle in obstacles)
             {
-                var localPos = Character.ConvertToLocalPos(obstacle.FindComponent<Transform2D>().Position);
+                var localPos = Character.ConvertToLocalPos(obstacle.Position);
                 if (localPos.X >= 0)
                 {
-                    float objectRadius = obstacle.BRadius();
-                    float sumRadius = objectRadius + objectRadius; // +Character.Texture.Texture.Width / 2;
+                    float objectRadius = obstacle.BRadius;
+                    float sumRadius = objectRadius + objectRadius;
                     if (Math.Abs(localPos.Y) < sumRadius)
                     {
                         float sqrtPart = (float)Math.Sqrt((sumRadius * sumRadius) - (localPos.Y * localPos.Y));
@@ -59,7 +59,7 @@ namespace WaveProject.Steering
 
             if (closetObstacle != null)
             {
-                Vector2 localPos = Character.ConvertToLocalPos(closetObstacle.FindComponent<Transform2D>().Position);
+                Vector2 localPos = Character.ConvertToLocalPos(closetObstacle.Position);
                 float x = localPos.X;
                 float y = localPos.Y;
 
@@ -67,7 +67,7 @@ namespace WaveProject.Steering
                 float factorX = 0.2f;
                 float factorY = 1 + (boxLength - x) / boxLength;
 
-                float objectRadius = closetObstacle.BRadius();
+                float objectRadius = closetObstacle.BRadius;
 
 
                 steeringLocal.X = (objectRadius - x) * factorX;
@@ -94,9 +94,10 @@ namespace WaveProject.Steering
             return globalPos;
         }
 
-        private IEnumerable<Entity> GetCollisionCandidates(Kinematic Character)
+        private IEnumerable<Obstacle> GetCollisionCandidates(Kinematic Character)
         {
-            return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null);
+            return Obstacle.Obstacles;
+            //return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null);
         }
     }
 }

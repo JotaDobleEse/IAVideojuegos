@@ -20,6 +20,8 @@ namespace WaveProject.Steering
         public CollisionDetector()
         {
             new Wall(200, 200, 50, 150, true);
+            new Wall(0, 50, 200, 10, true);
+            new Wall(0, 500, 200, 10, true);
         }
 
         public Collision GetCollision(Vector2 position, Vector2 moveAmount)
@@ -36,17 +38,17 @@ namespace WaveProject.Steering
                     intersections.Add(new Vector2(v.X, v.Y));
                     face1 = intersections.Count;
                 }
-                if (LineSegementsIntersect(position, position + moveAmount, wall.P2, wall.P3, out v))
+                if (LineSegementsIntersect(position, position + moveAmount, wall.P2, wall.P4, out v))
                 {
                     intersections.Add(new Vector2(v.X, v.Y));
                     face2 = intersections.Count;
                 }
-                if (LineSegementsIntersect(position, position + moveAmount, wall.P3, wall.P4, out v))
+                if (LineSegementsIntersect(position, position + moveAmount, wall.P4, wall.P3, out v))
                 {
                     intersections.Add(new Vector2(v.X, v.Y));
                     face3 = intersections.Count;
                 }
-                if (LineSegementsIntersect(position, position + moveAmount, wall.P4, wall.P1, out v))
+                if (LineSegementsIntersect(position, position + moveAmount, wall.P3, wall.P1, out v))
                 {
                     intersections.Add(new Vector2(v.X, v.Y));
                     face4 = intersections.Count;
@@ -60,34 +62,14 @@ namespace WaveProject.Steering
                     Vector2 normal = Vector2.Zero;
 
                     float rotation = (position - pos).ToRotation();
-                    //float r1, r2, r3, r4;
-                    //r1 = (((float)Math.PI / 2) - rotation).MapToRange().Abs();
-                    //r2 = (((float)Math.PI) - rotation).MapToRange().Abs();
-                    //r3 = (((float)Math.PI * 3 / 2) - rotation).MapToRange().Abs();
-                    //r4 = (((float)Math.PI * 4 / 2) - rotation).MapToRange().Abs();
-
-                    //if (r1 < r2 && r1 < r3 && r1 < r4)
-                    //{
-                    //    normal = ((float)Math.PI / 2).RotationToVector() * pos.Length();
-                    //}
-                    //else if (r2 < r1 && r2 < r3 && r2 < r4)
-                    //{
-                    //    normal = ((float)Math.PI).RotationToVector() * pos.Length();
-                    //}
-                    //else if (r3 < r1 && r3 < r2 && r3 < r4)
-                    //{
-                    //    normal = ((float)Math.PI * 3 / 2).RotationToVector() * pos.Length();
-                    //}
-                    //else if (r4 < r1 && r4 < r2 && r4 < r3)
-                    //{
-                    //    normal = ((float)Math.PI * 4 / 2).RotationToVector() * pos.Length();
-                    //}
 
                     if (face == face1 || face == face2)
                     {
                         var vect = wall.P2 - pos;
-                        var norm1 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * 5;
-                        var norm2 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * -5;
+                        var norm1 = vect + ((float)Math.PI / 2).RotationToVector();
+                        var norm2 = vect - ((float)Math.PI / 2).RotationToVector(); ;
+                        //var norm1 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * 5;
+                        //var norm2 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * -5;
                         float r1 = (norm1.ToRotation().MapToRange() - rotation.Abs()).MapToRange().Abs();
                         float r2 = (norm2.ToRotation().MapToRange() - rotation.Abs()).MapToRange().Abs();
                         if (r1 < r2)
@@ -101,9 +83,11 @@ namespace WaveProject.Steering
                     }
                     else if (face == face3 || face == face4)
                     {
-                        var vect = wall.P4 - pos;
-                        var norm1 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * 5;
-                        var norm2 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * -5;
+                        var vect = wall.P3 - pos;
+                        var norm1 = vect + ((float)Math.PI / 2).RotationToVector();
+                        var norm2 = vect - ((float)Math.PI / 2).RotationToVector(); ;
+                        //var norm1 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * 5;
+                        //var norm2 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * -5;
                         float r1 = (norm1.ToRotation().MapToRange() - rotation.Abs()).MapToRange().Abs();
                         float r2 = (norm2.ToRotation().MapToRange() - rotation.Abs()).MapToRange().Abs();
                         if (r1 < r2)

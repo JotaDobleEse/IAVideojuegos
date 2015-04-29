@@ -68,6 +68,10 @@ namespace WaveProject
                 foreach (var wall in Wall.Walls)
                 {
                     lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1);
+                    lb.DrawCircleVM(wall.P1, 10, Color.Green, 1);
+                    lb.DrawCircleVM(wall.P2, 10, Color.Blue, 1);
+                    lb.DrawCircleVM(wall.P3, 10, Color.Red, 1);
+                    lb.DrawCircleVM(wall.P4, 10, Color.Pink, 1);
                 }
             }
         }

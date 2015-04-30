@@ -95,5 +95,23 @@ namespace WaveProject
         {
             return Math.Abs(d) < Epsilon;
         }
+
+        public static Vector2 Clone(this Vector2 v)
+        {
+            return new Vector2(v.X, v.Y);
+        }
+        public static Vector2 RotateVector(this Vector2 vector, float radians)
+        {
+            float angle = vector.ToRotation() + radians;
+            return angle.MapToRange().RotationToVector() * vector.Length();
+        }
+        public static Vector2 Norm1(this Vector2 vector)
+        {
+            return new Vector2(-vector.Y, vector.X);
+        }
+        public static Vector2 Norm2(this Vector2 vector)
+        {
+            return new Vector2(vector.Y, -vector.X);
+        } 
     }
 }

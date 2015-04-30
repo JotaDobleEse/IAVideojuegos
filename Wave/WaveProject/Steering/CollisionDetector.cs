@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
+using WaveEngine.Framework.Graphics;
 
 namespace WaveProject.Steering
 {
@@ -11,17 +13,34 @@ namespace WaveProject.Steering
     {
         public Vector2 Position { get; set; }
         public Vector2 Normal { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Pos: {0}, Norm: {1}", Position, Normal);
+        }
     };
 
     public class CollisionDetector
     {
         private static CollisionDetector detector = new CollisionDetector();
         public static CollisionDetector Detector { get { return detector; } }
+
+        private Vector2 posicion = Vector2.Zero;
+        private Vector2 movimiento = Vector2.Zero;
+        private Vector2 interseccion = Vector2.Zero;
+        private Vector2 normal1 = Vector2.Zero;
+
         public CollisionDetector()
         {
-            new Wall(200, 200, 50, 150, true);
+            new Wall(200, 200, 50, 200, true);
             new Wall(0, 50, 200, 10, true);
             new Wall(0, 500, 200, 10, true);
+        }
+
+        public void Draw(LineBatch2D lb)
+        {
+            lb.DrawLineVM(interseccion, normal1 + interseccion, Color.Green, 1);
+            //lb.DrawLineVM(posicion, movimiento, Color.White, 1);
         }
 
         public Collision GetCollision(Vector2 position, Vector2 moveAmount)
@@ -35,43 +54,45 @@ namespace WaveProject.Steering
                 face1 = face2 = face3 = face4 = 0;
                 if (LineSegementsIntersect(position, position + moveAmount, wall.P1, wall.P2, out v))
                 {
-                    intersections.Add(new Vector2(v.X, v.Y));
+                    intersections.Add(v.Clone());
                     face1 = intersections.Count;
                 }
                 if (LineSegementsIntersect(position, position + moveAmount, wall.P2, wall.P4, out v))
                 {
-                    intersections.Add(new Vector2(v.X, v.Y));
+                    intersections.Add(v.Clone());
                     face2 = intersections.Count;
                 }
                 if (LineSegementsIntersect(position, position + moveAmount, wall.P4, wall.P3, out v))
                 {
-                    intersections.Add(new Vector2(v.X, v.Y));
+                    intersections.Add(v.Clone());
                     face3 = intersections.Count;
                 }
                 if (LineSegementsIntersect(position, position + moveAmount, wall.P3, wall.P1, out v))
                 {
-                    intersections.Add(new Vector2(v.X, v.Y));
+                    intersections.Add(v.Clone());
                     face4 = intersections.Count;
                 }
+
+                posicion = position;
+                movimiento = posicion + moveAmount;
 
                 if (intersections.Count > 0)
                 {
                     var pos = intersections.OrderBy(o => (o - position).Length()).First();
                     int face = intersections.IndexOf(pos) + 1;
-                    Console.WriteLine("f1: {0}, f2: {1}, f3: {2}, f4: {3}, actual: {4}", face1, face2, face3, face4, face);
+                    //Console.WriteLine("f1: {0}, f2: {1}, f3: {2}, f4: {3}, actual: {4}", face1, face2, face3, face4, face);
                     Vector2 normal = Vector2.Zero;
 
                     float rotation = (position - pos).ToRotation();
 
                     if (face == face1 || face == face2)
                     {
-                        var vect = wall.P2 - pos;
-                        var norm1 = vect + ((float)Math.PI / 2).RotationToVector();
-                        var norm2 = vect - ((float)Math.PI / 2).RotationToVector(); ;
-                        //var norm1 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * 5;
-                        //var norm2 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * -5;
-                        float r1 = (norm1.ToRotation().MapToRange() - rotation.Abs()).MapToRange().Abs();
-                        float r2 = (norm2.ToRotation().MapToRange() - rotation.Abs()).MapToRange().Abs();
+                        var vect = pos - wall.P2;
+                        var norm1 = vect.Norm1();// +pos;
+                        var norm2 = vect.Norm2();// +pos;
+
+                        float r1 = ((norm1 + pos) - position).Length();
+                        float r2 = ((norm2 + pos) - position).Length();
                         if (r1 < r2)
                         {
                             normal = norm1;
@@ -83,13 +104,12 @@ namespace WaveProject.Steering
                     }
                     else if (face == face3 || face == face4)
                     {
-                        var vect = wall.P3 - pos;
-                        var norm1 = vect + ((float)Math.PI / 2).RotationToVector();
-                        var norm2 = vect - ((float)Math.PI / 2).RotationToVector(); ;
-                        //var norm1 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * 5;
-                        //var norm2 = new Vector2(vect.X, -vect.Y) / (float)Math.Sqrt(vect.X * vect.X + vect.Y * vect.Y) * -5;
-                        float r1 = (norm1.ToRotation().MapToRange() - rotation.Abs()).MapToRange().Abs();
-                        float r2 = (norm2.ToRotation().MapToRange() - rotation.Abs()).MapToRange().Abs();
+                        var vect = pos - wall.P3;
+                        var norm1 = vect.Norm1();// +pos;
+                        var norm2 = vect.Norm2();// +pos;
+
+                        float r1 = ((norm1 + pos) - position).Length();
+                        float r2 = ((norm2 + pos) - position).Length();
                         if (r1 < r2)
                         {
                             normal = norm1;
@@ -99,6 +119,8 @@ namespace WaveProject.Steering
                             normal = norm2;
                         }
                     }
+                    interseccion = pos;
+                    normal1 = normal;
 
                     if (firstCollision == null)
                     {
@@ -111,6 +133,8 @@ namespace WaveProject.Steering
                     }
                 }
             }
+            //if (firstCollision != null)
+            //    Console.WriteLine(firstCollision);
             return firstCollision;
         }
 

@@ -147,15 +147,15 @@ namespace WaveProject
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new PredictivePathFollowing() { Path = path }, Color.Ivory));
 
-
-            Entity map = new Entity("mapa")
-                .AddComponent(new Transform2D())
-                .AddComponent(this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
+            this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
                 {
                     MinLayerDrawOrder = -10,
                     MaxLayerDrawOrder = -0
-                });
+                };
 
+            Entity map = new Entity("mapa")
+                .AddComponent(new Transform2D())
+                .AddComponent(this.tiledMap);
             
             //Steering o steering behavior? no se cual poner T_T
 
@@ -213,6 +213,16 @@ namespace WaveProject
             look.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) + 50);
             Entity pathFollowing = EntityManager.Find("pathFollowing");
             pathFollowing.FindComponent<Transform2D>().Position = new Vector2(100, 100);
+
+
+            if (tiledMap.ObjectLayers.Count > 0)
+            {
+                TiledMapObjectLayer layer = tiledMap.ObjectLayers.First(f => f.Value.ObjectLayerName == "Agua").Value;
+                foreach (var wall in layer.Objects)
+                {
+                    new Wall(wall.X, wall.Y, wall.Width, wall.Height, true);
+                }
+            }
 
         }
     }

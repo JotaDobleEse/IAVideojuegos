@@ -17,7 +17,7 @@ namespace WaveProject.Steering
         public WallAvoidance()
         {
             CollisionDetector = CollisionDetector.Detector;
-            AvoidDistance = 50;
+            AvoidDistance = 100;
             LookAhead = 100;
         }
 
@@ -31,6 +31,7 @@ namespace WaveProject.Steering
             if (collision != null)
             {
                 var target = collision.Position + collision.Normal * AvoidDistance;
+                //Console.WriteLine("{0} {1}",collision.Position, target);
 
                 Seek seek = new Seek();
                 seek.Character = Character;
@@ -39,9 +40,9 @@ namespace WaveProject.Steering
             }
             if (Character.Velocity == Vector2.Zero)
             {
-                return new SteeringOutput() { Linear = new Vector2(5000, 0) };
+                return new SteeringOutput() { Linear = new Vector2(5000, 50) };
             }
-            return new SteeringOutput() { /*Linear = Character.Velocity*/ };
+            return new SteeringOutput() { Linear = Character.Velocity };
         }
     }
 }

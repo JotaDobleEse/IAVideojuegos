@@ -72,7 +72,12 @@ namespace WaveProject
                     lb.DrawCircleVM(wall.P2, 10, Color.Blue, 1);
                     lb.DrawCircleVM(wall.P3, 10, Color.Red, 1);
                     lb.DrawCircleVM(wall.P4, 10, Color.Pink, 1);
+
+                    //lb.DrawLineVM(wall.Norm1, (wall.P1 + wall.P2) / 2, Color.Red, 1f);
+                    //lb.DrawLineVM(wall.Norm2, (wall.P1 + wall.P2) / 2, Color.Red, 1f);
                 }
+
+                CollisionDetector.Detector.Draw(lb);
             }
         }
 

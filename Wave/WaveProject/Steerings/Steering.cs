@@ -17,15 +17,6 @@ namespace WaveProject.Steerings
         public static SteeringOutput operator +(SteeringOutput s1, SteeringOutput s2)
         {
             SteeringOutput result = new SteeringOutput();
-            //if (float.IsNaN(s1.Linear.X))
-            //    s1.Linear = new Vector2(0, s1.Linear.Y);
-            //if (float.IsNaN(s1.Linear.Y))
-            //    s1.Linear = new Vector2(s1.Linear.X, 0);
-            //if (float.IsNaN(s2.Linear.X))
-            //    s2.Linear = new Vector2(0, s2.Linear.Y);
-            //if (float.IsNaN(s2.Linear.Y))
-            //    s2.Linear = new Vector2(s2.Linear.X, 0);
-
             result.Linear = s1.Linear + s2.Linear;
             result.Angular = s1.Angular + s2.Angular;
             return result;
@@ -69,11 +60,23 @@ namespace WaveProject.Steerings
 
     public abstract class Steering
     {
+        private static List<Steering> steerings = new List<Steering>();
+        public static List<Steering> Steerings { get { return steerings; } }
         public static LookMouseSteering LookMouse { get { return new LookMouseSteering(); } }
 
         public Kinematic Character { get; set; }
 
         public Kinematic Target { get; set; }
+
+        public Steering()
+        {
+            steerings.Add(this);
+        }
+
+        ~Steering()
+        {
+            steerings.Remove(this);
+        }
 
         public abstract SteeringOutput GetSteering();
 

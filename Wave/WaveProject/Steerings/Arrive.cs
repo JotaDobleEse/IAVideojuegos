@@ -15,7 +15,7 @@ namespace WaveProject.Steerings
         public float SlowRadius { get; set; }
         public float TimeToTarget { get; set; }
 
-        protected float MaxAceleration = 0.1f;
+        public float MaxAceleration { get; set; }
         
         public Arrive()
         {
@@ -23,6 +23,7 @@ namespace WaveProject.Steerings
             TimeToTarget = 0.1f;
             TargetRadius = 50f;
             SlowRadius = 150f;
+            MaxAceleration = 0.1f;
         }
 
         public override SteeringOutput GetSteering()

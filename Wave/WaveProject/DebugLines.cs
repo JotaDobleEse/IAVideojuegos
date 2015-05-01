@@ -15,7 +15,7 @@ namespace WaveProject
 {
     public class DebugLines : Drawable2D
     {
-        private IEnumerable<SteeringBehavior> Steerings;
+        private IEnumerable<Steering> Steerings;
         private Camera2D Camera;
 
         private bool DEBUG = true;
@@ -25,7 +25,7 @@ namespace WaveProject
             base.Initialize();
             try
             {
-                Steerings = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is SteeringBehavior)).Select(s => s.FindComponent<SteeringBehavior>()).ToList();
+                Steerings = Steering.Steerings;
                 Camera = EntityManager.AllEntities.First(f => f.Name == "Camera2D").FindComponent<Camera2D>();
             }
             catch (Exception e)
@@ -53,16 +53,16 @@ namespace WaveProject
                     lb.DrawLineVM(kinematic.Position, kinematic.Position + kinematic.LastOutput.Linear, Color.Orange, 1f);
                 }
 
-                if (Steerings.Any(a => a.Steering is Arrive))
+                if (Steerings.Any(a => a is Arrive))
                 {
-                    Arrive arrive = (Arrive)Steerings.First(a => a.Steering is Arrive).Steering;
-                    lb.DrawCircleVM(mousePositionProject, arrive.SlowRadius, Color.White, 1f);
-                    lb.DrawCircleVM(mousePositionProject, arrive.TargetRadius, Color.Orange, 1f);
+                    Arrive arrive = (Arrive)Steerings.First(a => a is Arrive);
+                    lb.DrawCircleVM(arrive.Target.Position, arrive.SlowRadius, Color.White, 1f);
+                    lb.DrawCircleVM(arrive.Target.Position, arrive.TargetRadius, Color.Orange, 1f);
                 }
 
-                foreach (var steerings in Steerings.Where(w => w.Steering is PredictivePathFollowing))
+                foreach (var steering in Steerings.Where(w => w is PredictivePathFollowing))
                 {
-                    var pathFollowing = steerings.Steering as PredictivePathFollowing;
+                    var pathFollowing = steering as PredictivePathFollowing;
                     pathFollowing.Path.DrawPath(lb);
                 }
 

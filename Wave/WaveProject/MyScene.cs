@@ -44,160 +44,185 @@ namespace WaveProject
             EntityManager.Add(text);
 
             #region SteeringsBehaviors
-            Entity wallAvoidance = new Entity("wallAvoidance")
-                .AddComponent(new Transform2D() { Position = new Vector2(20, 220) })
-                .AddComponent(new Sprite("Content/Textures/juggernaut"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                //.AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
-                .AddComponent(new SteeringBehavior(new Cohesion(), Color.DarkMagenta));
+            //Entity wallAvoidance = new Entity("wallAvoidance")
+            //    .AddComponent(new Transform2D() { Position = new Vector2(20, 220) })
+            //    .AddComponent(new Sprite("Content/Textures/juggernaut"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    //.AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
+            //    .AddComponent(new SteeringBehavior(new Cohesion(), Color.DarkMagenta));
 
-            Entity collisionAvoidance = new Entity("collisionAvoidance")
-                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 200) })
-                .AddComponent(new Sprite("Content/Textures/lagarto"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new CollisionAvoidanceRT(), Color.Pink));
+            //Entity collisionAvoidance = new Entity("collisionAvoidance")
+            //    .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 200) })
+            //    .AddComponent(new Sprite("Content/Textures/lagarto"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new CollisionAvoidanceRT(), Color.Pink));
 
-            Entity wander = new Entity("wander")
-                .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/soldado"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Wander(), Color.White));
+            //Entity wander = new Entity("wander")
+            //    .AddComponent(new Transform2D())
+            //    .AddComponent(new Sprite("Content/Textures/soldado"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new Wander(), Color.White));
 
-            Entity face = new Entity("face")
-                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150) })
-                .AddComponent(new Sprite("Content/Textures/soldado"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Face(), Color.Blue, "arrive"));
+            //Entity face = new Entity("face")
+            //    .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150) })
+            //    .AddComponent(new Sprite("Content/Textures/soldado"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new Face(), Color.Blue, "arrive"));
 
-            Entity lookWhereYouGoing = new Entity("lookWhereYouGoing")
-                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150) })
-                .AddComponent(new Sprite("Content/Textures/juggernaut"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new LookWhereYouGoing(), Color.Salmon, "arrive"));
+            //Entity lookWhereYouGoing = new Entity("lookWhereYouGoing")
+            //    .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150) })
+            //    .AddComponent(new Sprite("Content/Textures/juggernaut"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new LookWhereYouGoing(), Color.Salmon, "arrive"));
 
-            Entity align = new Entity("align")
-                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f), (WaveServices.Platform.ScreenHeight / 2f)) })
-                .AddComponent(new Sprite("Content/Textures/soldado"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Align(), Color.Crimson, "look"));
+            //Entity align = new Entity("align")
+            //    .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f), (WaveServices.Platform.ScreenHeight / 2f)) })
+            //    .AddComponent(new Sprite("Content/Textures/soldado"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new Align(), Color.Crimson, "look"));
 
-            Entity antiAlign = new Entity("antialign")
-                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 50) })
-                .AddComponent(new Sprite("Content/Textures/soldado"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new AntiAlign(), Color.Navy, "look"));
+            //Entity antiAlign = new Entity("antialign")
+            //    .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 50) })
+            //    .AddComponent(new Sprite("Content/Textures/soldado"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new AntiAlign(), Color.Navy, "look"));
 
-            Entity arrive = new Entity("arrive")
-                .AddComponent(new Transform2D() { Position = new Vector2(50, 50) })
-                .AddComponent(new Sprite("Content/Textures/lagarto"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Arrive(), Color.Green));
+            //Entity arrive = new Entity("arrive")
+            //    .AddComponent(new Transform2D() { Position = new Vector2(50, 50) })
+            //    .AddComponent(new Sprite("Content/Textures/lagarto"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new Arrive(), Color.Green));
 
-            Entity flee = new Entity("flee")
-                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f)) })
-                .AddComponent(new Sprite("Content/Textures/malabestia"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Flee(), Color.Gold));
+            //Entity flee = new Entity("flee")
+            //    .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f)) })
+            //    .AddComponent(new Sprite("Content/Textures/malabestia"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new Flee(), Color.Gold));
 
-            Entity mouserFollower = new Entity("follower")
-                .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/lagarto"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Seek(), Color.Salmon));
+            //Entity mouserFollower = new Entity("follower")
+            //    .AddComponent(new Transform2D())
+            //    .AddComponent(new Sprite("Content/Textures/lagarto"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new Seek(), Color.Salmon));
 
-            Entity persue = new Entity("persue")
-                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f)) })
-                .AddComponent(new Sprite("Content/Textures/lagarto"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new Persue(), Color.Green, "arrive"));
+            //Entity persue = new Entity("persue")
+            //    .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f)) })
+            //    .AddComponent(new Sprite("Content/Textures/lagarto"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new Persue(), Color.Green, "arrive"));
 
-            Entity velocityMatching = new Entity("velocity")
-                .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/malabestia"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new VelocityMatching(), Color.Khaki, "flee"));
+            //Entity velocityMatching = new Entity("velocity")
+            //    .AddComponent(new Transform2D())
+            //    .AddComponent(new Sprite("Content/Textures/malabestia"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new VelocityMatching(), Color.Khaki, "flee"));
 
-            Entity lookMouse = new Entity("look")
-                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) + 50) })
-                .AddComponent(new Sprite("Content/Textures/triangle"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(Steering.LookMouse, Color.MediumVioletRed));
+            //Entity lookMouse = new Entity("look")
+            //    .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) + 50) })
+            //    .AddComponent(new Sprite("Content/Textures/triangle"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(Steering.LookMouse, Color.MediumVioletRed));
 
-            Path path = new Path();
-            path.AddPosition(new Vector2(450, 200));
-            path.AddPosition(new Vector2(450, 500));
-            path.AddPosition(new Vector2(550, 475));
-            path.AddPosition(new Vector2(700, 550));
-            path.AddPosition(new Vector2(850, 225));
+            //Path path = new Path();
+            //path.AddPosition(new Vector2(450, 200));
+            //path.AddPosition(new Vector2(450, 500));
+            //path.AddPosition(new Vector2(550, 475));
+            //path.AddPosition(new Vector2(700, 550));
+            //path.AddPosition(new Vector2(850, 225));
 
-            Entity pathFollowing = new Entity("pathFollowing")
-                .AddComponent(new Transform2D() { Position = new Vector2(450, 200) })
-                .AddComponent(new Sprite("Content/Textures/malabestia"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(new PredictivePathFollowing() { Path = path }, Color.Ivory));
+            //Entity pathFollowing = new Entity("pathFollowing")
+            //    .AddComponent(new Transform2D() { Position = new Vector2(450, 200) })
+            //    .AddComponent(new Sprite("Content/Textures/malabestia"))
+            //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //    .AddComponent(new RectangleCollider())
+            //    .AddComponent(new SteeringBehavior(new PredictivePathFollowing() { Path = path }, Color.Ivory));
             #endregion
 
-
-            this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
-                {
-                    MinLayerDrawOrder = -10,
-                    MaxLayerDrawOrder = -0
-                };
-
-            Entity map = new Entity("mapa")
-                .AddComponent(new Transform2D())
-                .AddComponent(this.tiledMap);
-
             #region Flocking
-            Kinematic character = new Kinematic(true) { Position = new Vector2(100, 100), MaxVelocity = 30f };
+            //Kinematic character = new Kinematic(true) { Position = new Vector2(100, 100), MaxVelocity = 30f };
 
-            Entity flocko1 = new Entity("flocko1")
-                 .AddComponent(new Transform2D() { Position = character.Position })
-                 .AddComponent(new Sprite("Content/Textures/juggernaut"))
-                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+            //Entity flocko1 = new Entity("flocko1")
+            //     .AddComponent(new Transform2D() { Position = character.Position })
+            //     .AddComponent(new Sprite("Content/Textures/juggernaut"))
+            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //     .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
 
-            character = new Kinematic(true) { Position = new Vector2(150, 100), MaxVelocity = 50f };
-            Entity flocko2 = new Entity("flocko2")
-                 .AddComponent(new Transform2D() { Position = character.Position })
+            //character = new Kinematic(true) { Position = new Vector2(150, 100), MaxVelocity = 50f };
+            //Entity flocko2 = new Entity("flocko2")
+            //     .AddComponent(new Transform2D() { Position = character.Position })
+            //     .AddComponent(new Sprite("Content/Textures/malabestia"))
+            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //     .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+
+            //character = new Kinematic(true) { Position = new Vector2(100, 150), MaxVelocity = 40f };
+            //Entity flocko3 = new Entity("flocko3")
+            //     .AddComponent(new Transform2D() { Position = character.Position })
+            //     .AddComponent(new Sprite("Content/Textures/malabestia"))
+            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //     .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+
+            //character = new Kinematic(true) { Position = new Vector2(150, 150), MaxVelocity = 60f };
+            //Entity flocko4 = new Entity("flocko4")
+            //     .AddComponent(new Transform2D() { Position = character.Position })
+            //     .AddComponent(new Sprite("Content/Textures/malabestia"))
+            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //     .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+
+
+            //EntityManager.Add(flocko1);
+            //EntityManager.Add(flocko2);
+            //EntityManager.Add(flocko3);
+            //EntityManager.Add(flocko4);
+
+            #endregion
+
+            #region Follow the lider
+            Kinematic leader = new Kinematic(true) { Position = new Vector2(400, 500), MaxVelocity = 30f };
+
+            Entity leaderEntity = new Entity("leader")
+                 .AddComponent(new Transform2D() { Position = leader.Position })
                  .AddComponent(new Sprite("Content/Textures/malabestia"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+                 .AddComponent(new SteeringBehavior(new Wander(), Color.White, kinematic: leader));
 
-            character = new Kinematic(true) { Position = new Vector2(100, 150), MaxVelocity = 40f };
-            Entity flocko3 = new Entity("flocko3")
+            Kinematic character = new Kinematic(true) { Position = new Vector2(100, 100), MaxVelocity = 50f };
+            Entity follower1 = new Entity("follower1")
                  .AddComponent(new Transform2D() { Position = character.Position })
-                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+                 .AddComponent(new BlendedSteering(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
 
-            character = new Kinematic(true) { Position = new Vector2(150, 150), MaxVelocity = 60f };
-            Entity flocko4 = new Entity("flocko4")
+            character = new Kinematic(true) { Position = new Vector2(200, 200), MaxVelocity = 50f };
+            Entity follower2 = new Entity("follower2")
                  .AddComponent(new Transform2D() { Position = character.Position })
-                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+                 .AddComponent(new BlendedSteering(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
 
+            character = new Kinematic(true) { Position = new Vector2(600, 300), MaxVelocity = 50f };
+            Entity follower3 = new Entity("follower3")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/soldado"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new BlendedSteering(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
 
-            EntityManager.Add(flocko1);
-            EntityManager.Add(flocko2);
-            EntityManager.Add(flocko3);
-            EntityManager.Add(flocko4);
-
+            EntityManager.Add(leaderEntity);
+            EntityManager.Add(follower1);
+            EntityManager.Add(follower2);
+            EntityManager.Add(follower3);
             #endregion
 
             //EntityManager.Add(wallAvoidance);
@@ -214,6 +239,17 @@ namespace WaveProject
             ////EntityManager.Add(velocityMatching);
             //EntityManager.Add(lookMouse);
             //EntityManager.Add(pathFollowing);
+
+            this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
+            {
+                MinLayerDrawOrder = -10,
+                MaxLayerDrawOrder = -0
+            };
+
+            Entity map = new Entity("mapa")
+                .AddComponent(new Transform2D())
+                .AddComponent(this.tiledMap);
+
             EntityManager.Add(map);
 
         }

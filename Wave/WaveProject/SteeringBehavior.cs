@@ -27,9 +27,12 @@ namespace WaveProject
         public string Target { get; set; }
         public float MaxSpeed { get; set; }
 
-        public SteeringBehavior(Steering steering, Color color, string target = null)
+        public SteeringBehavior(Steering steering, Color color, string target = null, Kinematic kinematic = null)
         {
-            Kinematic = new Kinematic(true);
+            if (kinematic == null)
+                Kinematic = new Kinematic(true);
+            else
+                Kinematic = kinematic;
             Steering = steering;
             Steering.Character = Kinematic;
             Color = color;

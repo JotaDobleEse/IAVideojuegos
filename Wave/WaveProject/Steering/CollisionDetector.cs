@@ -32,9 +32,9 @@ namespace WaveProject.Steering
 
         public CollisionDetector()
         {
-            new Wall(200, 200, 50, 200, true);
-            new Wall(0, 50, 200, 10, true);
-            new Wall(0, 500, 200, 10, true);
+            //new Wall(200, 200, 50, 200, true);
+            //new Wall(0, 50, 200, 10, true);
+            //new Wall(0, 500, 200, 10, true);
         }
 
         public void Draw(LineBatch2D lb)

@@ -19,15 +19,13 @@ namespace WaveProject.Steering
         public Transform2D Transform { get; private set; }
         [RequiredComponent]
         public Sprite Texture { get; private set; }
-        [RequiredComponent]
-        public RectangleCollider Collider { get; private set; }
 
         private float Mass;
-        public Steering Steering { get; private set; }
-        public Kinematic Kinematic { get; private set; }
+        public Steering Steering { get; set; }
+        public Kinematic Kinematic { get; set; }
         public Color Color { get; set; }
         public string Target { get; set; }
-        public float MaxSpeed { get; private set; }
+        public float MaxSpeed { get; set; }
 
         public SteeringBehavior(Steering steering, Color color, string target = null)
         {
@@ -46,8 +44,6 @@ namespace WaveProject.Steering
             Kinematic.Rotation = 0f;
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
-            Collider.Center = Vector2.Center;
-            Collider.Transform2D = Transform;
             MaxSpeed = 50;
 
             Kinematic target = null;

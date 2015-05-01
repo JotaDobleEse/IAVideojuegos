@@ -43,10 +43,11 @@ namespace WaveProject
             EntityManager.Add(text);
 
             Entity wallAvoidance = new Entity("wallAvoidance")
-                .AddComponent(new Transform2D() { Position = new Vector2(0,220) })
+                .AddComponent(new Transform2D() { Position = new Vector2(20, 220) })
                 .AddComponent(new Sprite("Content/Textures/juggernaut"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
+                //.AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
                 .AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
 
             Entity collisionAvoidance = new Entity("collisionAvoidance")
@@ -134,14 +135,14 @@ namespace WaveProject
                 .AddComponent(new SteeringBehavior(Steering.Steering.LookMouse, Color.MediumVioletRed));
 
             Path path = new Path();
-            path.AddPosition(new Vector2(200, 200));
-            path.AddPosition(new Vector2(200, 500));
-            path.AddPosition(new Vector2(300, 475));
-            path.AddPosition(new Vector2(450, 550));
-            path.AddPosition(new Vector2(600, 225));
+            path.AddPosition(new Vector2(450, 200));
+            path.AddPosition(new Vector2(450, 500));
+            path.AddPosition(new Vector2(550, 475));
+            path.AddPosition(new Vector2(700, 550));
+            path.AddPosition(new Vector2(850, 225));
 
             Entity pathFollowing = new Entity("pathFollowing")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2(450, 200) })
                 .AddComponent(new Sprite("Content/Textures/malabestia"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
@@ -211,16 +212,17 @@ namespace WaveProject
             persue.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
             Entity look = EntityManager.Find("look");
             look.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) + 50);
-            Entity pathFollowing = EntityManager.Find("pathFollowing");
-            pathFollowing.FindComponent<Transform2D>().Position = new Vector2(100, 100);
 
 
             if (tiledMap.ObjectLayers.Count > 0)
             {
-                TiledMapObjectLayer layer = tiledMap.ObjectLayers.First(f => f.Value.ObjectLayerName == "Agua").Value;
-                foreach (var wall in layer.Objects)
+                //TiledMapObjectLayer layer = tiledMap.ObjectLayers.First(f => f.Value.ObjectLayerName == "Agua").Value;
+                foreach (var layer in tiledMap.ObjectLayers)
                 {
-                    new Wall(wall.X, wall.Y, wall.Width, wall.Height, true);
+                    foreach (var wall in layer.Value.Objects)
+                    {
+                        new Wall(wall.X, wall.Y, wall.Width, wall.Height, true);
+                    }
                 }
             }
 

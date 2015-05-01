@@ -38,11 +38,12 @@ namespace WaveProject.Steering
                 seek.Target = new Kinematic() { Position = target };
                 return seek.GetSteering();
             }
-            if (Character.Velocity == Vector2.Zero)
-            {
-                return new SteeringOutput() { Linear = new Vector2(5000, 50) };
-            }
-            return new SteeringOutput() { Linear = Character.Velocity };
+            //if (Character.Velocity == Vector2.Zero)
+            //{
+            //    return new SteeringOutput() { Linear = new Vector2(5000, 50) };
+            //}
+            //return new SteeringOutput() { Linear = Character.Velocity };
+            return new SteeringOutput();
         }
     }
 }

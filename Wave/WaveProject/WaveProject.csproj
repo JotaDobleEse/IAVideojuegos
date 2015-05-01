@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraController.cs" />
+    <Compile Include="Character.cs" />
     <Compile Include="Extensiones.cs" />
     <Compile Include="Kinematic.cs" />
     <Compile Include="Obstacle.cs" />

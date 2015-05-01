@@ -72,7 +72,7 @@ namespace WaveProject.Steering
                 steering.Linear = relativeP * MaxAcceleration;
                 steering.Angular = 0;
 
-                Character.Orientation = Character.Velocity.ToRotation(); // Despues
+                //Character.Orientation = Character.Velocity.ToRotation(); // Despues
 
                 return steering;
             }

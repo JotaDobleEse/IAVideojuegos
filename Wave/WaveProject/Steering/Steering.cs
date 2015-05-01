@@ -68,7 +68,7 @@ namespace WaveProject.Steering
 
         public float Weight { get; set; }
 
-        public Steering(float weight = 0)
+        public Steering(float weight = 1)
         {
 
             Weight = weight;

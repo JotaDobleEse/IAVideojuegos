@@ -12,50 +12,41 @@ namespace WaveProject.Steerings
     public class Separation : Steering
     {
 
-       //public SteeringBehavior[] listaObjetivos { get; set; }
-
         //Variable que nos indica si un target esta close
-        protected float Threshold = 0.1f;
+        public float Threshold { get; set; } 
 
         //Variable positiva, coeficiente de repulsion
-        protected float DecayCoefficient = 1f;
-        protected float MaxAcceleration = 0.1f;
+        public float DecayCoefficient { get; set; }
+        public float MaxAcceleration { get; set; } 
 
-        //Variable donde se iran acumulando la velocidad linear de cada uno de los targets
-        public static Vector2 LinearAcc { get; set; }
-
-        public EntityManager EntityManager { get; set; }
-
-        public Separation(EntityManager entityManager)
+        public Separation()
         {
-            this.EntityManager = entityManager;
+            Threshold = 30f;
+            DecayCoefficient = 1f;
+            MaxAcceleration = 0.1f;
         }
 
 
         public override SteeringOutput GetSteering()
         {
-            LinearAcc = new Vector2();
+            var linearAcc = Vector2.Zero;
 
             //var prueba = EntityManager.AllEntities;
-            IEnumerable<SteeringBehavior> Steerings = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is SteeringBehavior)).Select(s => s.FindComponent<SteeringBehavior>()).ToList();
+            IEnumerable<Kinematic> Steerings = Kinematic.Kinematics.Where(w => (w.Position - Character.Position).Length() <= Threshold && w != Character);
             foreach (var targets in Steerings)
             {
-                Vector2 direction = targets.Transform.Position - Character.Position;
-                float distance = direction.Length();
+                Vector2 direction = targets.Position - Character.Position;
+                var distance = direction.Length();
+                //Calculo de strength
+                float strength = Math.Min(DecayCoefficient / (distance*distance), MaxAcceleration);
 
-                if (distance < Threshold)
-                {
-                    //Calculo de strength
-                    float strength = Math.Min((float)(DecayCoefficient / Math.Pow(distance, 2)), MaxAcceleration);
-
-                    //añadir la aceleracion
-                    direction.Normalize();
-                    // LinearAcc += strength * direction;
-                    LinearAcc += strength * direction;
-                }
+                //añadir la aceleracion
+                direction.Normalize();
+                // LinearAcc += strength * direction;
+                linearAcc += strength * direction;
             }
             //A la salida del foreach tendremos en LinearAcc el vector resultante de la suma de los vectores 
-            return new SteeringOutput() { Linear = LinearAcc };
+            return new SteeringOutput() { Linear = linearAcc };
         }
     }
 }

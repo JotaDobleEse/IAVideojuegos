@@ -50,6 +50,7 @@ namespace WaveProject
                 foreach (var kinematic in Kinematic.Kinematics)
                 {
                     lb.DrawLineVM(kinematic.Position, kinematic.Position + kinematic.Velocity, Color.Red, 1f);
+                    lb.DrawLineVM(kinematic.Position, kinematic.Position + kinematic.LastOutput.Linear, Color.Orange, 1f);
                 }
 
                 if (Steerings.Any(a => a.Steering is Arrive))

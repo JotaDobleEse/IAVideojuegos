@@ -54,6 +54,7 @@
     <Compile Include="Obstacle.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="SteeringsCombinados\BlendedSteering.cs" />
+    <Compile Include="SteeringsCombinados\SteeringsFactory.cs" />
     <Compile Include="Steerings\Alignment.cs" />
     <Compile Include="Steerings\Cohesion.cs" />
     <Compile Include="SteeringVelocidad\Arrive.cs" />

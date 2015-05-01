@@ -21,20 +21,18 @@ namespace WaveProject.SteeringsCombinados
         [RequiredComponent]
         public Sprite Texture { get; private set; }
 
-        public Steering[] Steerings { get; private set; }
+        public BehaviorAndWeight[] Behaviors { get; private set; }
         public Kinematic Kinematic { get; set; }
 
         public Color Color { get; set; }
         public string Target { get; set; }
-        public float MaxSpeed { get; private set; }
 
-        public BlendedSteering(Steering[] steerings, Color color, string target = null)
+        public BlendedSteering(BehaviorAndWeight[] behaviors, Kinematic kinematic, Color color)
         {
-            Kinematic = new Kinematic(true);
-            Steerings = steerings;
+            Kinematic = kinematic;
+            Behaviors = behaviors;
            
             Color = color;
-            Target = target;
         }
 
         protected override void Initialize()
@@ -43,33 +41,6 @@ namespace WaveProject.SteeringsCombinados
 
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
-            MaxSpeed = 50;
-
-
-            Kinematic target = null;
-            if (string.IsNullOrEmpty(Target))
-            {
-                target = new Kinematic();
-                Vector2 targetMouse = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
-                target.Position = targetMouse;
-            }
-            else
-            {
-                try
-                {
-                    target = EntityManager.Find(Target).FindComponent<SteeringBehavior>().Kinematic;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-            foreach (var steering in Steerings)
-            {
-                steering.Character = Kinematic;
-                steering.Target = target;
-            }
-
         }
 
         protected override void Update(TimeSpan gameTime)
@@ -82,17 +53,15 @@ namespace WaveProject.SteeringsCombinados
             
             SteeringOutput final = new SteeringOutput();
 
-            foreach (var x in Steerings)
+            foreach (var x in Behaviors)
             {
-                final = final + (x.GetSteering() * x.Weight);
+                final = final + (x.Behavior.GetSteering() * x.Weight);
             }
-
-            final += new LookWhereYouGoing() { Character = Kinematic, Target = new Kinematic() { Position = Kinematic.Position + Kinematic.Velocity } }.GetSteering();
 
             Kinematic.Update(final, dt);
 
-            Transform.Position += Kinematic.Position * dt;
-            Transform.Rotation += Kinematic.Rotation * dt;
+            Transform.Position = Kinematic.Position;
+            Transform.Rotation = Kinematic.Rotation;
 
             #region Escenario circular
             if (Transform.Position.X > WaveServices.Platform.ScreenWidth)

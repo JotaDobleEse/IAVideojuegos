@@ -112,6 +112,6 @@ namespace WaveProject
         public static Vector2 Norm2(this Vector2 vector)
         {
             return new Vector2(vector.Y, -vector.X);
-        } 
+        }
     }
 }

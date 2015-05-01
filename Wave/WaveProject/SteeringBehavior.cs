@@ -21,7 +21,6 @@ namespace WaveProject
         [RequiredComponent]
         public Sprite Texture { get; private set; }
 
-        private float Mass;
         public Steering Steering { get; set; }
         public Kinematic Kinematic { get; set; }
         public Color Color { get; set; }
@@ -40,7 +39,6 @@ namespace WaveProject
         protected override void Initialize()
         {
             base.Initialize();
-            Mass = 1f;
             Kinematic.Velocity = Vector2.Zero;
             Kinematic.Rotation = 0f;
             Transform.Origin = Vector2.Center;

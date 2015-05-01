@@ -16,6 +16,7 @@ using WaveEngine.Framework.UI;
 using WaveProject.Steerings;
 using WaveEngine.TiledMap;
 using WaveEngine.Framework.Physics2D;
+using WaveProject.SteeringsCombinados;
 #endregion
 
 namespace WaveProject
@@ -42,6 +43,7 @@ namespace WaveProject
             EntityManager.Add(camera2D);
             EntityManager.Add(text);
 
+            #region SteeringsBehaviors
             Entity wallAvoidance = new Entity("wallAvoidance")
                 .AddComponent(new Transform2D() { Position = new Vector2(20, 220) })
                 .AddComponent(new Sprite("Content/Textures/juggernaut"))
@@ -51,7 +53,7 @@ namespace WaveProject
                 .AddComponent(new SteeringBehavior(new Cohesion(), Color.DarkMagenta));
 
             Entity collisionAvoidance = new Entity("collisionAvoidance")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 200) })
                 .AddComponent(new Sprite("Content/Textures/lagarto"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
@@ -65,42 +67,42 @@ namespace WaveProject
                 .AddComponent(new SteeringBehavior(new Wander(), Color.White));
 
             Entity face = new Entity("face")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150) })
                 .AddComponent(new Sprite("Content/Textures/soldado"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new Face(), Color.Blue, "arrive"));
 
             Entity lookWhereYouGoing = new Entity("lookWhereYouGoing")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150) })
                 .AddComponent(new Sprite("Content/Textures/juggernaut"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new LookWhereYouGoing(), Color.Salmon, "arrive"));
 
             Entity align = new Entity("align")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f), (WaveServices.Platform.ScreenHeight / 2f)) })
                 .AddComponent(new Sprite("Content/Textures/soldado"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new Align(), Color.Crimson, "look"));
 
             Entity antiAlign = new Entity("antialign")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 50) })
                 .AddComponent(new Sprite("Content/Textures/soldado"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new AntiAlign(), Color.Navy, "look"));
 
             Entity arrive = new Entity("arrive")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2(50, 50) })
                 .AddComponent(new Sprite("Content/Textures/lagarto"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new Arrive(), Color.Green));
 
             Entity flee = new Entity("flee")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f)) })
                 .AddComponent(new Sprite("Content/Textures/malabestia"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
@@ -114,7 +116,7 @@ namespace WaveProject
                 .AddComponent(new SteeringBehavior(new Seek(), Color.Salmon));
 
             Entity persue = new Entity("persue")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f)) })
                 .AddComponent(new Sprite("Content/Textures/lagarto"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
@@ -128,7 +130,7 @@ namespace WaveProject
                 .AddComponent(new SteeringBehavior(new VelocityMatching(), Color.Khaki, "flee"));
 
             Entity lookMouse = new Entity("look")
-                .AddComponent(new Transform2D())
+                .AddComponent(new Transform2D() { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) + 50) })
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
@@ -147,6 +149,8 @@ namespace WaveProject
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 .AddComponent(new SteeringBehavior(new PredictivePathFollowing() { Path = path }, Color.Ivory));
+            #endregion
+
 
             this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
                 {
@@ -157,34 +161,59 @@ namespace WaveProject
             Entity map = new Entity("mapa")
                 .AddComponent(new Transform2D())
                 .AddComponent(this.tiledMap);
-            
-            //Steering o steering behavior? no se cual poner T_T
 
-            //Steering[] listaSteerings = new Steering[] { new Seek() { Weight = 0.4f } };
-           
-          
+            #region Flocking
+            Kinematic character = new Kinematic(true) { Position = new Vector2(100, 100), MaxVelocity = 30f };
 
-           /* Entity flocko = new Entity("flocko")
-                .AddComponent(new Transform2D())
-                .AddComponent(new Sprite("Content/Textures/triangle"))
-                .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                .AddComponent(new RectangleCollider)
-                .AddComponent(new BlendedSteering(listaSteerings,Color.Red));*/
+            Entity flocko1 = new Entity("flocko1")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/juggernaut"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
 
-            EntityManager.Add(wallAvoidance);
-            EntityManager.Add(collisionAvoidance);
-            EntityManager.Add(wander);
-            EntityManager.Add(align);
-            //EntityManager.Add(face);
-            EntityManager.Add(lookWhereYouGoing);
-            //EntityManager.Add(antiAlign);
-            EntityManager.Add(arrive);
-            //EntityManager.Add(flee);
-            //EntityManager.Add(mouserFollower);
-            EntityManager.Add(persue);
-            //EntityManager.Add(velocityMatching);
-            EntityManager.Add(lookMouse);
-            EntityManager.Add(pathFollowing);
+            character = new Kinematic(true) { Position = new Vector2(150, 100), MaxVelocity = 50f };
+            Entity flocko2 = new Entity("flocko2")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+
+            character = new Kinematic(true) { Position = new Vector2(100, 150), MaxVelocity = 40f };
+            Entity flocko3 = new Entity("flocko3")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+
+            character = new Kinematic(true) { Position = new Vector2(150, 150), MaxVelocity = 60f };
+            Entity flocko4 = new Entity("flocko4")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new BlendedSteering(SteeringsFactory.Flocking(character), character, Color.White));
+
+
+            EntityManager.Add(flocko1);
+            EntityManager.Add(flocko2);
+            EntityManager.Add(flocko3);
+            EntityManager.Add(flocko4);
+
+            #endregion
+
+            //EntityManager.Add(wallAvoidance);
+            //EntityManager.Add(collisionAvoidance);
+            //EntityManager.Add(wander);
+            //EntityManager.Add(align);
+            ////EntityManager.Add(face);
+            //EntityManager.Add(lookWhereYouGoing);
+            ////EntityManager.Add(antiAlign);
+            //EntityManager.Add(arrive);
+            ////EntityManager.Add(flee);
+            ////EntityManager.Add(mouserFollower);
+            //EntityManager.Add(persue);
+            ////EntityManager.Add(velocityMatching);
+            //EntityManager.Add(lookMouse);
+            //EntityManager.Add(pathFollowing);
             EntityManager.Add(map);
 
         }
@@ -193,26 +222,6 @@ namespace WaveProject
         {
             base.Start();
             // This method is called after the CreateScene and Initialize methods and before the first Update.
-            Entity collisionAvoidance = EntityManager.Find("collisionAvoidance");
-            collisionAvoidance.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 200);
-
-            Entity arrive = EntityManager.Find("arrive");
-            arrive.FindComponent<Transform2D>().Position = new Vector2(50, 50);
-            Entity align = EntityManager.Find("align");
-            align.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f), (WaveServices.Platform.ScreenHeight / 2f));
-            //Entity antialign = EntityManager.Find("antialign");
-            //antialign.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 50);
-            //Entity face = EntityManager.Find("face");
-            //face.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150);
-            Entity lookWhereYouGoing = EntityManager.Find("lookWhereYouGoing");
-            lookWhereYouGoing.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 200, (WaveServices.Platform.ScreenHeight / 2f) - 150);
-            //Entity flee = EntityManager.Find("flee");
-            //flee.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
-            Entity persue = EntityManager.Find("persue");
-            persue.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) + 100, (WaveServices.Platform.ScreenHeight / 2f));
-            Entity look = EntityManager.Find("look");
-            look.FindComponent<Transform2D>().Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) + 50);
-
 
             if (tiledMap.ObjectLayers.Count > 0)
             {

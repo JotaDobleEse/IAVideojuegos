@@ -9,18 +9,18 @@ namespace WaveProject.Steerings
 {
     public class Cohesion : Steering
     {
-        public float Radius { get; set; }
+        public float Threshold { get; set; }
 
         public Cohesion()
         {
-            Radius = 200;
+            Threshold = 70;
         }
 
         public override SteeringOutput GetSteering()
         {
             int count = 0;
             Vector2 centerOfMass = new Vector2(0, 0);
-            var targets = Kinematic.Kinematics.Where(w => (w.Position - Character.Position).Length() <= Radius);
+            var targets = Kinematic.Kinematics.Where(w => (w.Position - Character.Position).Length() <= Threshold && w != Character);
             foreach (var target in targets)
             {
                 centerOfMass += target.Position;

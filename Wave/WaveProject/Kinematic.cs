@@ -17,6 +17,10 @@ namespace WaveProject
         public Vector2 Velocity { get; set; }
         public float Rotation { get; set; }
         public float MaxVelocity { get; set; }
+        public SteeringOutput LastOutput { get; private set; }
+
+        public bool IsStable { get; private set; }
+
 
         /// <summary>
         /// Crea un Kinematic.
@@ -24,6 +28,7 @@ namespace WaveProject
         /// <param name="stable">Establece si el Kinematic se introduce en la colección de muros del sistema.</param>
         public Kinematic(bool stable = false)
         {
+            IsStable = stable;
             if (stable)
                 kinematics.Add(this);
             MaxVelocity = 50;
@@ -36,6 +41,7 @@ namespace WaveProject
 
         public void Update(SteeringOutput steering, float deltaTime)
         {
+            LastOutput = steering;
             Velocity += steering.Linear * deltaTime;
             Rotation += steering.Angular * deltaTime;
 
@@ -50,6 +56,16 @@ namespace WaveProject
 
             Position += Velocity * deltaTime;
             Orientation += Rotation * deltaTime;
+        }
+
+        public Kinematic Clone()
+        {
+            return new Kinematic(IsStable) { Position = this.Position, LastOutput = this.LastOutput, MaxVelocity = this.MaxVelocity, Orientation = this.Orientation, Rotation = this.Rotation, Velocity = this.Velocity };
+        }
+
+        public Kinematic Clone(bool stable)
+        {
+            return new Kinematic(stable) { Position = this.Position, LastOutput = this.LastOutput, MaxVelocity = this.MaxVelocity, Orientation = this.Orientation, Rotation = this.Rotation, Velocity = this.Velocity };
         }
     }
 }

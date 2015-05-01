@@ -9,18 +9,18 @@ namespace WaveProject.Steerings
 {
     public class Alignment : Steering
     {
-        public float Radius { get; set; }
+        public float Threshold { get; set; }
 
         public Alignment()
         {
-            Radius = 200;
+            Threshold = 100;
         }
 
         public override SteeringOutput GetSteering()
         {
             int count = 0;
             Vector2 heading = new Vector2(0, 0);
-            var targets = Kinematic.Kinematics.Where(w => (w.Position - Character.Position).Length() <= Radius);
+            var targets = Kinematic.Kinematics.Where(w => (w.Position - Character.Position).Length() <= Threshold && w != Character);
             foreach (var target in targets)
             {
                 heading += target.Position + target.Velocity;

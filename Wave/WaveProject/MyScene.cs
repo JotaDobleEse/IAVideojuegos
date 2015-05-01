@@ -48,7 +48,7 @@ namespace WaveProject
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 //.AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
-                .AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
+                .AddComponent(new SteeringBehavior(/*new WallAvoidance()*/ new Cohesion(), Color.DarkMagenta));
 
             Entity collisionAvoidance = new Entity("collisionAvoidance")
                 .AddComponent(new Transform2D())
@@ -160,7 +160,7 @@ namespace WaveProject
             
             //Steering o steering behavior? no se cual poner T_T
 
-           // Steering[] listaSteerings = new Steering[] {new SteeringBehavior(new Seek(), Color.Red)};
+            //Steering[] listaSteerings = new Steering[] { new Seek() { Weight = 0.4f } };
            
           
 

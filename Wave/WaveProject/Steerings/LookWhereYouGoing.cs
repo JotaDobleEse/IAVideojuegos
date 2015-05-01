@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 
-namespace WaveProject.Steering
+namespace WaveProject.Steerings
 {
-    class Face : Steering
+    class LookWhereYouGoing : Steering
     {
 
         public override SteeringOutput GetSteering()
         {
-            var direction = Target.Position - Character.Position;
+            var direction = (Target.Position + Target.Velocity) - Character.Position;
 
             if (direction.Length() == 0)
             {

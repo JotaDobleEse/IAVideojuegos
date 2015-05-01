@@ -7,7 +7,7 @@ using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 
-namespace WaveProject.Steering
+namespace WaveProject.Steerings
 {
     public class Collision
     {

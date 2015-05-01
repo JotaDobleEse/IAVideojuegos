@@ -9,7 +9,7 @@ using WaveEngine.Components.Cameras;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
-using WaveProject.Steering;
+using WaveProject.Steerings;
 
 namespace WaveProject
 {

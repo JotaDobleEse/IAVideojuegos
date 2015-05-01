@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 
-namespace WaveProject.Steering
+namespace WaveProject.Steerings
 {
 
     public struct SteeringOutput 

@@ -10,8 +10,9 @@ using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Physics2D;
 using WaveEngine.Framework.Services;
+using WaveProject.Steerings;
 
-namespace WaveProject.Steering
+namespace WaveProject.SteeringsCombinados
 {
     public class BlendedSteering : Behavior
     {

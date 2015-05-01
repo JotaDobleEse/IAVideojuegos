@@ -9,7 +9,7 @@ using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Managers;
 
-namespace WaveProject.Steering
+namespace WaveProject.Steerings
 {
     class CollisionAvoidance : Steering
     {

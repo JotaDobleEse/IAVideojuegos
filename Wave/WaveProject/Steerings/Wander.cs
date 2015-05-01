@@ -7,7 +7,7 @@ using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
 
-namespace WaveProject.Steering
+namespace WaveProject.Steerings
 {
     class Wander : Steering
     {

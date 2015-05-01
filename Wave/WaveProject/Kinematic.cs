@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Common.Math;
-using WaveProject.Steering;
+using WaveProject.Steerings;
 
 namespace WaveProject
 {

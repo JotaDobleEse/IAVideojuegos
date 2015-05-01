@@ -13,7 +13,7 @@ using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Resources;
 using WaveEngine.Framework.Services;
 using WaveEngine.Framework.UI;
-using WaveProject.Steering;
+using WaveProject.Steerings;
 using WaveEngine.TiledMap;
 using WaveEngine.Framework.Physics2D;
 #endregion
@@ -132,7 +132,7 @@ namespace WaveProject
                 .AddComponent(new Sprite("Content/Textures/triangle"))
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
-                .AddComponent(new SteeringBehavior(Steering.Steering.LookMouse, Color.MediumVioletRed));
+                .AddComponent(new SteeringBehavior(Steering.LookMouse, Color.MediumVioletRed));
 
             Path path = new Path();
             path.AddPosition(new Vector2(450, 200));

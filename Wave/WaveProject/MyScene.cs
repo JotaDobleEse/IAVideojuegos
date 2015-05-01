@@ -48,7 +48,7 @@ namespace WaveProject
                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                 .AddComponent(new RectangleCollider())
                 //.AddComponent(new SteeringBehavior(new WallAvoidance(), Color.DarkMagenta));
-                .AddComponent(new SteeringBehavior(/*new WallAvoidance()*/ new Cohesion(), Color.DarkMagenta));
+                .AddComponent(new SteeringBehavior(new Cohesion(), Color.DarkMagenta));
 
             Entity collisionAvoidance = new Entity("collisionAvoidance")
                 .AddComponent(new Transform2D())

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WaveProject.Steerings;
 
-namespace WaveProject.SteeringsCombinados
+namespace WaveProject.Steerings.Combined
 {
     public class PrioritySteering : Steering
     {

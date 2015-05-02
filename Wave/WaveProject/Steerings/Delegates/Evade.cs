@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 
-namespace WaveProject.Steerings
+namespace WaveProject.Steerings.Delegated
 {
-    public class Persue : Steering
+    class Evade : Steering
     {
-        public float maxPrediction = 1f;
+        public float maxPrediction = 10f;
 
         public override SteeringOutput GetSteering()
         {
@@ -27,13 +27,12 @@ namespace WaveProject.Steerings
             else
                 prediction = distance / speed;
 
+            //Delegar en Flee
+            Steering flee = new Flee();
 
-            //Delegar en Seek
-            Seek seek = new Seek();
-            seek.Character = Character;
-            seek.Target = new Kinematic() { Position = Target.Position + Target.Velocity * prediction };
-            return seek.GetSteering();
+            flee.Character = Character;
+            flee.Target = new Kinematic() { Position = Target.Velocity * prediction };
+            return flee.GetSteering();
         }
     }
-
 }

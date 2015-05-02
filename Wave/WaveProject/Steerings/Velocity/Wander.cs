@@ -10,54 +10,59 @@ using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
 
-namespace WaveProject.SteeringVelocidad
+namespace WaveProject.Steerings.Velocity
 {
-    public class Flee : SteeringBehavior
+    [Obsolete("Use Steerings.Delegated.Wander.")]
+    public class Wander : SteeringBehavior
     {
         [RequiredComponent]
         public Transform2D Transform { get; private set; }
 
         [RequiredComponent]
         public Sprite Texture { get; private set; }
+        public float MaxRotation { get; private set; }
 
-        public Flee(float maxVel = 300f, string entityTarget = null, Color? color = null)
-            : base(maxVel, entityTarget, color)
+        private int SameDirection = 0;
+        private const int LOOPCOUNT = 15;
+        private Vector2 SameVelocity;
+
+        public Wander(float maxVel = 300f, Color? color = null)
+            : base(maxVel, null, color)
         { }
 
         protected override void Initialize()
         {
             base.Initialize();
             Mass = 1f;
+            MaxRotation = (float)(60 * Math.PI / 180);
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
         }
 
-        Steering FleeVelocity(Vector2 target)
+        public float BinomialRandom()
         {
-            Vector2 velocity = Transform.Position - target;
-            velocity.Normalize();
+            return (float)(WaveServices.Random.NextDouble() - WaveServices.Random.NextDouble());
+        }
 
-            return Steering.Create(velocity * MaxSpeed);
+        Steering WanderVelocity()
+        {
+            Vector2 velocity = new Vector2((float)Math.Sin(Transform.Rotation), -(float)Math.Cos(Transform.Rotation)) * MaxSpeed;
+            Steering steering = Steering.Create(velocity);
+            float rand = BinomialRandom();
+            steering.Rotation = rand * MaxRotation;
+            return steering;
         }
 
         protected override void Update(TimeSpan gameTime)
         {
-            Vector2 target = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
-            if (!string.IsNullOrEmpty(EntityTarget))
+            if (SameDirection == 0)
             {
-                Entity e = EntityManager.Find(EntityTarget);
-                target = e.FindComponent<Transform2D>().Position;
+                Steering wander = WanderVelocity();
+                SameVelocity = wander.Velocity;
+                Transform.Rotation += wander.Rotation * (float)gameTime.TotalSeconds*60;
             }
-            double dist = Math.Sqrt(Math.Pow(target.X - Transform.Position.X, 2) + Math.Pow(target.Y - Transform.Position.Y, 2));
-            if (dist <= 200f)
-            {
-                Steering flee = FleeVelocity(target);
-                Transform.Position += flee.Velocity * (float)gameTime.TotalSeconds;
-                Transform.Rotation = flee.Rotation;
-            }
+            Transform.Position += SameVelocity * (float)gameTime.TotalSeconds;
 
-            //Transform.Position = new Vector2(Math.Abs(Transform.Position.X), Math.Abs(Transform.Position.Y));
-            //Transform.Position = new Vector2((Transform.Position.X > WaveServices.Platform.ScreenWidth ? WaveServices.Platform.ScreenWidth : Transform.Position.X), (Transform.Position.Y > WaveServices.Platform.ScreenHeight ? WaveServices.Platform.ScreenHeight : Transform.Position.Y));
             #region Escenario circular
             if (Transform.Position.X > WaveServices.Platform.ScreenWidth)
             {
@@ -76,7 +81,7 @@ namespace WaveProject.SteeringVelocidad
                 Transform.Position += new Vector2(0, WaveServices.Platform.ScreenHeight);
             }
             #endregion
-
+            SameDirection = (SameDirection + 1) % LOOPCOUNT;
         }
     }
 }

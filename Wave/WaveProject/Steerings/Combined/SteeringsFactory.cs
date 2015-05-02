@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaveProject.Steerings;
+using WaveProject.Steerings.Delegated;
 
-namespace WaveProject.SteeringsCombinados
+namespace WaveProject.Steerings.Combined
 {
     public struct BehaviorAndWeight
     {

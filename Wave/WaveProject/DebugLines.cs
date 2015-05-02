@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Components.Cameras;
+using WaveEngine.Components.UI;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
 using WaveProject.Steerings;
+using WaveProject.Steerings.Delegated;
 
 namespace WaveProject
 {
@@ -17,8 +19,15 @@ namespace WaveProject
     {
         private IEnumerable<Steering> Steerings;
         private Camera2D Camera;
+        public TextBlock Text { get; private set; }
 
         private bool DEBUG = true;
+        public DebugLines(TextBlock text)
+        {
+            //Create UI
+            Text = text;
+            Text.Foreground = Color.White;
+        }
 
         protected override void Initialize()
         {
@@ -39,6 +48,7 @@ namespace WaveProject
         {
             if (DEBUG)
             {
+                Text.Text = string.Format("Coords. ({0},{1}), dt: {2}", WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y, (float)gameTime.TotalSeconds);
                 LineBatch2D lb = RenderManager.LineBatch2D;
 
                 foreach (var kinematic in Kinematic.Kinematics)

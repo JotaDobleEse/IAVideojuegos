@@ -10,8 +10,9 @@ using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
 
-namespace WaveProject.SteeringVelocidad
+namespace WaveProject.Steerings.Velocity
 {
+    [Obsolete("Usar Steerings.Arrive.")]
     public class Arrive : SteeringBehavior
     {
         [RequiredComponent]

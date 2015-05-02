@@ -8,7 +8,7 @@ using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Managers;
 
-namespace WaveProject.Steerings
+namespace WaveProject.Steerings.Delegated
 {
 
     public class CollisionAvoidanceRT :  Steering

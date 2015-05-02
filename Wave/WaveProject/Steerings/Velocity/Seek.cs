@@ -10,8 +10,9 @@ using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
 
-namespace WaveProject.SteeringVelocidad
+namespace WaveProject.Steerings.Velocity
 {
+    [Obsolete("Usar Steerings.Seek.")]
     public class Seek : SteeringBehavior
     {
         [RequiredComponent]

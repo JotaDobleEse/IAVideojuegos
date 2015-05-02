@@ -16,7 +16,7 @@ using WaveEngine.Framework.UI;
 using WaveProject.Steerings;
 using WaveEngine.TiledMap;
 using WaveEngine.Framework.Physics2D;
-using WaveProject.SteeringsCombinados;
+using WaveProject.Steerings.Combined;
 #endregion
 
 namespace WaveProject
@@ -37,8 +37,7 @@ namespace WaveProject
 
             // Create a 2D camera
             var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.Black }
-                .Entity.AddComponent(new InfoDebug(text))
-                .AddComponent(new DebugLines())
+                .Entity.AddComponent(new DebugLines(text))
                 .AddComponent(new CameraController()); // Transparent background need this clearFlags.
             EntityManager.Add(camera2D);
             EntityManager.Add(text);

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Framework;
 
-namespace WaveProject.SteeringVelocidad
+namespace WaveProject.Steerings.Velocity
 {
+    [Obsolete("Create own class.")]
     public abstract class SteeringBehavior : Behavior
     {
         public float MaxSpeed { get; private set; }

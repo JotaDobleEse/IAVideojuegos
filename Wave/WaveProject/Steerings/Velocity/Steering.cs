@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 
-namespace WaveProject.SteeringVelocidad
+namespace WaveProject.Steerings.Velocity
 {
+    [Obsolete("Usar Steerings.Steering.")]
     class Steering
     {
         public Vector2 Velocity { get; set; }

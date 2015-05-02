@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 
-namespace WaveProject.Steerings
+namespace WaveProject.Steerings.Delegated
 {
     class WallAvoidance : Steering
     {

@@ -56,8 +56,9 @@
     <Compile Include="Steerings\Combined\BlendedSteering.cs" />
     <Compile Include="Steerings\Combined\PrioritySteering.cs" />
     <Compile Include="Steerings\Combined\SteeringsFactory.cs" />
-    <Compile Include="Steerings\Alignment.cs" />
-    <Compile Include="Steerings\Cohesion.cs" />
+    <Compile Include="Steerings\Coordinated\FormationManager.cs" />
+    <Compile Include="Steerings\Group\Alignment.cs" />
+    <Compile Include="Steerings\Group\Cohesion.cs" />
     <Compile Include="Steerings\Velocity\Arrive.cs" />
     <Compile Include="DebugLines.cs" />
     <Compile Include="Steerings\Velocity\Flee.cs" />
@@ -79,7 +80,7 @@
     <Compile Include="Steerings\Delegates\Persue.cs" />
     <Compile Include="Steerings\Delegates\PredictivePathFollowing.cs" />
     <Compile Include="Steerings\Seek.cs" />
-    <Compile Include="Steerings\Separation.cs" />
+    <Compile Include="Steerings\Group\Separation.cs" />
     <Compile Include="Steerings\Steering.cs" />
     <Compile Include="Steerings\Velocity\Wander.cs" />
     <Compile Include="Steerings\VelocityMatching.cs" />
@@ -90,6 +91,7 @@
   <ItemGroup>
     <None Include="Resources.weproj" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(WaveEngine)v1.0\Targets\Windows\WPKAssetsExport.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

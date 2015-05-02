@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WaveProject.Steerings;
 using WaveProject.Steerings.Delegated;
+using WaveProject.Steerings.Group;
 
 namespace WaveProject.Steerings.Combined
 {
@@ -20,10 +21,10 @@ namespace WaveProject.Steerings.Combined
         {
             BehaviorAndWeight[] behaviors = new BehaviorAndWeight[4];
 
-            behaviors[0] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character }, Weight = 0.7f };
-            behaviors[1] = new BehaviorAndWeight() { Behavior = new Cohesion() { Character = character }, Weight = 0.4f };
-            behaviors[2] = new BehaviorAndWeight() { Behavior = new Alignment() { Character = character }, Weight = 0.5f };
-            behaviors[3] = new BehaviorAndWeight() { Behavior = new Wander() { Character = character }, Weight = 0.7f };
+            behaviors[0] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character, Threshold = 100f }, Weight = 2f };
+            behaviors[1] = new BehaviorAndWeight() { Behavior = new Cohesion() { Character = character }, Weight = 0.2f };
+            behaviors[2] = new BehaviorAndWeight() { Behavior = new Alignment() { Character = character }, Weight = 0.9f };
+            behaviors[3] = new BehaviorAndWeight() { Behavior = new Wander() { Character = character }, Weight = 0.5f };
 
             return behaviors;
         }
@@ -33,7 +34,7 @@ namespace WaveProject.Steerings.Combined
             BehaviorAndWeight[] behaviors = new BehaviorAndWeight[3];
 
             behaviors[0] = new BehaviorAndWeight() { Behavior = new Arrive() { Character = character, Target = leader }, Weight = 0.2f };
-            behaviors[1] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character, Threshold = 100f }, Weight = 1f };
+            behaviors[1] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character, Threshold = 100f }, Weight = 0.9f };
             behaviors[2] = new BehaviorAndWeight() { Behavior = new Evade() { Character = character, Target = leader }, Weight = 0.05f };
 
             return behaviors;

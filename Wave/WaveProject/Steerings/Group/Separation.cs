@@ -7,7 +7,7 @@ using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Managers;
 
-namespace WaveProject.Steerings
+namespace WaveProject.Steerings.Group
 {
     public class Separation : Steering
     {
@@ -38,7 +38,7 @@ namespace WaveProject.Steerings
                 Vector2 direction = targets.Position - Character.Position;
                 var distance = direction.Length();
                 //Calculo de strength
-                float strength = Math.Min(DecayCoefficient / (distance*distance), MaxAcceleration);
+                float strength = Math.Min(DecayCoefficient / (distance*distance), MaxAcceleration) * -1;
 
                 //añadir la aceleracion
                 direction.Normalize();

@@ -17,6 +17,8 @@ using WaveProject.Steerings;
 using WaveEngine.TiledMap;
 using WaveEngine.Framework.Physics2D;
 using WaveProject.Steerings.Combined;
+using WaveProject.Steerings.Group;
+using WaveProject.Steerings.Delegated;
 #endregion
 
 namespace WaveProject
@@ -177,40 +179,40 @@ namespace WaveProject
             #endregion
 
             #region Flocking
-            //Kinematic character = new Kinematic(true) { Position = new Vector2(100, 100), MaxVelocity = 30f };
+            Kinematic character = new Kinematic(true) { Position = new Vector2(100, 100), MaxVelocity = 30f };
 
-            //Entity flocko1 = new Entity("flocko1")
-            //     .AddComponent(new Transform2D() { Position = character.Position })
-            //     .AddComponent(new Sprite("Content/Textures/juggernaut"))
-            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-            //     .AddComponent(new Character(new BlendedSteering(SteeringsFactory.Flocking(character)), character, Color.White));
+            Entity flocko1 = new Entity("flocko1")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/juggernaut"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new Character(new BlendedSteering(SteeringsFactory.Flocking(character)), character, Color.White));
 
-            //character = new Kinematic(true) { Position = new Vector2(150, 100), MaxVelocity = 50f };
-            //Entity flocko2 = new Entity("flocko2")
-            //     .AddComponent(new Transform2D() { Position = character.Position })
-            //     .AddComponent(new Sprite("Content/Textures/malabestia"))
-            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-            //     .AddComponent(new Character(new BlendedSteering(SteeringsFactory.Flocking(character)), character, Color.White));
+            character = new Kinematic(true) { Position = new Vector2(150, 100), MaxVelocity = 50f };
+            Entity flocko2 = new Entity("flocko2")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new Character(new BlendedSteering(SteeringsFactory.Flocking(character)), character, Color.White));
 
-            //character = new Kinematic(true) { Position = new Vector2(100, 150), MaxVelocity = 40f };
-            //Entity flocko3 = new Entity("flocko3")
-            //     .AddComponent(new Transform2D() { Position = character.Position })
-            //     .AddComponent(new Sprite("Content/Textures/malabestia"))
-            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-            //     .AddComponent(new Character(new BlendedSteering(SteeringsFactory.Flocking(character)), character, Color.White));
+            character = new Kinematic(true) { Position = new Vector2(100, 150), MaxVelocity = 40f };
+            Entity flocko3 = new Entity("flocko3")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new Character(new BlendedSteering(SteeringsFactory.Flocking(character)), character, Color.White));
 
-            //character = new Kinematic(true) { Position = new Vector2(150, 150), MaxVelocity = 60f };
-            //Entity flocko4 = new Entity("flocko4")
-            //     .AddComponent(new Transform2D() { Position = character.Position })
-            //     .AddComponent(new Sprite("Content/Textures/malabestia"))
-            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-            //     .AddComponent(new Character(new BlendedSteering(SteeringsFactory.Flocking(character)), character, Color.White));
+            character = new Kinematic(true) { Position = new Vector2(150, 150), MaxVelocity = 60f };
+            Entity flocko4 = new Entity("flocko4")
+                 .AddComponent(new Transform2D() { Position = character.Position })
+                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new Character(new BlendedSteering(SteeringsFactory.Flocking(character)), character, Color.White));
 
 
-            //EntityManager.Add(flocko1);
-            //EntityManager.Add(flocko2);
-            //EntityManager.Add(flocko3);
-            //EntityManager.Add(flocko4);
+            EntityManager.Add(flocko1);
+            EntityManager.Add(flocko2);
+            EntityManager.Add(flocko3);
+            EntityManager.Add(flocko4);
 
             #endregion
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 
-namespace WaveProject.Steerings
+namespace WaveProject.Steerings.Group
 {
     public class Cohesion : Steering
     {

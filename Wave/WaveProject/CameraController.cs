@@ -19,9 +19,12 @@ namespace WaveProject
         private bool PressedMouse = false;
         private Vector2 LastPositionMouse;
 
+        public static Camera2D CurrentCamera { get; private set; }
+
         protected override void Initialize()
         {
             base.Initialize();
+            CurrentCamera = Camera;
             //Camera.Zoom = Vector2.One / 2f;
         }
 

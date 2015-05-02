@@ -82,7 +82,6 @@
     <Compile Include="Steerings\Seek.cs" />
     <Compile Include="Steerings\Separation.cs" />
     <Compile Include="Steerings\Steering.cs" />
-    <Compile Include="SteeringBehavior.cs" />
     <Compile Include="SteeringVelocidad\Wander.cs" />
     <Compile Include="Steerings\VelocityMatching.cs" />
     <Compile Include="Steerings\WallAvoidance.cs" />

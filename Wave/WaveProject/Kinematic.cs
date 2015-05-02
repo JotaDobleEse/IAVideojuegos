@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Common.Math;
+using WaveEngine.Framework.Graphics;
+using WaveEngine.Framework.Services;
 using WaveProject.Steerings;
 
 namespace WaveProject
@@ -12,6 +14,11 @@ namespace WaveProject
     {
         private static List<Kinematic> kinematics = new List<Kinematic>();
         public static List<Kinematic> Kinematics { get { return kinematics; } }
+
+        private static Kinematic mouse = new Kinematic();
+
+        public static Kinematic MouseKinematic { get { return mouse; } }
+
         public Vector2 Position { get; set; }
         public float Orientation { get; set; }
         public Vector2 Velocity { get; set; }
@@ -56,6 +63,14 @@ namespace WaveProject
 
             Position += Velocity * deltaTime;
             Orientation += Rotation * deltaTime;
+
+            #region Update mouse
+            if (CameraController.CurrentCamera != null)
+            {
+                Vector2 targetMouse = WaveServices.Input.MouseState.PositionRelative(CameraController.CurrentCamera);
+                mouse.Position = targetMouse;
+            }
+            #endregion
         }
 
         public Kinematic Clone()

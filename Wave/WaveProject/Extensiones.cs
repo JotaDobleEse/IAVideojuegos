@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Input;
 using WaveEngine.Common.Math;
 using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
+using WaveEngine.Framework.Services;
 
 namespace WaveProject
 {
@@ -112,6 +114,22 @@ namespace WaveProject
         public static Vector2 Norm2(this Vector2 vector)
         {
             return new Vector2(vector.Y, -vector.X);
+        }
+        public static Vector2 Position(this MouseState mouse)
+        {
+            return new Vector2(mouse.X, mouse.Y);
+        }
+        public static Vector2 PositionRelative(this MouseState mouse, Camera camera)
+        {
+            Vector3 mousePosition = new Vector3(mouse.Position(), 0f);
+            Vector3 project = camera.Unproject(ref mousePosition);
+            return project.ToVector2();
+        }
+        public static Vector2 PositionRelative(this MouseState mouse, ViewportManager viewport)
+        {
+            Vector2 mousePosition = mouse.Position();
+            viewport.RecoverPosition(ref mousePosition);
+            return mousePosition;
         }
     }
 }

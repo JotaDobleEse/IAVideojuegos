@@ -10,6 +10,7 @@ using WaveEngine.Components.UI;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
+using WaveEngine.TiledMap;
 using WaveProject.Steerings;
 using WaveProject.Steerings.Delegated;
 
@@ -24,7 +25,6 @@ namespace WaveProject
         private bool DEBUG = true;
         public DebugLines(TextBlock text)
         {
-            //Create UI
             Text = text;
             Text.Foreground = Color.White;
         }
@@ -80,6 +80,20 @@ namespace WaveProject
                 }
 
                 CollisionDetector.Detector.Draw(lb);
+
+                try
+                {
+                    Kinematic mouse = Kinematic.MouseKinematic;
+                    LayerTile tile = MyScene.TiledMap.TileLayers.First().Value.GetLayerTileByWorldPosition(mouse.Position);
+                    int x, y;
+                    x = tile.X * MyScene.TiledMap.TileWidth;
+                    y = tile.Y * MyScene.TiledMap.TileHeight;
+                    lb.DrawRectangleVM(new RectangleF(x, y, MyScene.TiledMap.TileWidth, MyScene.TiledMap.TileHeight), Color.Green, 1);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Tile no encontrado");
+                }
             }
         }
 

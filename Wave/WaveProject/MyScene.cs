@@ -25,7 +25,7 @@ namespace WaveProject
 {
     public class MyScene : Scene
     {
-        private TiledMap tiledMap;
+        public static TiledMap TiledMap;
         protected override void CreateScene()
         {
             TextBlock text = new TextBlock("axis")
@@ -46,7 +46,7 @@ namespace WaveProject
 
             Entity map = new Entity("mapa")
                 .AddComponent(new Transform2D())
-                .AddComponent(this.tiledMap = new TiledMap("Content/Maps/mapa.tmx")
+                .AddComponent(TiledMap = new TiledMap("Content/Maps/mapa.tmx")
                 {
                     MinLayerDrawOrder = -10,
                     MaxLayerDrawOrder = -0
@@ -213,7 +213,6 @@ namespace WaveProject
             EntityManager.Add(flocko2);
             EntityManager.Add(flocko3);
             EntityManager.Add(flocko4);
-
             #endregion
 
             #region Follow the lider
@@ -295,9 +294,9 @@ namespace WaveProject
             base.Start();
 
             // Carga todas las capas de objeto del mapa como Muros
-            if (tiledMap.ObjectLayers.Count > 0)
+            if (TiledMap.ObjectLayers.Count > 0)
             {
-                foreach (var layer in tiledMap.ObjectLayers)
+                foreach (var layer in TiledMap.ObjectLayers)
                 {
                     foreach (var wall in layer.Value.Objects)
                     {

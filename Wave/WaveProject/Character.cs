@@ -51,21 +51,21 @@ namespace WaveProject
             Transform.Rotation = Kinematic.Orientation;
 
             #region Escenario circular
-            if (Transform.Position.X > WaveServices.Platform.ScreenWidth)
+            if (Transform.Position.X > MyScene.TiledMap.Width())
             {
-                Transform.Position -= new Vector2(WaveServices.Platform.ScreenWidth, 0);
+                Transform.Position -= new Vector2(MyScene.TiledMap.Width(), 0);
             }
             else if (Transform.Position.X < 0)
             {
-                Transform.Position += new Vector2(WaveServices.Platform.ScreenWidth, 0);
+                Transform.Position += new Vector2(MyScene.TiledMap.Width(), 0);
             }
-            if (Transform.Position.Y > WaveServices.Platform.ScreenHeight)
+            if (Transform.Position.Y > MyScene.TiledMap.Height())
             {
-                Transform.Position -= new Vector2(0, WaveServices.Platform.ScreenHeight);
+                Transform.Position -= new Vector2(0, MyScene.TiledMap.Height());
             }
             else if (Transform.Position.Y < 0)
             {
-                Transform.Position += new Vector2(0, WaveServices.Platform.ScreenHeight);
+                Transform.Position += new Vector2(0, MyScene.TiledMap.Height());
             }
             #endregion
         }

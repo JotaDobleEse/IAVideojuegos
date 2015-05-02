@@ -9,6 +9,7 @@ using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
+using WaveEngine.TiledMap;
 
 namespace WaveProject
 {
@@ -130,20 +131,19 @@ namespace WaveProject
         {
             Vector3 mousePosition = new Vector3(mouse.Position(), 0f);
             Vector3 project = camera.Unproject(ref mousePosition);
-            return project.ToVector2();
+            Vector2 projectMouse = project.ToVector2();
+            WaveServices.ViewportManager.RecoverPosition(ref projectMouse);
+            return projectMouse;
         }
 
-        /// <summary>
-        /// Devuelve la posición del ratón relativa a la resolución de la pantalla especificada.
-        /// </summary>
-        /// <param name="mouse"></param>
-        /// <param name="viewport">Visor en base al que se va a rectificar la posición del ratón.</param>
-        /// <returns></returns>
-        public static Vector2 PositionRelative(this MouseState mouse, ViewportManager viewport)
+        public static int Width(this TiledMap map)
         {
-            Vector2 mousePosition = mouse.Position();
-            viewport.RecoverPosition(ref mousePosition);
-            return mousePosition;
+            return map.Width * map.TileWidth;
+        }
+
+        public static int Height(this TiledMap map)
+        {
+            return map.Height * map.TileHeight;
         }
     }
 }

@@ -9,7 +9,7 @@ using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
-using WaveProject.SteeringVelocidad;
+using WaveProject.Steerings;
 
 namespace WaveProject
 {
@@ -21,15 +21,14 @@ namespace WaveProject
         public Sprite Texture { get; private set; }
         public Kinematic Kinematic { get; private set; }
         public Color Color { get; set; }
-        public SteeringBehavior Steering { get; set; }
+        public Steering Steering { get; set; }
 
-        public Character(SteeringBehavior steering, Color color, float MaxSpeed = 50, string target = null)
+        public Character(Steering steering, Kinematic kinematic, Color color, float maxVelocity = 50)
         {
-            Kinematic = new Kinematic(true);
-            Kinematic.MaxVelocity = 50;
+            Kinematic = kinematic;
+            Kinematic.MaxVelocity = maxVelocity;
             Steering = steering;
             Color = color;
-            //Target = target;
         }
 
         protected override void Initialize()
@@ -37,32 +36,38 @@ namespace WaveProject
             base.Initialize();
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
-
-            //Kinematic target = null;
-            //if (string.IsNullOrEmpty(Steering.Target))
-            //{
-            //    target = new Kinematic();
-            //    Vector2 targetMouse = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
-            //    target.Position = targetMouse;
-            //}
-            //else
-            //{
-            //    try
-            //    {
-            //        target = EntityManager.Find(Target).FindComponent<SteeringBehavior>().Kinematic;
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Console.WriteLine(e.Message);
-            //    }
-            //}
-            //Steering.Target = target;
-            
         }
 
         protected override void Update(TimeSpan gameTime)
         {
+            Kinematic.Position = Transform.Position;
+            Kinematic.Orientation = Transform.Rotation;
 
+            float dt = (float)gameTime.TotalSeconds;
+            SteeringOutput output = Steering.GetSteering();
+            Kinematic.Update(output, dt);
+
+            Transform.Position = Kinematic.Position;
+            Transform.Rotation = Kinematic.Orientation;
+
+            #region Escenario circular
+            if (Transform.Position.X > WaveServices.Platform.ScreenWidth)
+            {
+                Transform.Position -= new Vector2(WaveServices.Platform.ScreenWidth, 0);
+            }
+            else if (Transform.Position.X < 0)
+            {
+                Transform.Position += new Vector2(WaveServices.Platform.ScreenWidth, 0);
+            }
+            if (Transform.Position.Y > WaveServices.Platform.ScreenHeight)
+            {
+                Transform.Position -= new Vector2(0, WaveServices.Platform.ScreenHeight);
+            }
+            else if (Transform.Position.Y < 0)
+            {
+                Transform.Position += new Vector2(0, WaveServices.Platform.ScreenHeight);
+            }
+            #endregion
         }
     }
 }

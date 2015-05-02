@@ -13,13 +13,11 @@ namespace WaveProject.Steerings
 {
     class CollisionAvoidance : Steering
     {
-        public EntityManager EntityManager { get; set; }
         public float MinBoxLength { get; set; }
         public float MaxAcceleration { get; set; }
 
-        public CollisionAvoidance(EntityManager entityManager)
+        public CollisionAvoidance()
         {
-            EntityManager = entityManager;
             MinBoxLength = 80;
             MaxAcceleration = 20f;
         }

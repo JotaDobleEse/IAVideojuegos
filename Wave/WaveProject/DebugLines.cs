@@ -53,9 +53,9 @@ namespace WaveProject
                     lb.DrawLineVM(kinematic.Position, kinematic.Position + kinematic.LastOutput.Linear, Color.Orange, 1f);
                 }
 
-                if (Steerings.Any(a => a is Arrive))
+                foreach (var steering in Steerings.Where(a => a is Arrive))
                 {
-                    Arrive arrive = (Arrive)Steerings.First(a => a is Arrive);
+                    Arrive arrive = (Arrive)steering;
                     lb.DrawCircleVM(arrive.Target.Position, arrive.SlowRadius, Color.White, 1f);
                     lb.DrawCircleVM(arrive.Target.Position, arrive.TargetRadius, Color.Orange, 1f);
                 }

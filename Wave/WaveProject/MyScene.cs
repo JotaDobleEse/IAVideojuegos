@@ -190,34 +190,70 @@ namespace WaveProject
             #endregion
 
             #region Follow the lider
+            //Kinematic leader = new Kinematic(true) { Position = new Vector2(400, 500), MaxVelocity = 30f };
+
+            //Entity leaderEntity = new Entity("leader")
+            //     .AddComponent(new Transform2D() { Position = leader.Position })
+            //     .AddComponent(new Sprite("Content/Textures/malabestia"))
+            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //     .AddComponent(new SteeringBehavior(new Wander(), Color.White, kinematic: leader));
+
+            //Kinematic character = new Kinematic(true) { Position = new Vector2(100, 100), MaxVelocity = 50f };
+            //Entity follower1 = new Entity("follower1")
+            //     .AddComponent(new Transform2D() { Position = character.Position })
+            //     .AddComponent(new Sprite("Content/Textures/soldado"))
+            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //     .AddComponent(new BlendedBehavior(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
+
+            //character = new Kinematic(true) { Position = new Vector2(200, 200), MaxVelocity = 50f };
+            //Entity follower2 = new Entity("follower2")
+            //     .AddComponent(new Transform2D() { Position = character.Position })
+            //     .AddComponent(new Sprite("Content/Textures/soldado"))
+            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //     .AddComponent(new BlendedBehavior(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
+
+            //character = new Kinematic(true) { Position = new Vector2(600, 300), MaxVelocity = 50f };
+            //Entity follower3 = new Entity("follower3")
+            //     .AddComponent(new Transform2D() { Position = character.Position })
+            //     .AddComponent(new Sprite("Content/Textures/soldado"))
+            //     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+            //     .AddComponent(new BlendedBehavior(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
+
+            //EntityManager.Add(leaderEntity);
+            //EntityManager.Add(follower1);
+            //EntityManager.Add(follower2);
+            //EntityManager.Add(follower3);
+            #endregion
+
+            #region Priority
             Kinematic leader = new Kinematic(true) { Position = new Vector2(400, 500), MaxVelocity = 30f };
 
             Entity leaderEntity = new Entity("leader")
                  .AddComponent(new Transform2D() { Position = leader.Position })
                  .AddComponent(new Sprite("Content/Textures/malabestia"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new SteeringBehavior(new Wander(), Color.White, kinematic: leader));
+                 .AddComponent(new Character(new Wander() { Character = leader }, leader, Color.White));
 
             Kinematic character = new Kinematic(true) { Position = new Vector2(100, 100), MaxVelocity = 50f };
             Entity follower1 = new Entity("follower1")
                  .AddComponent(new Transform2D() { Position = character.Position })
                  .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new BlendedSteering(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
+                 .AddComponent(new Character(new PrioritySteering(SteeringsFactory.PriorityGroup(character, leader)), character, Color.White));
 
             character = new Kinematic(true) { Position = new Vector2(200, 200), MaxVelocity = 50f };
             Entity follower2 = new Entity("follower2")
                  .AddComponent(new Transform2D() { Position = character.Position })
                  .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new BlendedSteering(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
+                 .AddComponent(new Character(new PrioritySteering(SteeringsFactory.PriorityGroup(character, leader)), character, Color.White));
 
             character = new Kinematic(true) { Position = new Vector2(600, 300), MaxVelocity = 50f };
             Entity follower3 = new Entity("follower3")
                  .AddComponent(new Transform2D() { Position = character.Position })
                  .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new BlendedSteering(SteeringsFactory.LeaderFollowing(character, leader), character, Color.White));
+                 .AddComponent(new Character(new PrioritySteering(SteeringsFactory.PriorityGroup(character, leader)), character, Color.White));
 
             EntityManager.Add(leaderEntity);
             EntityManager.Add(follower1);

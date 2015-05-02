@@ -52,7 +52,7 @@ namespace WaveProject
                 });
             EntityManager.Add(map);
 
-            #region SteeringsBehaviors
+            #region Basic Steerings
             //Kinematic wallAvoidanceChar = new Kinematic(true) { Position = new Vector2(20, 220) };
             //Kinematic collisionAvoidanceChar = new Kinematic(true) { Position = new Vector2((WaveServices.Platform.ScreenWidth / 2f) - 100, (WaveServices.Platform.ScreenHeight / 2f) - 200) };
             //Kinematic wanderChar = new Kinematic(true);
@@ -160,6 +160,21 @@ namespace WaveProject
             //    .AddComponent(new Sprite("Content/Textures/malabestia"))
             //    .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
             //    .AddComponent(new Character(new PredictivePathFollowing() { Character = pathFollowingChar, Path = path }, pathFollowingChar, Color.Ivory));
+
+            //EntityManager.Add(wallAvoidance);
+            //EntityManager.Add(collisionAvoidance);
+            //EntityManager.Add(wander);
+            //EntityManager.Add(align);
+            ////EntityManager.Add(face);
+            //EntityManager.Add(lookWhereYouGoing);
+            ////EntityManager.Add(antiAlign);
+            //EntityManager.Add(arrive);
+            ////EntityManager.Add(flee);
+            ////EntityManager.Add(mouserFollower);
+            //EntityManager.Add(persue);
+            ////EntityManager.Add(velocityMatching);
+            //EntityManager.Add(lookMouse);
+            //EntityManager.Add(pathFollowing);
             #endregion
 
             #region Flocking
@@ -272,30 +287,15 @@ namespace WaveProject
             //EntityManager.Add(follower3);
             #endregion
 
-            //EntityManager.Add(wallAvoidance);
-            //EntityManager.Add(collisionAvoidance);
-            //EntityManager.Add(wander);
-            //EntityManager.Add(align);
-            ////EntityManager.Add(face);
-            //EntityManager.Add(lookWhereYouGoing);
-            ////EntityManager.Add(antiAlign);
-            //EntityManager.Add(arrive);
-            ////EntityManager.Add(flee);
-            ////EntityManager.Add(mouserFollower);
-            //EntityManager.Add(persue);
-            ////EntityManager.Add(velocityMatching);
-            //EntityManager.Add(lookMouse);
-            //EntityManager.Add(pathFollowing);
         }
 
         protected override void Start()
         {
             base.Start();
-            // This method is called after the CreateScene and Initialize methods and before the first Update.
 
+            // Carga todas las capas de objeto del mapa como Muros
             if (tiledMap.ObjectLayers.Count > 0)
             {
-                //TiledMapObjectLayer layer = tiledMap.ObjectLayers.First(f => f.Value.ObjectLayerName == "Agua").Value;
                 foreach (var layer in tiledMap.ObjectLayers)
                 {
                     foreach (var wall in layer.Value.Objects)

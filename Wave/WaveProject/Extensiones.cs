@@ -119,12 +119,26 @@ namespace WaveProject
         {
             return new Vector2(mouse.X, mouse.Y);
         }
+
+        /// <summary>
+        /// Devuelve la posición del ratón relativa a la cámara especificada.
+        /// </summary>
+        /// <param name="mouse"></param>
+        /// <param name="camera">Cámara en base a la que se va a rectificar la posición del ratón.</param>
+        /// <returns></returns>
         public static Vector2 PositionRelative(this MouseState mouse, Camera camera)
         {
             Vector3 mousePosition = new Vector3(mouse.Position(), 0f);
             Vector3 project = camera.Unproject(ref mousePosition);
             return project.ToVector2();
         }
+
+        /// <summary>
+        /// Devuelve la posición del ratón relativa a la resolución de la pantalla especificada.
+        /// </summary>
+        /// <param name="mouse"></param>
+        /// <param name="viewport">Visor en base al que se va a rectificar la posición del ratón.</param>
+        /// <returns></returns>
         public static Vector2 PositionRelative(this MouseState mouse, ViewportManager viewport)
         {
             Vector2 mousePosition = mouse.Position();

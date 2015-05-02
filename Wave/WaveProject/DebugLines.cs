@@ -40,12 +40,6 @@ namespace WaveProject
             if (DEBUG)
             {
                 LineBatch2D lb = RenderManager.LineBatch2D;
-                Vector2 mousePosition2d = new Vector2(WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y);
-                Vector3 mousePosition = new Vector3(mousePosition2d, 0f);
-                Vector3 project = Camera.Unproject(ref mousePosition);
-                Vector2 mousePositionProject =  project.ToVector2();
-                
-                //Console.WriteLine("Original: {0} -- Proyectada: {1}", mousePosition, mousePositionProject);
 
                 foreach (var kinematic in Kinematic.Kinematics)
                 {

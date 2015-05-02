@@ -16,7 +16,9 @@ namespace WaveProject
         public static List<Kinematic> Kinematics { get { return kinematics; } }
 
         private static Kinematic mouse = new Kinematic();
-
+        /// <summary>
+        /// Kinematic con la posición del ratón, solo se actualiza si algún kinematic pasa por el método Update.
+        /// </summary>
         public static Kinematic MouseKinematic { get { return mouse; } }
 
         public Vector2 Position { get; set; }

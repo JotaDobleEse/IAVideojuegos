@@ -50,6 +50,7 @@
     <Compile Include="CameraController.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Extensiones.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="Kinematic.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Path.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Steerings\Group\Alignment.cs" />
     <Compile Include="Steerings\Group\Cohesion.cs" />
     <Compile Include="Steerings\Pathfinding\LRTA.cs" />
+    <Compile Include="Steerings\Pathfinding\Node.cs" />
     <Compile Include="Steerings\Velocity\Arrive.cs" />
     <Compile Include="DebugLines.cs" />
     <Compile Include="Steerings\Velocity\Flee.cs" />

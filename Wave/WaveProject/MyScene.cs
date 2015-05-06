@@ -28,8 +28,14 @@ namespace WaveProject
     {
         public static TiledMap TiledMap;
         DebugLines MyDebug;
+        GameController Controller;
         protected override void CreateScene()
         {
+            // Controlador principal
+            var gameController = new Entity("Controller")
+                .AddComponent(Controller = new GameController(Kinematic.Mouse));
+            EntityManager.Add(gameController);
+
             TextBlock text = new TextBlock("axis")
             {
                 Margin = new Thickness((WaveServices.Platform.ScreenWidth / 2f) - 100, 10, 0, 0),
@@ -306,11 +312,8 @@ namespace WaveProject
                     }
                 }
             }
-            Vector2 end = new Vector2(848, 496);
-            LRTA lrta = new LRTA(end);
-            Vector2[] path = lrta.Execute(new Vector2(300, 300), end);
-            MyDebug.Path = path.Select(s => new Vector2(s.X * TiledMap.TileWidth + TiledMap.TileWidth / 2, s.Y * TiledMap.TileHeight + TiledMap.TileHeight / 2)).ToArray();
 
+            Controller.Debug = MyDebug;
         }
     }
 }

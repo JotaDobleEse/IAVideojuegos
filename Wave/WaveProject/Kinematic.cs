@@ -15,11 +15,11 @@ namespace WaveProject
         private static List<Kinematic> kinematics = new List<Kinematic>();
         public static List<Kinematic> Kinematics { get { return kinematics; } }
 
-        private static Kinematic mouse = new Kinematic();
+        private static Kinematic mouse = new MouseKinematic();
         /// <summary>
         /// Kinematic con la posición del ratón, solo se actualiza si algún kinematic pasa por el método Update.
         /// </summary>
-        public static Kinematic MouseKinematic { get { return mouse; } }
+        public static Kinematic Mouse { get { return mouse; } }
 
         public Vector2 Position { get; set; }
         public float Orientation { get; set; }
@@ -48,7 +48,7 @@ namespace WaveProject
             kinematics.Remove(this);
         }
 
-        public void Update(SteeringOutput steering, float deltaTime)
+        public virtual void Update(float deltaTime, SteeringOutput steering)
         {
             LastOutput = steering;
             Velocity += steering.Linear * deltaTime;
@@ -65,14 +65,25 @@ namespace WaveProject
 
             Position += Velocity * deltaTime;
             Orientation += Rotation * deltaTime;
+        }
 
-            #region Update mouse
-            if (CameraController.CurrentCamera != null)
-            {
-                Vector2 targetMouse = WaveServices.Input.MouseState.PositionRelative(CameraController.CurrentCamera);
-                mouse.Position = targetMouse;
-            }
-            #endregion
+        public Vector2 ConvertToLocalPos(Vector2 position)
+        {
+            var localPos = position - Position;
+            localPos -= Rotation.RotationToVector();
+            return localPos;
+        }
+
+        public Vector2 ConvertToGlobalPos(Vector2 position)
+        {
+            var localPos = position + Position;
+            localPos += RotationAsVector();
+            return localPos;
+        }
+
+        public Vector2 RotationAsVector()
+        {
+            return new Vector2((float)Math.Sin(Rotation), -(float)Math.Cos(Rotation));
         }
 
         public Kinematic Clone()
@@ -83,6 +94,27 @@ namespace WaveProject
         public Kinematic Clone(bool stable)
         {
             return new Kinematic(stable) { Position = this.Position, LastOutput = this.LastOutput, MaxVelocity = this.MaxVelocity, Orientation = this.Orientation, Rotation = this.Rotation, Velocity = this.Velocity };
+        }
+
+        private class MouseKinematic : Kinematic
+        {
+            public MouseKinematic()
+            {
+                if (CameraController.CurrentCamera != null)
+                {
+                    Vector2 targetMouse = WaveServices.Input.MouseState.PositionRelative(CameraController.CurrentCamera);
+                    Position = targetMouse;
+                }
+            }
+
+            public override void Update(float deltaTime, SteeringOutput steering)
+            {
+                if (CameraController.CurrentCamera != null)
+                {
+                    Vector2 targetMouse = WaveServices.Input.MouseState.PositionRelative(CameraController.CurrentCamera);
+                    Position = targetMouse;
+                }
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ namespace WaveProject
 
             float dt = (float)gameTime.TotalSeconds;
             SteeringOutput output = Steering.GetSteering();
-            Kinematic.Update(output, dt);
+            Kinematic.Update(dt, output);
 
             Transform.Position = Kinematic.Position;
             Transform.Rotation = Kinematic.Orientation;

@@ -79,23 +79,21 @@ namespace WaveProject
 
                 for (int i = 0; i < Path.Length-1; i++)
                 {
+                    if (i == 0)
+                        lb.DrawCircleVM(Path[i], 2, Color.Red, 1);
                     lb.DrawLineVM(Path[i], Path[i + 1], Color.White, 1f);
                 }
 
                 CollisionDetector.Detector.Draw(lb);
 
-                try
+                Kinematic mouse = Kinematic.Mouse;
+                if (MyScene.TiledMap.PositionInMap(mouse.Position))
                 {
-                    Kinematic mouse = Kinematic.MouseKinematic;
                     LayerTile tile = MyScene.TiledMap.TileLayers.First().Value.GetLayerTileByWorldPosition(mouse.Position);
                     int x, y;
                     x = tile.X * MyScene.TiledMap.TileWidth;
                     y = tile.Y * MyScene.TiledMap.TileHeight;
                     lb.DrawRectangleVM(new RectangleF(x, y, MyScene.TiledMap.TileWidth, MyScene.TiledMap.TileHeight), Color.Green, 1);
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Tile no encontrado");
                 }
             }
         }

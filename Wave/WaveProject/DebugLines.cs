@@ -21,12 +21,13 @@ namespace WaveProject
         private IEnumerable<Steering> Steerings;
         private Camera2D Camera;
         public TextBlock Text { get; private set; }
-        public Vector2[] Path { get; set; }
+        public List<Vector2> Path { get; set; }
+        public PlayableCharacter SelecterCharacter { get; set; }
 
         private bool DEBUG = true;
         public DebugLines(TextBlock text)
         {
-            Path = new Vector2[0];
+            Path = new List<Vector2>();
             Text = text;
             Text.Foreground = Color.White;
         }
@@ -77,7 +78,7 @@ namespace WaveProject
                     lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1);
                 }
 
-                for (int i = 0; i < Path.Length-1; i++)
+                for (int i = 0; i < Path.Count-1; i++)
                 {
                     if (i == 0)
                         lb.DrawCircleVM(Path[i], 2, Color.Red, 1);
@@ -94,6 +95,11 @@ namespace WaveProject
                     x = tile.X * MyScene.TiledMap.TileWidth;
                     y = tile.Y * MyScene.TiledMap.TileHeight;
                     lb.DrawRectangleVM(new RectangleF(x, y, MyScene.TiledMap.TileWidth, MyScene.TiledMap.TileHeight), Color.Green, 1);
+                }
+
+                if (SelecterCharacter != null)
+                {
+                    SelecterCharacter.Draw(lb);
                 }
             }
         }

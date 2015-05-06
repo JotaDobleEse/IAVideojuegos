@@ -54,6 +54,7 @@
     <Compile Include="Kinematic.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Path.cs" />
+    <Compile Include="PlayableCharacter.cs" />
     <Compile Include="Steerings\Combined\BlendedSteering.cs" />
     <Compile Include="Steerings\Combined\PrioritySteering.cs" />
     <Compile Include="Steerings\Combined\SteeringsFactory.cs" />

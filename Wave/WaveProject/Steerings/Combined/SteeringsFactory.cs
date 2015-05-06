@@ -69,6 +69,18 @@ namespace WaveProject.Steerings.Combined
             return behaviors;
         }
 
+        public static BehaviorAndWeight[] PathFollowing(Kinematic character)
+        {
+            BehaviorAndWeight[] behaviors = new BehaviorAndWeight[4];
+
+            behaviors[0] = new BehaviorAndWeight() { Behavior = new CollisionAvoidance() { Character = character }, Weight = 0.4f };
+            behaviors[1] = new BehaviorAndWeight() { Behavior = new WallAvoidance() { Character = character, LookAhead = 30f }, Weight = 0.4f };
+            behaviors[2] = new BehaviorAndWeight() { Behavior = new CollisionAvoidanceRT() { Character = character }, Weight = 0.7f };
+            behaviors[3] = new BehaviorAndWeight() { Behavior = new PredictivePathFollowing() { Character = character }, Weight = 1.0f };
+
+            return behaviors;
+        }
+
         public static BlendedSteering[] PriorityGroup(Kinematic character, Kinematic target)
         {
             BlendedSteering[] steerings = new BlendedSteering[3];

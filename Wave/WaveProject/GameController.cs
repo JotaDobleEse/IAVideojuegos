@@ -19,11 +19,13 @@ namespace WaveProject
         Vector2 LastMousePosition;
         Vector2 LastStartTile;
         Vector2 LastEndTile;
+
         Button LRTAManhattan;
         Button LRTAChevychev;
         Button LRTAEuclidean;
         DistanceAlgorith CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
         public DebugLines Debug { get; set; }
+        private PlayableCharacter SelectedCharacter;
 
         public GameController(Kinematic mouse)
         {
@@ -79,17 +81,31 @@ namespace WaveProject
         protected override void Update(TimeSpan gameTime)
         {
             Mouse.Update((float)gameTime.TotalMilliseconds, new Steerings.SteeringOutput());
-            if (!LastMousePosition.Equal(Mouse.Position) && MyScene.TiledMap.PositionInMap(Mouse.Position))
+            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed)
             {
-                LRTA lrta = new LRTA(new Vector2(300, 300), Mouse.Position, algorithm: CurrentLrtaAlgorithm);
-                if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
+                IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
+                    .Where(w => w.FindComponent<PlayableCharacter>() != null)
+                    .Select(s => s.FindComponent<PlayableCharacter>());
+
+                SelectedCharacter = characters
+                    .FirstOrDefault(f => Mouse.Position.IsContent(f.Kinematic.Position, new Vector2(f.Texture.Texture.Width, f.Texture.Texture.Height)));
+            }
+            if (SelectedCharacter != null)
+            {
+                if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && MyScene.TiledMap.PositionInMap(Mouse.Position))
                 {
-                    LastStartTile = lrta.StartPos;
-                    LastEndTile = lrta.EndPos;
-                    Vector2[] path = lrta.Execute();
-                    Debug.Path = path;
+                    LRTA lrta = new LRTA(SelectedCharacter.Kinematic.Position, Mouse.Position, algorithm: CurrentLrtaAlgorithm);
+                    if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
+                    {
+                        LastStartTile = lrta.StartPos;
+                        LastEndTile = lrta.EndPos;
+                        List<Vector2> path = lrta.Execute();
+                        SelectedCharacter.SetPath(path);
+                        Debug.Path = path;
+                    }
                 }
             }
+            Debug.SelecterCharacter = SelectedCharacter;
             LastMousePosition = Mouse.Position;
         }
     }

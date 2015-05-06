@@ -79,13 +79,13 @@ namespace WaveProject.Steerings.Pathfinding
         /// Obtiene el camino aplicando el algoritmo LRTA.
         /// </summary>
         /// <returns></returns>
-        public Vector2[] Execute()
+        public List<Vector2> Execute()
         {
             var layer = MyScene.TiledMap.TileLayers.First().Value;
             var startTile = layer.GetLayerTileByWorldPosition(StartPos).Position();
             var endTile = layer.GetLayerTileByWorldPosition(EndPos).Position();
             if (!Map[endTile.X(), endTile.Y()].Passable)
-                return new Vector2[0];
+                return new List<Vector2>();
             return Execute(Map[startTile.X(), startTile.Y()], Map[endTile.X(), endTile.Y()]);
         }
 
@@ -95,7 +95,7 @@ namespace WaveProject.Steerings.Pathfinding
         /// <param name="start">Nodo origen.</param>
         /// <param name="end">Nodo destino.</param>
         /// <returns></returns>
-        private Vector2[] Execute(Node start, Node end)
+        private List<Vector2> Execute(Node start, Node end)
         {
             // Matriz de guardado de camino
             Vector2[,] pathMatrix = new Vector2[Map.GetLength(0), Map.GetLength(1)];
@@ -152,10 +152,10 @@ namespace WaveProject.Steerings.Pathfinding
             path.AddFirst(start.Position);
 
             // Recortamos esquinas del camino con el algoritmo String Pulling,
-            // después convetimos las coordenadas de Tile a coordenadas de Mundo y delvovemos como array.
+            // después convetimos las coordenadas de Tile a coordenadas de Mundo.
             return StringPulling(path.ToList())
                 .Select(s => new Vector2(ScaleWidth * s.X + ScaleWidth / 2, ScaleHeight * s.Y + ScaleHeight / 2))
-                .ToArray();
+                .ToList();
         }
 
         #region Funciones auxiliares del LRTA*

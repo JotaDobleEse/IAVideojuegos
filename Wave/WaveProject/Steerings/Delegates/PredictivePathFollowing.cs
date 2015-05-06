@@ -25,6 +25,8 @@ namespace WaveProject.Steerings.Delegated
 
         public override SteeringOutput GetSteering()
         {
+            if (Path.Length == 0)
+                return new SteeringOutput();
             Vector2 futurePos = Character.Position + Character.Velocity * PredictTime;
 
             CurrentParam = Path.GetParam(futurePos, CurrentParam);

@@ -166,6 +166,21 @@ namespace WaveProject
         {
             return (v1.X.Equal(v2.X, maxRelativeError) && v1.Y.Equal(v2.Y, maxRelativeError));
         }
+
+        /// <summary>
+        /// Comprueba si un punto esta contenido en un rectangulo
+        /// </summary>
+        /// <param name="center"></param>
+        /// <param name="widthHeight"></param>
+        /// <returns></returns>
+        public static bool IsContent(this Vector2 v1, Vector2 center, Vector2 widthHeight)
+        {
+            bool ejeX = false;
+            bool ejeY = false;
+            ejeX = (center.X - widthHeight.X / 2 < v1.X && v1.X < center.X + widthHeight.X / 2);
+            ejeY = (center.Y - widthHeight.Y / 2 < v1.Y && v1.Y < center.Y + widthHeight.Y / 2);
+            return ejeX && ejeY;
+        }
         #endregion
 
         #region float

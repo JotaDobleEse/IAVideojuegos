@@ -7,7 +7,7 @@ using WaveEngine.Common.Math;
 
 namespace WaveProject.Steerings.Pathfinding
 {
-    public class Node
+    public class Node : ICloneable
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -81,6 +81,17 @@ namespace WaveProject.Steerings.Pathfinding
         public override string ToString()
         {
             return "(" + X + "," + Y + "), H=" + H + ", Temp=" + Temp;
+        }
+
+        public object Clone()
+        {
+            Node n = new Node();
+            n.X = X;
+            n.Y = Y;
+            n.H = float.PositiveInfinity;
+            n.Passable = Passable;
+            n.Terrain = Terrain;
+            return n;
         }
     }
 }

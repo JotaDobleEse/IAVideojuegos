@@ -50,7 +50,7 @@ namespace WaveProject
         {
             if (DEBUG)
             {
-                Text.Text = string.Format("Coords. ({0},{1}), dt: {2}", WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y, (float)gameTime.TotalSeconds);
+                Text.Text = string.Format("Coords. ({0},{1}), FPS: {2}", WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y, 1 / (float)gameTime.TotalSeconds);
                 LineBatch2D lb = RenderManager.LineBatch2D;
 
                 foreach (var kinematic in Kinematic.Kinematics)

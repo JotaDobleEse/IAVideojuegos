@@ -20,6 +20,8 @@ using WaveProject.Steerings.Combined;
 using WaveProject.Steerings.Group;
 using WaveProject.Steerings.Delegated;
 using WaveProject.Steerings.Pathfinding;
+using System.Globalization;
+using System.Threading;
 #endregion
 
 namespace WaveProject
@@ -27,6 +29,7 @@ namespace WaveProject
     public class MyScene : Scene
     {
         public static TiledMap TiledMap;
+        public static Node[,] NodeMap;
         DebugLines MyDebug;
         GameController Controller;
         protected override void CreateScene()
@@ -35,6 +38,14 @@ namespace WaveProject
             var gameController = new Entity("Controller")
                 .AddComponent(Controller = new GameController(Kinematic.Mouse));
             EntityManager.Add(gameController);
+
+            Button LRTAManhattan = new Button("LRTA_Manhattan") { BackgroundColor = Color.Gray, Text = "LRTA Manhattan", Width = 150, IsBorder = false };
+            Button LRTAChevychev = new Button("LRTA_Chevychev") { BackgroundColor = Color.Gray, Text = "LRTA Chevychev", Width = 150, IsBorder = false };
+            Button LRTAEuclidean = new Button("LRTA_Euclidean") { BackgroundColor = Color.Gray, Text = "LRTA Euclidean", Width = 150, IsBorder = false };
+
+            EntityManager.Add(LRTAManhattan);
+            EntityManager.Add(LRTAChevychev);
+            EntityManager.Add(LRTAEuclidean);
 
             TextBlock text = new TextBlock("axis")
             {
@@ -301,12 +312,53 @@ namespace WaveProject
         {
             base.Start();
 
+            #region Node Map Base
+            // Esto es para que los valores true o false recuperados de los tiles,
+            // se formateen siempre como True o False.
+            CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
+            TextInfo textInfo = cultureInfo.TextInfo;
+
+            NodeMap = new Node[MyScene.TiledMap.Width, MyScene.TiledMap.Height];
+
+            // Obtenemos la posición del tile objetivo para generar los valores heuristicos iniciales
+            var layer = MyScene.TiledMap.TileLayers.First().Value;
+
+            // Obtenemos todos los tiles del mapa
+            var tiles = layer.Tiles;
+            foreach (var tile in tiles)
+            {
+                try
+                {
+                    // Generamos un nodo con las posiciones del Tile
+                    Node node = new Node();
+                    node.X = tile.X;
+                    node.Y = tile.Y;
+                    node.Temp = 0f;
+
+                    // Obtenemos el tipo de terreno
+                    string terrain = tile.TilesetTile.Properties["terrain"];
+                    node.Terrain = (Terrain)System.Enum.Parse(typeof(Terrain), terrain, true);
+
+                    // Obtenemos el valor que indica si un Tile es pasable
+                    string passable = tile.TilesetTile.Properties["passable"];
+                    node.Passable = bool.Parse(textInfo.ToTitleCase(passable));
+
+                    // Guardamos el nodo en la matriz
+                    NodeMap[node.X, node.Y] = node;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Property or tile could not found.");
+                }
+            }
+            #endregion
+
             // Carga todas las capas de objeto del mapa como Muros
             if (TiledMap.ObjectLayers.Count > 0)
             {
-                foreach (var layer in TiledMap.ObjectLayers)
+                foreach (var layer1 in TiledMap.ObjectLayers)
                 {
-                    foreach (var wall in layer.Value.Objects)
+                    foreach (var wall in layer1.Value.Objects)
                     {
                         new Wall(wall.X, wall.Y, wall.Width, wall.Height, true);
                     }

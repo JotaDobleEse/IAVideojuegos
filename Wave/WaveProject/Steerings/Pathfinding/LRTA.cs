@@ -13,6 +13,10 @@ namespace WaveProject.Steerings.Pathfinding
     {
         WATER, PATH, PLAIN, FOREST, DESERT
     }
+    public enum DistanceAlgorith
+    {
+        MANHATTAN, CHEVYCHEV, EUCLIDEAN
+    }
 
     public class LRTA
     {
@@ -25,12 +29,12 @@ namespace WaveProject.Steerings.Pathfinding
         private Vector2 StartPos;
         private Vector2 EndPos;
 
-        public LRTA(Vector2 startPos, Vector2 endPos, CharacterType characterType = CharacterType.NONE)
+        public LRTA(Vector2 startPos, Vector2 endPos, CharacterType characterType = CharacterType.NONE, DistanceAlgorith algorithm = DistanceAlgorith.EUCLIDEAN)
         {
             CharacterType = characterType;
             StartPos = startPos;
             EndPos = endPos;
-
+            
             // Esto es para que los valores true o false recuperados de los tiles,
             // se formateen siempre como True o False.
             CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
@@ -40,43 +44,33 @@ namespace WaveProject.Steerings.Pathfinding
             Map = new Node[MyScene.TiledMap.Width, MyScene.TiledMap.Height];
             ScaleWidth = MyScene.TiledMap.TileWidth;
             ScaleHeight = MyScene.TiledMap.TileHeight;
-
+            
             // Obtenemos la posición del tile objetivo para generar los valores heuristicos iniciales
             var layer = MyScene.TiledMap.TileLayers.First().Value;
             Vector2 endTile = layer.GetLayerTileByWorldPosition(endPos).Position();
 
-            // Obtenemos todos los tiles del mapa
-            var tiles = layer.Tiles;
-            foreach (var tile in tiles)
+            for (int i = 0; i < MyScene.NodeMap.GetLength(0); i++)
             {
-                try
+                for (int j = 0; j < MyScene.NodeMap.GetLength(1); j++)
                 {
-                    // Generamos un nodo con las posiciones del Tile
-                    Node node = new Node();
-                    node.X = tile.X;
-                    node.Y = tile.Y;
-                    node.Temp = 0f;
-
-                    // Obtenemos el tipo de terreno
-                    string terrain = tile.TilesetTile.Properties["terrain"];
-                    node.Terrain = (Terrain)System.Enum.Parse(typeof(Terrain), terrain, true);
-
-                    // Obtenemos el valor que indica si un Tile es pasable
-                    string passable = tile.TilesetTile.Properties["passable"];
-                    node.Passable = bool.Parse(textInfo.ToTitleCase(passable));
-
-                    // Si el nodo es pasable calculamos su valor heurístico, sino le asignamos Infinito
+                    Node node = MyScene.NodeMap[i, j].Clone() as Node;
                     if (node.Passable)
-                        node.H = Manhatan(tile.Position(), endTile);
-                    else
-                        node.H = float.PositiveInfinity;
-
-                    // Guardamos el nodo en la matriz
-                    Map[node.X, node.Y] = node;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Property or tile could not found.");
+                        switch(algorithm)
+                        { 
+                            case DistanceAlgorith.MANHATTAN:
+                                node.H = Manhatan(node.Position, endTile);
+                                break;
+                            case DistanceAlgorith.CHEVYCHEV:
+                                node.H = Chebychev(node.Position, endTile);
+                                break;
+                            case DistanceAlgorith.EUCLIDEAN:
+                                node.H = Euclidean(node.Position, endTile);
+                                break;
+                            default:
+                                node.H = Euclidean(node.Position, endTile);
+                                break;
+                        }
+                    Map[i, j] = node;
                 }
             }
         }
@@ -105,6 +99,7 @@ namespace WaveProject.Steerings.Pathfinding
         {
             // Matriz de guardado de camino
             Vector2[,] pathMatrix = new Vector2[Map.GetLength(0), Map.GetLength(1)];
+            pathMatrix[start.X, start.Y] = start.Position;
             var current = start.Position;
 
             // Mientrasque no estamos en el nodo final
@@ -145,7 +140,7 @@ namespace WaveProject.Steerings.Pathfinding
 
             // Reconstruimos el camino de atrás hacia adelante.
             LinkedList<Vector2> path = new LinkedList<Vector2>();
-            while (current != Vector2.Zero) // Mientras no estemos en la posición inicial
+            while (current != start.Position) // Mientras no estemos en la posición inicial
             {
                 // Añadimos la posición actual
                 path.AddFirst(current);
@@ -233,7 +228,7 @@ namespace WaveProject.Steerings.Pathfinding
         /// <returns></returns>
         private Vector2 BestCandidate(Node origin)
         {
-            Vector2 current = origin.Position;
+            Vector2 current = Vector2.Zero;// = origin.Position;
             // Comprobamos, basándonos en el heurístico local de los vecinos del nodo,
             // cual de sus vecinos es el que tiene ese valor y nos quedamos con el.
             if (origin.Hneightbors.Equal(origin.Hup))

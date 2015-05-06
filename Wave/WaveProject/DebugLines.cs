@@ -21,10 +21,12 @@ namespace WaveProject
         private IEnumerable<Steering> Steerings;
         private Camera2D Camera;
         public TextBlock Text { get; private set; }
+        public Vector2[] Path { get; set; }
 
         private bool DEBUG = true;
         public DebugLines(TextBlock text)
         {
+            Path = new Vector2[0];
             Text = text;
             Text.Foreground = Color.White;
         }
@@ -73,10 +75,11 @@ namespace WaveProject
                 foreach (var wall in Wall.Walls)
                 {
                     lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1);
-                    //lb.DrawCircleVM(wall.P1, 10, Color.Green, 1);
-                    //lb.DrawCircleVM(wall.P2, 10, Color.Blue, 1);
-                    //lb.DrawCircleVM(wall.P3, 10, Color.Red, 1);
-                    //lb.DrawCircleVM(wall.P4, 10, Color.Pink, 1);
+                }
+
+                for (int i = 0; i < Path.Length-1; i++)
+                {
+                    lb.DrawLineVM(Path[i], Path[i + 1], Color.White, 1f);
                 }
 
                 CollisionDetector.Detector.Draw(lb);

@@ -13,6 +13,10 @@ using WaveProject.Steerings;
 
 namespace WaveProject
 {
+    public enum CharacterType
+    {
+        BEAST, LIZARD, SOLDIER, JUGGERNAUT, NONE
+    }
     public class Character : Behavior
     {
         [RequiredComponent]

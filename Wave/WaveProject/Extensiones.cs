@@ -120,6 +120,14 @@ namespace WaveProject
         {
             return new Vector2(mouse.X, mouse.Y);
         }
+        public static Vector2 Position(this LayerTile tile)
+        {
+            return new Vector2(tile.X, tile.Y);
+        }
+        public static bool IsNull(this Vector2 v)
+        {
+            return (float.IsNaN(v.X) || float.IsNaN(v.Y)) || (v == Vector2.Zero);
+        }
 
         /// <summary>
         /// Devuelve la posición del ratón relativa a la cámara especificada.

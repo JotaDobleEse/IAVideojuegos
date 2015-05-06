@@ -19,6 +19,7 @@ using WaveEngine.Framework.Physics2D;
 using WaveProject.Steerings.Combined;
 using WaveProject.Steerings.Group;
 using WaveProject.Steerings.Delegated;
+using WaveProject.Steerings.Pathfinding;
 #endregion
 
 namespace WaveProject
@@ -26,6 +27,7 @@ namespace WaveProject
     public class MyScene : Scene
     {
         public static TiledMap TiledMap;
+        DebugLines MyDebug;
         protected override void CreateScene()
         {
             TextBlock text = new TextBlock("axis")
@@ -39,7 +41,7 @@ namespace WaveProject
 
             // Create a 2D camera
             var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.Black }
-                .Entity.AddComponent(new DebugLines(text))
+                .Entity.AddComponent(MyDebug = new DebugLines(text))
                 .AddComponent(new CameraController()); // Transparent background need this clearFlags.
             EntityManager.Add(camera2D);
             EntityManager.Add(text);
@@ -304,6 +306,10 @@ namespace WaveProject
                     }
                 }
             }
+            Vector2 end = new Vector2(848, 496);
+            LRTA lrta = new LRTA(end);
+            Vector2[] path = lrta.Execute(new Vector2(300, 300), end);
+            MyDebug.Path = path.Select(s => new Vector2(s.X * TiledMap.TileWidth + TiledMap.TileWidth / 2, s.Y * TiledMap.TileHeight + TiledMap.TileHeight / 2)).ToArray();
 
         }
     }

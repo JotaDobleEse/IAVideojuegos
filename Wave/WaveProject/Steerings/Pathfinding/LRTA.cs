@@ -26,8 +26,8 @@ namespace WaveProject.Steerings.Pathfinding
         private List<Vector2> SharpLocalSearchPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1), new Vector2(-1, 2), new Vector2(1, -2), new Vector2(-2, -1), new Vector2(2, -1), new Vector2(-2, 1), new Vector2(2, 1), new Vector2(-1, 2), new Vector2(1, 2) };
         private int ScaleWidth;
         private int ScaleHeight;
-        private Vector2 StartPos;
-        private Vector2 EndPos;
+        public Vector2 StartPos { get; private set; }
+        public Vector2 EndPos { get; private set; }
 
         public LRTA(Vector2 startPos, Vector2 endPos, CharacterType characterType = CharacterType.NONE, DistanceAlgorith algorithm = DistanceAlgorith.EUCLIDEAN)
         {

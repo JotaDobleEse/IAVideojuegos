@@ -154,6 +154,18 @@ namespace WaveProject
         {
             return (float.IsNaN(v.X) || float.IsNaN(v.Y)) || (v == Vector2.Zero);
         }
+
+        /// <summary>
+        /// Comprueba si dos vectores son iguales.
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="maxRelativeError"></param>
+        /// <returns></returns>
+        public static bool Equal(this Vector2 v1, Vector2 v2, float maxRelativeError = 0.01f)
+        {
+            return (v1.X.Equal(v2.X, maxRelativeError) && v1.Y.Equal(v2.Y, maxRelativeError));
+        }
         #endregion
 
         #region float

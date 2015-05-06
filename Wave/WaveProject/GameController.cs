@@ -16,6 +16,9 @@ namespace WaveProject
     public class GameController : Behavior
     {
         Kinematic Mouse;
+        Vector2 LastMousePosition;
+        Vector2 LastStartTile;
+        Vector2 LastEndTile;
         Button LRTAManhattan;
         Button LRTAChevychev;
         Button LRTAEuclidean;
@@ -25,6 +28,8 @@ namespace WaveProject
         public GameController(Kinematic mouse)
         {
             Mouse = mouse;
+            LastMousePosition = mouse.Position;
+            LastStartTile = LastEndTile = Vector2.Zero;
         }
 
         protected override void Initialize()
@@ -74,12 +79,18 @@ namespace WaveProject
         protected override void Update(TimeSpan gameTime)
         {
             Mouse.Update((float)gameTime.TotalMilliseconds, new Steerings.SteeringOutput());
-            if (MyScene.TiledMap.PositionInMap(Mouse.Position))
+            if (!LastMousePosition.Equal(Mouse.Position) && MyScene.TiledMap.PositionInMap(Mouse.Position))
             {
                 LRTA lrta = new LRTA(new Vector2(300, 300), Mouse.Position, algorithm: CurrentLrtaAlgorithm);
-                Vector2[] path = lrta.Execute();
-                Debug.Path = path;
+                if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
+                {
+                    LastStartTile = lrta.StartPos;
+                    LastEndTile = lrta.EndPos;
+                    Vector2[] path = lrta.Execute();
+                    Debug.Path = path;
+                }
             }
+            LastMousePosition = Mouse.Position;
         }
     }
 }

@@ -26,6 +26,7 @@ namespace WaveProject.Steerings.Delegated
 
         public void SetPath(List<Vector2> path)
         {
+            CurrentParam = 0;
             Path.SetPath(path);
             CurrentParam = Path.GetParam(Character.Position, CurrentParam);
         }

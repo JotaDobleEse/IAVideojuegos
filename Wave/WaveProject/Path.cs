@@ -32,6 +32,8 @@ namespace WaveProject
 
         public Vector2 GetPosition(int param)
         {
+            if (Length == 0)
+                return Vector2.Zero;
             if (param >= Length)
                 return Points[Length - 1];
             return Points[param];

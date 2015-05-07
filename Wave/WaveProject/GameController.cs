@@ -102,15 +102,20 @@ namespace WaveProject
                     .Where(w => w.FindComponent<PlayableCharacter>() != null)
                     .Select(s => s.FindComponent<PlayableCharacter>());
 
+                SelectedCharacters = characters.Where(w => w.Kinematic.Position.IsContent(MouseRectangle.Center, new Vector2(MouseRectangle.Width.Abs(), MouseRectangle.Height.Abs()))).ToList();
+            }
+
+            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release && MousePressed)
+            {
+                IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
+                    .Where(w => w.FindComponent<PlayableCharacter>() != null)
+                    .Select(s => s.FindComponent<PlayableCharacter>());
+
                 var selectedCharacter = characters
                     .FirstOrDefault(f => Mouse.Position.IsContent(f.Kinematic.Position, new Vector2(f.Texture.Texture.Width, f.Texture.Texture.Height)));
 
                 if (selectedCharacter != null)
                     SelectedCharacters.Add(selectedCharacter);
-            }
-
-            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release)
-            {
                 MousePressed = false;
                 MouseRectangle = RectangleF.Empty;
             }

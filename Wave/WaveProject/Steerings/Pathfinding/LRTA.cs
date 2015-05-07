@@ -82,11 +82,18 @@ namespace WaveProject.Steerings.Pathfinding
         public List<Vector2> Execute()
         {
             var layer = MyScene.TiledMap.TileLayers.First().Value;
-            var startTile = layer.GetLayerTileByWorldPosition(StartPos).Position();
-            var endTile = layer.GetLayerTileByWorldPosition(EndPos).Position();
-            if (!Map[endTile.X(), endTile.Y()].Passable)
+            try
+            {
+                var startTile = layer.GetLayerTileByWorldPosition(StartPos).Position();
+                var endTile = layer.GetLayerTileByWorldPosition(EndPos).Position();
+                if (!Map[startTile.X(), startTile.Y()].Passable || !Map[endTile.X(), endTile.Y()].Passable)
+                    return new List<Vector2>();
+                return Execute(Map[startTile.X(), startTile.Y()], Map[endTile.X(), endTile.Y()]);
+            }
+            catch(Exception)
+            {
                 return new List<Vector2>();
-            return Execute(Map[startTile.X(), startTile.Y()], Map[endTile.X(), endTile.Y()]);
+            }
         }
 
         /// <summary>

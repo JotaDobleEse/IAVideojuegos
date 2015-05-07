@@ -56,7 +56,7 @@ namespace WaveProject
 
         public void Draw(LineBatch2D lb)
         {
-            lb.DrawCircleVM(Kinematic.Position, 50, Color.Red, 1f);
+            lb.DrawCircleVM(Kinematic.Position, 35, Color.Red, 1f);
         }
 
         protected override void Update(TimeSpan gameTime)

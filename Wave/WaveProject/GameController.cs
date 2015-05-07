@@ -27,6 +27,7 @@ namespace WaveProject
         public DebugLines Debug { get; set; }
         private List<PlayableCharacter> SelectedCharacters;
         private bool MousePressed = false;
+        private bool ControlSelect = false;
         private RectangleF MouseRectangle;
 
         public GameController(Kinematic mouse)
@@ -86,23 +87,9 @@ namespace WaveProject
         {
             Mouse.Update((float)gameTime.TotalMilliseconds, new Steerings.SteeringOutput());
 
-            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed && !MousePressed)
+            if ((WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release && ControlSelect))
             {
-                MousePressed = true;
-                SelectedCharacters.Clear();
-                MouseRectangle.X = Mouse.Position.X;
-                MouseRectangle.Y = Mouse.Position.Y;
-            }
-
-            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed && MousePressed)
-            {
-                MouseRectangle.Width = Mouse.Position.X - MouseRectangle.X;
-                MouseRectangle.Height = Mouse.Position.Y - MouseRectangle.Y;
-                IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
-                    .Where(w => w.FindComponent<PlayableCharacter>() != null)
-                    .Select(s => s.FindComponent<PlayableCharacter>());
-
-                SelectedCharacters = characters.Where(w => w.Kinematic.Position.IsContent(MouseRectangle.Center, new Vector2(MouseRectangle.Width.Abs(), MouseRectangle.Height.Abs()))).ToList();
+                ControlSelect = false;
             }
 
             if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release && MousePressed)
@@ -118,6 +105,46 @@ namespace WaveProject
                     SelectedCharacters.Add(selectedCharacter);
                 MousePressed = false;
                 MouseRectangle = RectangleF.Empty;
+            }
+
+            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed && !MousePressed)
+            {
+                if (WaveServices.Input.KeyboardState.LeftControl == WaveEngine.Common.Input.ButtonState.Pressed && !ControlSelect)
+                {
+                    ControlSelect = true;
+                    IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
+                    .Where(w => w.FindComponent<PlayableCharacter>() != null)
+                    .Select(s => s.FindComponent<PlayableCharacter>());
+
+                    var selectedCharacter = characters
+                        .FirstOrDefault(f => Mouse.Position.IsContent(f.Kinematic.Position, new Vector2(f.Texture.Texture.Width, f.Texture.Texture.Height)));
+
+                    if (selectedCharacter != null)
+                    {
+                        if (SelectedCharacters.Contains(selectedCharacter))
+                            SelectedCharacters.Remove(selectedCharacter);
+                        else 
+                            SelectedCharacters.Add(selectedCharacter);
+                    }
+                }
+                else if (!ControlSelect)
+                {
+                    MousePressed = true;
+                    SelectedCharacters.Clear();
+                    MouseRectangle.X = Mouse.Position.X;
+                    MouseRectangle.Y = Mouse.Position.Y;
+                }
+            }
+
+            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed && MousePressed)
+            {
+                MouseRectangle.Width = Mouse.Position.X - MouseRectangle.X;
+                MouseRectangle.Height = Mouse.Position.Y - MouseRectangle.Y;
+                IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
+                    .Where(w => w.FindComponent<PlayableCharacter>() != null)
+                    .Select(s => s.FindComponent<PlayableCharacter>());
+
+                SelectedCharacters = characters.Where(w => w.Kinematic.Position.IsContent(MouseRectangle.Center, new Vector2(MouseRectangle.Width.Abs(), MouseRectangle.Height.Abs()))).ToList();
             }
 
             if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && MyScene.TiledMap.PositionInMap(Mouse.Position))

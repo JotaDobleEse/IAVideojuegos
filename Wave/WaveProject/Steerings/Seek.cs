@@ -10,7 +10,7 @@ namespace WaveProject.Steerings
 {
     public class Seek : Steering
     {
-        protected float MaxAceleration = 0.1f;
+        protected float MaxAceleration = 0.5f;
 
         public override SteeringOutput GetSteering()
         {

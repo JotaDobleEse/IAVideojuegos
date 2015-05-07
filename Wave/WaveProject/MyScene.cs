@@ -312,15 +312,15 @@ namespace WaveProject
                  .AddComponent(new Transform2D() { Position = kinematic.Position })
                  .AddComponent(new Sprite("Content/Textures/malabestia"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, Color.White, 30));
+                 .AddComponent(new PlayableCharacter(kinematic, Color.White, 50));
 
             kinematic = new Kinematic(true) { Position = new Vector2(500, 500) };
 
             Entity char2 = new Entity("char2")
                  .AddComponent(new Transform2D() { Position = kinematic.Position })
-                 .AddComponent(new Sprite("Content/Textures/malabestia"))
+                 .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, Color.White, 20));
+                 .AddComponent(new PlayableCharacter(kinematic, Color.White, 30));
 
             EntityManager.Add(char1);
             EntityManager.Add(char2);

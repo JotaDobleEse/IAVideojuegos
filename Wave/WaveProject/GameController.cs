@@ -25,13 +25,17 @@ namespace WaveProject
         Button LRTAEuclidean;
         DistanceAlgorith CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
         public DebugLines Debug { get; set; }
-        private PlayableCharacter SelectedCharacter;
+        private List<PlayableCharacter> SelectedCharacters;
+        private bool MousePressed = false;
+        private RectangleF MouseRectangle;
 
         public GameController(Kinematic mouse)
         {
             Mouse = mouse;
             LastMousePosition = mouse.Position;
             LastStartTile = LastEndTile = Vector2.Zero;
+            MouseRectangle = RectangleF.Empty;
+            SelectedCharacters = new List<PlayableCharacter>();
         }
 
         protected override void Initialize()
@@ -81,32 +85,65 @@ namespace WaveProject
         protected override void Update(TimeSpan gameTime)
         {
             Mouse.Update((float)gameTime.TotalMilliseconds, new Steerings.SteeringOutput());
-            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed)
+
+            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed && !MousePressed)
             {
+                MousePressed = true;
+                SelectedCharacters.Clear();
+                MouseRectangle.X = Mouse.Position.X;
+                MouseRectangle.Y = Mouse.Position.Y;
+            }
+
+            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed && MousePressed)
+            {
+                MouseRectangle.Width = Mouse.Position.X - MouseRectangle.X;
+                MouseRectangle.Height = Mouse.Position.Y - MouseRectangle.Y;
                 IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
                     .Where(w => w.FindComponent<PlayableCharacter>() != null)
                     .Select(s => s.FindComponent<PlayableCharacter>());
 
-                SelectedCharacter = characters
+                var selectedCharacter = characters
                     .FirstOrDefault(f => Mouse.Position.IsContent(f.Kinematic.Position, new Vector2(f.Texture.Texture.Width, f.Texture.Texture.Height)));
+
+                if (selectedCharacter != null)
+                    SelectedCharacters.Add(selectedCharacter);
             }
-            if (SelectedCharacter != null)
+
+            if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release)
             {
-                if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && MyScene.TiledMap.PositionInMap(Mouse.Position))
+                MousePressed = false;
+                MouseRectangle = RectangleF.Empty;
+            }
+
+            if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && MyScene.TiledMap.PositionInMap(Mouse.Position))
+            {
+                foreach (var selectedCharacter in SelectedCharacters)
                 {
-                    LRTA lrta = new LRTA(SelectedCharacter.Kinematic.Position, Mouse.Position, algorithm: CurrentLrtaAlgorithm);
+                    LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, algorithm: CurrentLrtaAlgorithm);
                     if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
                     {
                         LastStartTile = lrta.StartPos;
                         LastEndTile = lrta.EndPos;
                         List<Vector2> path = lrta.Execute();
-                        SelectedCharacter.SetPath(path);
+                        selectedCharacter.SetPath(path);
                         Debug.Path = path;
                     }
                 }
             }
-            Debug.SelecterCharacter = SelectedCharacter;
             LastMousePosition = Mouse.Position;
+            Debug.Controller = this;
+        }
+
+        public void Draw(LineBatch2D lb)
+        {
+            lb.DrawRectangleVM(MouseRectangle, Color.Green, 1f);
+
+            foreach (var selectedCharacter in SelectedCharacters)
+            {
+                selectedCharacter.Draw(lb);
+            }
         }
     }
+
+   
 }

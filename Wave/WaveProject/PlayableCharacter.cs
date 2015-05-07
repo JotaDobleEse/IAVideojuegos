@@ -27,7 +27,8 @@ namespace WaveProject
         {
             Kinematic = kinematic;
             Kinematic.MaxVelocity = maxVelocity;
-            Steering = new PredictivePathFollowing() { Character = kinematic };
+            //Steering = new FollowPath() { Character = Kinematic };
+            Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.6f };
             Color = color;
         }
 
@@ -36,7 +37,13 @@ namespace WaveProject
             if (Steering is PredictivePathFollowing)
             {
                 PredictivePathFollowing steering = Steering as PredictivePathFollowing;
+                steering.SetPath(path);
+            }
+            if (Steering is FollowPath)
+            {
+                FollowPath steering = Steering as FollowPath;
                 steering.Path.SetPath(path);
+                steering.CurrentParam = 0;
             }
         }
 

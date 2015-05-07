@@ -10,7 +10,6 @@ namespace WaveProject.Steerings.Delegated
 {
     class Face : Steering
     {
-
         public override SteeringOutput GetSteering()
         {
             var direction = Target.Position - Character.Position;

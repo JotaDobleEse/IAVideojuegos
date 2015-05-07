@@ -59,12 +59,12 @@ namespace WaveProject
 
         public void DrawPath(LineBatch2D batch)
         {
-            /*for (int i = 1; i <= Points.Count; i++)
+            for (int i = 1; i < Points.Count; i++)
             {
                 Vector2 pos1 = Points[i - 1];
                 Vector2 pos2 = Points[i % Points.Count];
                 batch.DrawLineVM(pos1, pos2, Color.IndianRed, 1f);
-            }*/
+            }
         }
     }
 }

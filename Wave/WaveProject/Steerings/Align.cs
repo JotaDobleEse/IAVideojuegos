@@ -18,8 +18,8 @@ namespace WaveProject.Steerings
         
         public Align()
         {
-            MaxRotation = (float)Math.PI;
-            MaxAngularAcceleration = 0.2f;
+            MaxRotation = (float)Math.PI / 4;
+            MaxAngularAcceleration = (float)Math.PI;// 0.2f;
             TimeToTarget = 0.1f;
             TargetRadius = (float)(15 * Math.PI / 180);
             SlowRadius = (float)(75 * Math.PI / 180);

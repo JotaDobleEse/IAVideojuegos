@@ -22,7 +22,7 @@ namespace WaveProject
         private Camera2D Camera;
         public TextBlock Text { get; private set; }
         public List<Vector2> Path { get; set; }
-        public PlayableCharacter SelecterCharacter { get; set; }
+        public GameController Controller { get; set; }
 
         private bool DEBUG = true;
         public DebugLines(TextBlock text)
@@ -60,32 +60,24 @@ namespace WaveProject
                     lb.DrawLineVM(kinematic.Position, kinematic.Position + kinematic.LastOutput.Linear, Color.Orange, 1f);
                 }
 
-                foreach (var steering in Steerings.Where(a => a is Arrive))
+                foreach (var steering in Steerings)
                 {
-                    Arrive arrive = (Arrive)steering;
-                    lb.DrawCircleVM(arrive.Target.Position, arrive.SlowRadius, Color.White, 1f);
-                    lb.DrawCircleVM(arrive.Target.Position, arrive.TargetRadius, Color.Orange, 1f);
+                    steering.Draw(lb);
                 }
 
-                foreach (var steering in Steerings.Where(w => w is PredictivePathFollowing))
-                {
-                    var pathFollowing = steering as PredictivePathFollowing;
-                    pathFollowing.Path.DrawPath(lb);
-                }
+                Controller.Draw(lb);
 
-                foreach (var wall in Wall.Walls)
+                /*foreach (var wall in Wall.Walls)
                 {
-                    lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1);
-                }
+                    lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1f);
+                }*/
 
-                for (int i = 0; i < Path.Count-1; i++)
+                /*for (int i = 0; i < Path.Count-1; i++)
                 {
                     if (i == 0)
-                        lb.DrawCircleVM(Path[i], 2, Color.Red, 1);
-                    lb.DrawLineVM(Path[i], Path[i + 1], Color.White, 1f);
-                }
-
-                CollisionDetector.Detector.Draw(lb);
+                        lb.DrawCircleVM(Path[i], 2, Color.Red, 0.5f);
+                    lb.DrawLineVM(Path[i], Path[i + 1], Color.White, 0.5f);
+                }*/
 
                 Kinematic mouse = Kinematic.Mouse;
                 if (MyScene.TiledMap.PositionInMap(mouse.Position))
@@ -95,11 +87,6 @@ namespace WaveProject
                     x = tile.X * MyScene.TiledMap.TileWidth;
                     y = tile.Y * MyScene.TiledMap.TileHeight;
                     lb.DrawRectangleVM(new RectangleF(x, y, MyScene.TiledMap.TileWidth, MyScene.TiledMap.TileHeight), Color.Green, 1);
-                }
-
-                if (SelecterCharacter != null)
-                {
-                    SelecterCharacter.Draw(lb);
                 }
             }
         }

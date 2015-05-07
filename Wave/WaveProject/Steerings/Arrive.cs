@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 
@@ -16,8 +17,9 @@ namespace WaveProject.Steerings
         public float TimeToTarget { get; set; }
 
         public float MaxAceleration { get; set; }
-        
-        public Arrive()
+
+        public Arrive(bool stable = false)
+            : base(stable)
         {
             MaxSpeed = new Vector2(150, 150);
             TimeToTarget = 0.1f;
@@ -63,6 +65,12 @@ namespace WaveProject.Steerings
 
             steering.Angular = 0;
             return steering;
+        }
+
+        public override void Draw(LineBatch2D lb)
+        {
+            lb.DrawCircleVM(Target.Position, SlowRadius, Color.White, 1f);
+            lb.DrawCircleVM(Target.Position, TargetRadius, Color.Orange, 1f);
         }
     }
 

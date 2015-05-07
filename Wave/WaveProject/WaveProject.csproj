@@ -61,6 +61,7 @@
     <Compile Include="Steerings\Coordinated\DefensiveCirclePattern.cs" />
     <Compile Include="Steerings\Coordinated\FormationManager.cs" />
     <Compile Include="Steerings\Coordinated\Pattern.cs" />
+    <Compile Include="Steerings\Delegated\FollowPath.cs" />
     <Compile Include="Steerings\Group\Alignment.cs" />
     <Compile Include="Steerings\Group\Cohesion.cs" />
     <Compile Include="Steerings\Pathfinding\LRTA.cs" />
@@ -76,22 +77,22 @@
     <Compile Include="Steerings\AntiAlign.cs" />
     <Compile Include="Steerings\Align.cs" />
     <Compile Include="Steerings\Arrive.cs" />
-    <Compile Include="Steerings\Delegates\CollisionAvoidance.cs" />
-    <Compile Include="Steerings\Delegates\CollisionAvoidanceRT.cs" />
-    <Compile Include="Steerings\Delegates\CollisionDetector.cs" />
-    <Compile Include="Steerings\Delegates\Evade.cs" />
-    <Compile Include="Steerings\Delegates\Face.cs" />
+    <Compile Include="Steerings\Delegated\CollisionAvoidance.cs" />
+    <Compile Include="Steerings\Delegated\CollisionAvoidanceRT.cs" />
+    <Compile Include="Steerings\Delegated\CollisionDetector.cs" />
+    <Compile Include="Steerings\Delegated\Evade.cs" />
+    <Compile Include="Steerings\Delegated\Face.cs" />
     <Compile Include="Steerings\Flee.cs" />
-    <Compile Include="Steerings\Delegates\LookWhereYouGoing.cs" />
-    <Compile Include="Steerings\Delegates\Persue.cs" />
-    <Compile Include="Steerings\Delegates\PredictivePathFollowing.cs" />
+    <Compile Include="Steerings\Delegated\LookWhereYouGoing.cs" />
+    <Compile Include="Steerings\Delegated\Persue.cs" />
+    <Compile Include="Steerings\Delegated\PredictivePathFollowing.cs" />
     <Compile Include="Steerings\Seek.cs" />
     <Compile Include="Steerings\Group\Separation.cs" />
     <Compile Include="Steerings\Steering.cs" />
     <Compile Include="Steerings\Velocity\Wander.cs" />
     <Compile Include="Steerings\VelocityMatching.cs" />
-    <Compile Include="Steerings\Delegates\WallAvoidance.cs" />
-    <Compile Include="Steerings\Delegates\Wander.cs" />
+    <Compile Include="Steerings\Delegated\WallAvoidance.cs" />
+    <Compile Include="Steerings\Delegated\Wander.cs" />
     <Compile Include="Wall.cs" />
   </ItemGroup>
   <ItemGroup>

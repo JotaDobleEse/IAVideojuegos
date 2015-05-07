@@ -68,9 +68,10 @@ namespace WaveProject.Steerings
 
         public Kinematic Target { get; set; }
 
-        public Steering()
+        public Steering(bool stable = false)
         {
-            steerings.Add(this);
+            if (stable)
+                steerings.Add(this);
         }
 
         ~Steering()
@@ -79,6 +80,11 @@ namespace WaveProject.Steerings
         }
 
         public abstract SteeringOutput GetSteering();
+
+        public virtual void Draw(LineBatch2D lb)
+        {
+
+        }
 
         #region SteeringContenedor
         public class LookMouseSteering : Steering

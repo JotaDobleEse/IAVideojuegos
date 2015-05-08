@@ -151,7 +151,7 @@ namespace WaveProject
             {
                 foreach (var selectedCharacter in SelectedCharacters)
                 {
-                    LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, algorithm: CurrentLrtaAlgorithm);
+                    LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter, CurrentLrtaAlgorithm);
                     if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
                     {
                         LastStartTile = lrta.StartPos;

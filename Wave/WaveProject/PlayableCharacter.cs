@@ -9,11 +9,13 @@ using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveProject.Steerings;
+using WaveProject.Steerings.Combined;
 using WaveProject.Steerings.Delegated;
+using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
-    public class PlayableCharacter : Behavior
+    public class PlayableCharacter : Behavior, IWalker
     {
         [RequiredComponent]
         public Transform2D Transform { get; private set; }
@@ -22,29 +24,28 @@ namespace WaveProject
         public Kinematic Kinematic { get; private set; }
         public Color Color { get; set; }
         public Steering Steering { get; set; }
+        public PredictivePathFollowing PathFollowing { get; set; }
+        public CharacterType Type { get; private set; }
 
-        public PlayableCharacter(Kinematic kinematic, Color color, float maxVelocity = 50)
+        public PlayableCharacter(Kinematic kinematic, CharacterType type, Color color, float maxVelocity = 50)
         {
             Kinematic = kinematic;
             Kinematic.MaxVelocity = maxVelocity;
+            Type = type;
+
+            //Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.6f };
             //Steering = new FollowPath() { Character = Kinematic };
-            Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.6f };
+
+            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            Steering = new BlendedSteering(behaviors);
+            PathFollowing = (PredictivePathFollowing)(behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is PredictivePathFollowing) ?? new PredictivePathFollowing());
+
             Color = color;
         }
 
         public void SetPath(List<Vector2> path)
         {
-            if (Steering is PredictivePathFollowing)
-            {
-                PredictivePathFollowing steering = Steering as PredictivePathFollowing;
-                steering.SetPath(path);
-            }
-            if (Steering is FollowPath)
-            {
-                FollowPath steering = Steering as FollowPath;
-                steering.Path.SetPath(path);
-                steering.CurrentParam = 0;
-            }
+            PathFollowing.SetPath(path);
         }
 
         protected override void Initialize()
@@ -89,6 +90,74 @@ namespace WaveProject
                 Transform.Position += new Vector2(0, MyScene.TiledMap.Height());
             }
             #endregion
+        }
+
+        public float Cost(Terrain terrain)
+        {
+            switch (Type)
+            {
+                case CharacterType.RANGED:
+                    return CostRanged(terrain);
+                case CharacterType.EXPLORER:
+                    return CostExplorer(terrain);
+                case CharacterType.MELEE:
+                    return CostMelee(terrain);
+            }
+            return 1;
+        }
+
+        private float CostRanged(Terrain terrain)
+        {
+            switch (terrain)
+            {
+                case Terrain.DESERT:
+                    return 1f;
+                case Terrain.FOREST:
+                    return 5f;
+                case Terrain.PATH:
+                    return 2f;
+                case Terrain.PLAIN:
+                    return 0.7f;
+                case Terrain.WATER:
+                    return float.PositiveInfinity;
+            }
+            return 1;
+        }
+
+        private float CostExplorer(Terrain terrain)
+        {
+            switch (terrain)
+            {
+                case Terrain.DESERT:
+                    return 1.5f;
+                case Terrain.FOREST:
+                    return 0.5f;
+                case Terrain.PATH:
+                    return 5f;
+                case Terrain.PLAIN:
+                    return 3f;
+                case Terrain.WATER:
+                    return float.PositiveInfinity;
+            }
+            return 1;
+        }
+
+        private float CostMelee(Terrain terrain)
+        {
+            switch (terrain)
+            {
+                case Terrain.DESERT:
+                    return 2f;
+                case Terrain.FOREST:
+                    return 5f;
+                case Terrain.PATH:
+                    return 0.6f;
+                case Terrain.PLAIN:
+                    return 1.5f;
+                case Terrain.WATER:
+                    return float.PositiveInfinity;
+            }
+            return 1;
         }
     }
 }

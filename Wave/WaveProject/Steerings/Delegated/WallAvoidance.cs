@@ -17,7 +17,7 @@ namespace WaveProject.Steerings.Delegated
         public WallAvoidance()
         {
             CollisionDetector = CollisionDetector.Detector;
-            AvoidDistance = 100;
+            AvoidDistance = 40;
             LookAhead = 100;
         }
 

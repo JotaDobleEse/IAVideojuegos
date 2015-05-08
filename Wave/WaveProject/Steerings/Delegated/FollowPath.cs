@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 using WaveProject.Steerings.Delegated;
 
@@ -28,12 +29,16 @@ namespace WaveProject.Steerings.Delegated
             CurrentParam = Path.GetParam(Character.Position, CurrentParam);
             int targetParam = CurrentParam + PathOffset;
 
+            var targetPosition = Path.GetPosition(targetParam);
+            if (targetPosition == Vector2.Zero)
+                return new SteeringOutput();
+
             if (Path.Length - 1 == CurrentParam)
             {
                 Arrive arrive = new Arrive();
                 Face face = new Face();
                 arrive.Character = face.Character = Character;
-                arrive.Target = face.Target = new Kinematic() { Position = Path.GetPosition(targetParam) };
+                arrive.Target = face.Target = new Kinematic() { Position = targetPosition };
 
                 return arrive.GetSteering() + face.GetSteering();
             }
@@ -42,7 +47,7 @@ namespace WaveProject.Steerings.Delegated
                 Seek seek = new Seek();
                 Face face = new Face();
                 seek.Character = face.Character = Character;
-                seek.Target = face.Target = new Kinematic() { Position = Path.GetPosition(targetParam) };
+                seek.Target = face.Target = new Kinematic() { Position = targetPosition };
 
                 return seek.GetSteering() + face.GetSteering();
             }

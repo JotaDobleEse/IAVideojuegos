@@ -51,6 +51,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="Extensiones.cs" />
     <Compile Include="GameController.cs" />
+    <Compile Include="IWalker.cs" />
     <Compile Include="Kinematic.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Path.cs" />

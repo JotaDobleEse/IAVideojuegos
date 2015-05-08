@@ -15,7 +15,7 @@ namespace WaveProject
 {
     public enum CharacterType
     {
-        BEAST, LIZARD, SOLDIER, JUGGERNAUT, NONE
+        RANGED, EXPLORER, MELEE
     }
     public class Character : Behavior
     {

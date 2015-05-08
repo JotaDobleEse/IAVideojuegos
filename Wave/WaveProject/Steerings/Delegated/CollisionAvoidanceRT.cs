@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
@@ -16,9 +17,9 @@ namespace WaveProject.Steerings.Delegated
         public float MaxAcceleration { get; set; }
         public float Radius { get; set; }
 
-        public CollisionAvoidanceRT()
+        public CollisionAvoidanceRT(bool stable = false) : base(stable)
         {
-            MaxAcceleration = 8f;
+            MaxAcceleration = 10f;
             Radius = 20f;
         }
 
@@ -72,8 +73,8 @@ namespace WaveProject.Steerings.Delegated
                 steering.Linear = relativeP * MaxAcceleration;
                 steering.Angular = 0;
 
+                Console.WriteLine(steering.Linear);
                 //Character.Orientation = Character.Velocity.ToRotation(); // Despues
-
                 return steering;
             }
             return new SteeringOutput();
@@ -81,8 +82,13 @@ namespace WaveProject.Steerings.Delegated
 
         private IEnumerable<Kinematic> GetCollisionCandidates(Kinematic origin)
         {
-            return Kinematic.Kinematics.Where(w => w != origin);
+            return Kinematic.Kinematics.Where(w => w != origin/* && (w.Position - origin.Position).Length() <= Radius * 4*/);
             //return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null && w.FindComponent<SteeringBehavior>().Kinematic != origin).Select(s => s.FindComponent<SteeringBehavior>().Kinematic);
+        }
+
+        public override void Draw(LineBatch2D lb)
+        {
+            //lb.DrawCircleVM(Character.Position, Radius, Color.Blue, 1f);
         }
 
     }

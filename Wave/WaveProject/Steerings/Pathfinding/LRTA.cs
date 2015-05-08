@@ -21,7 +21,7 @@ namespace WaveProject.Steerings.Pathfinding
     public class LRTA
     {
         private Node[,] Map;
-        private CharacterType CharacterType;
+        private IWalker Character;
         private List<Vector2> StandardLocalSearchPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
         private List<Vector2> SharpLocalSearchPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1), new Vector2(-1, 2), new Vector2(1, -2), new Vector2(-2, -1), new Vector2(2, -1), new Vector2(-2, 1), new Vector2(2, 1), new Vector2(-1, 2), new Vector2(1, 2) };
         private int ScaleWidth;
@@ -29,9 +29,9 @@ namespace WaveProject.Steerings.Pathfinding
         public Vector2 StartPos { get; private set; }
         public Vector2 EndPos { get; private set; }
 
-        public LRTA(Vector2 startPos, Vector2 endPos, CharacterType characterType = CharacterType.NONE, DistanceAlgorith algorithm = DistanceAlgorith.EUCLIDEAN)
+        public LRTA(Vector2 startPos, Vector2 endPos, IWalker character, DistanceAlgorith algorithm = DistanceAlgorith.EUCLIDEAN)
         {
-            CharacterType = characterType;
+            Character = character;
             StartPos = startPos;
             EndPos = endPos;
             
@@ -199,13 +199,13 @@ namespace WaveProject.Steerings.Pathfinding
                 foreach (var n in sLss)
                 {
                     // Vecino de arriba
-                    n.Hup = Map.GetValueOrDefault(n.X, n.Y - 1, float.PositiveInfinity) + Weigth(Map[n.X, n.Y - 1]);
+                    n.Hup = Map.GetValueOrDefault(n.X, n.Y - 1, float.PositiveInfinity) + Weigth(n, Map[n.X, n.Y - 1]);
                     // Vecino de abajo
-                    n.Hdown = Map.GetValueOrDefault(n.X, n.Y + 1, float.PositiveInfinity) + Weigth(Map[n.X, n.Y + 1]);
+                    n.Hdown = Map.GetValueOrDefault(n.X, n.Y + 1, float.PositiveInfinity) + Weigth(n, Map[n.X, n.Y + 1]);
                     // Vecino derecho
-                    n.Hright = Map.GetValueOrDefault(n.X + 1, n.Y, float.PositiveInfinity) + Weigth(Map[n.X + 1, n.Y]);
+                    n.Hright = Map.GetValueOrDefault(n.X + 1, n.Y, float.PositiveInfinity) + Weigth(n, Map[n.X + 1, n.Y]);
                     // Vecino izquierdo
-                    n.Hleft = Map.GetValueOrDefault(n.X - 1, n.Y, float.PositiveInfinity) + Weigth(Map[n.X - 1, n.Y]);
+                    n.Hleft = Map.GetValueOrDefault(n.X - 1, n.Y, float.PositiveInfinity) + Weigth(n, Map[n.X - 1, n.Y]);
 
                     // Mejor heurístico local de los vecinos
                     n.Hneightbors = Math.Min(n.Hup, Math.Min(n.Hdown, Math.Min(n.Hleft, n.Hright)));
@@ -262,20 +262,11 @@ namespace WaveProject.Steerings.Pathfinding
         /// </summary>
         /// <param name="target">Nodo al que nos vamos a mover.</param>
         /// <returns></returns>
-        private float Weigth(Node target)
+        private float Weigth(Node origin, Node target)
         {
-            switch (CharacterType)
-            {
-                case CharacterType.BEAST:
-                case CharacterType.JUGGERNAUT:
-                case CharacterType.LIZARD:
-                case CharacterType.SOLDIER:
-                case CharacterType.NONE:
-                    return 1;
-                default:
-                    break;
-            }
-            return 1;
+            float n1 = Character.Cost(origin.Terrain);
+            float n2 = Character.Cost(target.Terrain);
+            return (n1 + n2) / 2;
         }
         #endregion
 

@@ -147,11 +147,11 @@ namespace WaveProject
                 SelectedCharacters = characters.Where(w => w.Kinematic.Position.IsContent(MouseRectangle.Center, new Vector2(MouseRectangle.Width.Abs(), MouseRectangle.Height.Abs()))).ToList();
             }
 
-            if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && MyScene.TiledMap.PositionInMap(Mouse.Position))
+            if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && Map.CurrentMap.PositionInMap(Mouse.Position))
             {
                 foreach (var selectedCharacter in SelectedCharacters)
                 {
-                    LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter, CurrentLrtaAlgorithm);
+                    LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
                     if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
                     {
                         LastStartTile = lrta.StartPos;

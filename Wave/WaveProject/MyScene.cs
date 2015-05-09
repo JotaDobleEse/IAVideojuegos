@@ -22,14 +22,14 @@ using WaveProject.Steerings.Delegated;
 using WaveProject.Steerings.Pathfinding;
 using System.Globalization;
 using System.Threading;
+using WaveProject.CharacterTypes;
 #endregion
 
 namespace WaveProject
 {
     public class MyScene : Scene
     {
-        public static TiledMap TiledMap;
-        public static Node[,] NodeMap;
+        TiledMap TiledMap;
         DebugLines MyDebug;
         GameController Controller;
         protected override void CreateScene()
@@ -312,7 +312,7 @@ namespace WaveProject
                  .AddComponent(new Transform2D() { Position = kinematic.Position })
                  .AddComponent(new Sprite("Content/Textures/malabestia"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, CharacterType.MELEE, Color.White, 35));
+                 .AddComponent(new PlayableCharacter(kinematic, new MeleeCharacter(), Color.White, 20));
             EntityManager.Add(char1);
 
             kinematic = new Kinematic(true) { Position = new Vector2(500, 500) };
@@ -321,54 +321,24 @@ namespace WaveProject
                  .AddComponent(new Transform2D() { Position = kinematic.Position })
                  .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, CharacterType.RANGED, Color.White, 30));
+                 .AddComponent(new PlayableCharacter(kinematic, new RangedCharacter(), Color.White, 25));
             EntityManager.Add(char2);
+
+            kinematic = new Kinematic(true) { Position = new Vector2(550, 200) };
+
+            Entity char3 = new Entity("char3")
+                 .AddComponent(new Transform2D() { Position = kinematic.Position })
+                 .AddComponent(new Sprite("Content/Textures/lagarto"))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new PlayableCharacter(kinematic, new ExplorerCharacter(), Color.White, 30));
+            EntityManager.Add(char3);
         }
 
         protected override void Start()
         {
             base.Start();
 
-            #region Node Map Base
-            // Esto es para que los valores true o false recuperados de los tiles,
-            // se formateen siempre como True o False.
-            CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
-            TextInfo textInfo = cultureInfo.TextInfo;
-
-            NodeMap = new Node[MyScene.TiledMap.Width, MyScene.TiledMap.Height];
-
-            // Obtenemos la posición del tile objetivo para generar los valores heuristicos iniciales
-            var layer = MyScene.TiledMap.TileLayers.First().Value;
-
-            // Obtenemos todos los tiles del mapa
-            var tiles = layer.Tiles;
-            foreach (var tile in tiles)
-            {
-                try
-                {
-                    // Generamos un nodo con las posiciones del Tile
-                    Node node = new Node();
-                    node.X = tile.X;
-                    node.Y = tile.Y;
-                    node.Temp = 0f;
-
-                    // Obtenemos el tipo de terreno
-                    string terrain = tile.TilesetTile.Properties["terrain"];
-                    node.Terrain = (Terrain)System.Enum.Parse(typeof(Terrain), terrain, true);
-
-                    // Obtenemos el valor que indica si un Tile es pasable
-                    string passable = tile.TilesetTile.Properties["passable"];
-                    node.Passable = bool.Parse(textInfo.ToTitleCase(passable));
-
-                    // Guardamos el nodo en la matriz
-                    NodeMap[node.X, node.Y] = node;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Property or tile could not found.");
-                }
-            }
-            #endregion
+            Map.CurrentMap.Initialize(TiledMap);
 
             // Carga todas las capas de objeto del mapa como Muros
             if (TiledMap.ObjectLayers.Count > 0)

@@ -49,10 +49,14 @@
   <ItemGroup>
     <Compile Include="CameraController.cs" />
     <Compile Include="Character.cs" />
+    <Compile Include="CharacterTypes\CharacterType.cs" />
+    <Compile Include="CharacterTypes\ExplorerCharacter.cs" />
+    <Compile Include="CharacterTypes\MeleeCharacter.cs" />
+    <Compile Include="CharacterTypes\RangedCharacter.cs" />
     <Compile Include="Extensiones.cs" />
     <Compile Include="GameController.cs" />
-    <Compile Include="IWalker.cs" />
     <Compile Include="Kinematic.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="PlayableCharacter.cs" />

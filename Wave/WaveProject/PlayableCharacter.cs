@@ -8,6 +8,7 @@ using WaveEngine.Common.Math;
 using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
+using WaveProject.CharacterTypes;
 using WaveProject.Steerings;
 using WaveProject.Steerings.Combined;
 using WaveProject.Steerings.Delegated;
@@ -15,7 +16,7 @@ using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
-    public class PlayableCharacter : Behavior, IWalker
+    public class PlayableCharacter : Behavior
     {
         [RequiredComponent]
         public Transform2D Transform { get; private set; }
@@ -33,12 +34,13 @@ namespace WaveProject
             Kinematic.MaxVelocity = maxVelocity;
             Type = type;
 
-            //Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.6f };
+            Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.3f };
             //Steering = new FollowPath() { Character = Kinematic };
+            PathFollowing = (PredictivePathFollowing)Steering;
 
-            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            /*BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
             Steering = new BlendedSteering(behaviors);
-            PathFollowing = (PredictivePathFollowing)(behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is PredictivePathFollowing) ?? new PredictivePathFollowing());
+            PathFollowing = (PredictivePathFollowing)(behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is PredictivePathFollowing) ?? new PredictivePathFollowing());*/
 
             Color = color;
         }
@@ -65,99 +67,34 @@ namespace WaveProject
             Kinematic.Position = Transform.Position;
             Kinematic.Orientation = Transform.Rotation;
 
+            Terrain terrain = Map.CurrentMap.TerrainOnWorldPosition(Kinematic.Position);
+            Kinematic.MaxVelocity = Type.MaxVelocity(terrain);
+
             float dt = (float)gameTime.TotalSeconds;
             SteeringOutput output = Steering.GetSteering();
             Kinematic.Update(dt, output);
 
             Transform.Position = Kinematic.Position;
             Transform.Rotation = Kinematic.Orientation;
-
+            
             #region Escenario circular
-            if (Transform.Position.X > MyScene.TiledMap.Width())
+            if (Transform.Position.X > Map.CurrentMap.TotalWidth)
             {
-                Transform.Position -= new Vector2(MyScene.TiledMap.Width(), 0);
+                Transform.Position -= new Vector2(Map.CurrentMap.TotalWidth, 0);
             }
             else if (Transform.Position.X < 0)
             {
-                Transform.Position += new Vector2(MyScene.TiledMap.Width(), 0);
+                Transform.Position += new Vector2(Map.CurrentMap.TotalWidth, 0);
             }
-            if (Transform.Position.Y > MyScene.TiledMap.Height())
+            if (Transform.Position.Y > Map.CurrentMap.TotalHeight)
             {
-                Transform.Position -= new Vector2(0, MyScene.TiledMap.Height());
+                Transform.Position -= new Vector2(0, Map.CurrentMap.TotalHeight);
             }
             else if (Transform.Position.Y < 0)
             {
-                Transform.Position += new Vector2(0, MyScene.TiledMap.Height());
+                Transform.Position += new Vector2(0, Map.CurrentMap.TotalHeight);
             }
             #endregion
-        }
-
-        public float Cost(Terrain terrain)
-        {
-            switch (Type)
-            {
-                case CharacterType.RANGED:
-                    return CostRanged(terrain);
-                case CharacterType.EXPLORER:
-                    return CostExplorer(terrain);
-                case CharacterType.MELEE:
-                    return CostMelee(terrain);
-            }
-            return 1;
-        }
-
-        private float CostRanged(Terrain terrain)
-        {
-            switch (terrain)
-            {
-                case Terrain.DESERT:
-                    return 1f;
-                case Terrain.FOREST:
-                    return 5f;
-                case Terrain.PATH:
-                    return 2f;
-                case Terrain.PLAIN:
-                    return 0.7f;
-                case Terrain.WATER:
-                    return float.PositiveInfinity;
-            }
-            return 1;
-        }
-
-        private float CostExplorer(Terrain terrain)
-        {
-            switch (terrain)
-            {
-                case Terrain.DESERT:
-                    return 1.5f;
-                case Terrain.FOREST:
-                    return 0.5f;
-                case Terrain.PATH:
-                    return 5f;
-                case Terrain.PLAIN:
-                    return 3f;
-                case Terrain.WATER:
-                    return float.PositiveInfinity;
-            }
-            return 1;
-        }
-
-        private float CostMelee(Terrain terrain)
-        {
-            switch (terrain)
-            {
-                case Terrain.DESERT:
-                    return 2f;
-                case Terrain.FOREST:
-                    return 5f;
-                case Terrain.PATH:
-                    return 0.6f;
-                case Terrain.PLAIN:
-                    return 1.5f;
-                case Terrain.WATER:
-                    return float.PositiveInfinity;
-            }
-            return 1;
         }
     }
 }

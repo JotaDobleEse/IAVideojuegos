@@ -80,13 +80,13 @@ namespace WaveProject
                 }*/
 
                 Kinematic mouse = Kinematic.Mouse;
-                if (MyScene.TiledMap.PositionInMap(mouse.Position))
+                if (Map.CurrentMap.PositionInMap(mouse.Position))
                 {
-                    LayerTile tile = MyScene.TiledMap.TileLayers.First().Value.GetLayerTileByWorldPosition(mouse.Position);
+                    LayerTile tile = Map.CurrentMap.TileByWolrdPosition(mouse.Position);
                     int x, y;
-                    x = tile.X * MyScene.TiledMap.TileWidth;
-                    y = tile.Y * MyScene.TiledMap.TileHeight;
-                    lb.DrawRectangleVM(new RectangleF(x, y, MyScene.TiledMap.TileWidth, MyScene.TiledMap.TileHeight), Color.Green, 1);
+                    x = tile.X * Map.CurrentMap.TileWidth;
+                    y = tile.Y * Map.CurrentMap.TileHeight;
+                    lb.DrawRectangleVM(new RectangleF(x, y, Map.CurrentMap.TileWidth, Map.CurrentMap.TileHeight), Color.Green, 1);
                 }
             }
         }

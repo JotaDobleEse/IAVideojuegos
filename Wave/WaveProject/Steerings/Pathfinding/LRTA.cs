@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WaveEngine.Common.Math;
+using WaveProject.CharacterTypes;
 
 namespace WaveProject.Steerings.Pathfinding
 {
@@ -20,8 +21,8 @@ namespace WaveProject.Steerings.Pathfinding
 
     public class LRTA
     {
-        private Node[,] Map;
-        private IWalker Character;
+        private Node[,] NodeMap;
+        private CharacterType Character;
         private List<Vector2> StandardLocalSearchPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
         private List<Vector2> SharpLocalSearchPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1), new Vector2(-1, 2), new Vector2(1, -2), new Vector2(-2, -1), new Vector2(2, -1), new Vector2(-2, 1), new Vector2(2, 1), new Vector2(-1, 2), new Vector2(1, 2) };
         private int ScaleWidth;
@@ -29,7 +30,7 @@ namespace WaveProject.Steerings.Pathfinding
         public Vector2 StartPos { get; private set; }
         public Vector2 EndPos { get; private set; }
 
-        public LRTA(Vector2 startPos, Vector2 endPos, IWalker character, DistanceAlgorith algorithm = DistanceAlgorith.EUCLIDEAN)
+        public LRTA(Vector2 startPos, Vector2 endPos, CharacterType character, DistanceAlgorith algorithm = DistanceAlgorith.EUCLIDEAN)
         {
             Character = character;
             StartPos = startPos;
@@ -41,19 +42,18 @@ namespace WaveProject.Steerings.Pathfinding
             TextInfo textInfo = cultureInfo.TextInfo;
 
             // Creamos la matriz de nodos con el ancho y alto del mapa
-            Map = new Node[MyScene.TiledMap.Width, MyScene.TiledMap.Height];
-            ScaleWidth = MyScene.TiledMap.TileWidth;
-            ScaleHeight = MyScene.TiledMap.TileHeight;
+            NodeMap = new Node[Map.CurrentMap.Width, Map.CurrentMap.Height];
+            ScaleWidth = Map.CurrentMap.TileWidth;
+            ScaleHeight = Map.CurrentMap.TileHeight;
             
             // Obtenemos la posición del tile objetivo para generar los valores heuristicos iniciales
-            var layer = MyScene.TiledMap.TileLayers.First().Value;
-            Vector2 endTile = layer.GetLayerTileByWorldPosition(endPos).Position();
+            Vector2 endTile = Map.CurrentMap.TilePositionByWolrdPosition(endPos);
 
-            for (int i = 0; i < MyScene.NodeMap.GetLength(0); i++)
+            for (int i = 0; i < NodeMap.GetLength(0); i++)
             {
-                for (int j = 0; j < MyScene.NodeMap.GetLength(1); j++)
+                for (int j = 0; j < NodeMap.GetLength(1); j++)
                 {
-                    Node node = MyScene.NodeMap[i, j].Clone() as Node;
+                    Node node = Map.CurrentMap.NodeMap[i, j].Clone() as Node;
                     if (node.Passable)
                         switch(algorithm)
                         { 
@@ -70,7 +70,7 @@ namespace WaveProject.Steerings.Pathfinding
                                 node.H = Euclidean(node.Position, endTile);
                                 break;
                         }
-                    Map[i, j] = node;
+                    NodeMap[i, j] = node;
                 }
             }
         }
@@ -81,14 +81,13 @@ namespace WaveProject.Steerings.Pathfinding
         /// <returns></returns>
         public List<Vector2> Execute()
         {
-            var layer = MyScene.TiledMap.TileLayers.First().Value;
             try
             {
-                var startTile = layer.GetLayerTileByWorldPosition(StartPos).Position();
-                var endTile = layer.GetLayerTileByWorldPosition(EndPos).Position();
-                if (!Map[startTile.X(), startTile.Y()].Passable || !Map[endTile.X(), endTile.Y()].Passable)
+                var startTile = Map.CurrentMap.TilePositionByWolrdPosition(StartPos);
+                var endTile = Map.CurrentMap.TilePositionByWolrdPosition(EndPos);
+                if (!NodeMap[startTile.X(), startTile.Y()].Passable || !NodeMap[endTile.X(), endTile.Y()].Passable)
                     return new List<Vector2>();
-                return Execute(Map[startTile.X(), startTile.Y()], Map[endTile.X(), endTile.Y()]);
+                return Execute(NodeMap[startTile.X(), startTile.Y()], NodeMap[endTile.X(), endTile.Y()]);
             }
             catch(Exception)
             {
@@ -105,7 +104,7 @@ namespace WaveProject.Steerings.Pathfinding
         private List<Vector2> Execute(Node start, Node end)
         {
             // Matriz de guardado de camino
-            Vector2[,] pathMatrix = new Vector2[Map.GetLength(0), Map.GetLength(1)];
+            Vector2[,] pathMatrix = new Vector2[NodeMap.GetLength(0), NodeMap.GetLength(1)];
             pathMatrix[start.X, start.Y] = start.Position;
             var current = start.Position;
 
@@ -132,7 +131,7 @@ namespace WaveProject.Steerings.Pathfinding
                 do
                 {
                     // Obtenemos el nodo actual
-                    Node origin = Map[current.X(), current.Y()];
+                    Node origin = NodeMap[current.X(), current.Y()];
 
                     // Pasamos a la mejor posición entre los vecinos
                     current = BestCandidate(origin);
@@ -179,8 +178,8 @@ namespace WaveProject.Steerings.Pathfinding
             foreach (var posicion in positions)
             {
                 // Si existe un nodo en la posición especificada se añade a la lista
-                if (Map.Exists(node + posicion))
-                    neighbors.Add(Map[node.X() + posicion.X(), node.Y() + posicion.Y()]);
+                if (NodeMap.Exists(node + posicion))
+                    neighbors.Add(NodeMap[node.X() + posicion.X(), node.Y() + posicion.Y()]);
             }
             return neighbors;
         }
@@ -199,13 +198,13 @@ namespace WaveProject.Steerings.Pathfinding
                 foreach (var n in sLss)
                 {
                     // Vecino de arriba
-                    n.Hup = Map.GetValueOrDefault(n.X, n.Y - 1, float.PositiveInfinity) + Weigth(n, Map[n.X, n.Y - 1]);
+                    n.Hup = NodeMap.GetValueOrDefault(n.X, n.Y - 1, float.PositiveInfinity) + Weigth(n, NodeMap[n.X, n.Y - 1]);
                     // Vecino de abajo
-                    n.Hdown = Map.GetValueOrDefault(n.X, n.Y + 1, float.PositiveInfinity) + Weigth(n, Map[n.X, n.Y + 1]);
+                    n.Hdown = NodeMap.GetValueOrDefault(n.X, n.Y + 1, float.PositiveInfinity) + Weigth(n, NodeMap[n.X, n.Y + 1]);
                     // Vecino derecho
-                    n.Hright = Map.GetValueOrDefault(n.X + 1, n.Y, float.PositiveInfinity) + Weigth(n, Map[n.X + 1, n.Y]);
+                    n.Hright = NodeMap.GetValueOrDefault(n.X + 1, n.Y, float.PositiveInfinity) + Weigth(n, NodeMap[n.X + 1, n.Y]);
                     // Vecino izquierdo
-                    n.Hleft = Map.GetValueOrDefault(n.X - 1, n.Y, float.PositiveInfinity) + Weigth(n, Map[n.X - 1, n.Y]);
+                    n.Hleft = NodeMap.GetValueOrDefault(n.X - 1, n.Y, float.PositiveInfinity) + Weigth(n, NodeMap[n.X - 1, n.Y]);
 
                     // Mejor heurístico local de los vecinos
                     n.Hneightbors = Math.Min(n.Hup, Math.Min(n.Hdown, Math.Min(n.Hleft, n.Hright)));
@@ -319,7 +318,7 @@ namespace WaveProject.Steerings.Pathfinding
                 Vector2 newPos = (p1 - p2) + (p3 - p2);
                 newPos += p2;
                 if (p2 != newPos)
-                    return (Map[newPos.X(), newPos.Y()].Passable);
+                    return (NodeMap[newPos.X(), newPos.Y()].Passable);
             }
             return false;
         }

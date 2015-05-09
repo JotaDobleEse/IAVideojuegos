@@ -13,10 +13,6 @@ using WaveProject.Steerings;
 
 namespace WaveProject
 {
-    public enum CharacterType
-    {
-        RANGED, EXPLORER, MELEE
-    }
     public class Character : Behavior
     {
         [RequiredComponent]
@@ -55,21 +51,21 @@ namespace WaveProject
             Transform.Rotation = Kinematic.Orientation;
 
             #region Escenario circular
-            if (Transform.Position.X > MyScene.TiledMap.Width())
+            if (Transform.Position.X > Map.CurrentMap.TotalWidth)
             {
-                Transform.Position -= new Vector2(MyScene.TiledMap.Width(), 0);
+                Transform.Position -= new Vector2(Map.CurrentMap.TotalWidth, 0);
             }
             else if (Transform.Position.X < 0)
             {
-                Transform.Position += new Vector2(MyScene.TiledMap.Width(), 0);
+                Transform.Position += new Vector2(Map.CurrentMap.TotalWidth, 0);
             }
-            if (Transform.Position.Y > MyScene.TiledMap.Height())
+            if (Transform.Position.Y > Map.CurrentMap.TotalHeight)
             {
-                Transform.Position -= new Vector2(0, MyScene.TiledMap.Height());
+                Transform.Position -= new Vector2(0, Map.CurrentMap.TotalHeight);
             }
             else if (Transform.Position.Y < 0)
             {
-                Transform.Position += new Vector2(0, MyScene.TiledMap.Height());
+                Transform.Position += new Vector2(0, Map.CurrentMap.TotalHeight);
             }
             #endregion
         }

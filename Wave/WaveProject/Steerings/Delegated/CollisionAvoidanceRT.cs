@@ -20,11 +20,15 @@ namespace WaveProject.Steerings.Delegated
         public CollisionAvoidanceRT(bool stable = false) : base(stable)
         {
             MaxAcceleration = 8f;
-            Radius = 20f;
+            Radius = 30f;
         }
 
         public override SteeringOutput GetSteering()
         {
+            // HACK
+            if (Character.Velocity == Vector2.Zero)
+                return new SteeringOutput();
+            // END HACK
             float shortestTime = float.PositiveInfinity;
 
             Kinematic firstTarget = null;
@@ -71,6 +75,7 @@ namespace WaveProject.Steerings.Delegated
 
                 SteeringOutput steering = new SteeringOutput();
                 steering.Linear = relativeP * MaxAcceleration;
+                Console.WriteLine(steering.Linear);
                 steering.Angular = 0;
 
                 //Character.Orientation = Character.Velocity.ToRotation(); // Despues

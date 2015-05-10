@@ -35,6 +35,7 @@ namespace WaveProject.Steerings.Delegated
         {
             if (Path.Length == 0)
                 return new SteeringOutput();
+
             Vector2 futurePos = Character.Position + Character.Velocity * PredictTime;
 
             CurrentParam = Path.GetParam(futurePos, CurrentParam);
@@ -46,6 +47,15 @@ namespace WaveProject.Steerings.Delegated
             
             if (Path.Length - 1 == CurrentParam)
             {
+                // HACK
+                if ((targetPosition - Character.Position).Length() < 5f)
+                {
+                    Character.Velocity = Vector2.Zero;
+                    Character.Rotation = 0f;
+                    return new SteeringOutput();
+                }
+                // END HACK
+
                 Arrive arrive = new Arrive();
                 Face face = new Face();
                 arrive.Character = face.Character = Character;

@@ -24,6 +24,10 @@ namespace WaveProject.Steerings.Delegated
 
         public override SteeringOutput GetSteering()
         {
+            // HACK
+            if (Character.Velocity == Vector2.Zero)
+                return new SteeringOutput();
+            // END HACK
 
             float minIntersection = 0;
             Obstacle closetObstacle = null;

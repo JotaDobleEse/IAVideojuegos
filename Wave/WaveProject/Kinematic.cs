@@ -10,8 +10,13 @@ using WaveProject.Steerings;
 
 namespace WaveProject
 {
-    public class Kinematic
+    public class Kinematic : IDisposable
     {
+        private static int InstancesCounter = 0;
+        public int Id { get; private set; }
+        
+        private Kinematic ClonInList;
+
         private static List<Kinematic> kinematics = new List<Kinematic>();
         public static List<Kinematic> Kinematics { get { return kinematics; } }
 
@@ -39,13 +44,13 @@ namespace WaveProject
         {
             IsStable = stable;
             if (stable)
-                kinematics.Add(this);
+            {
+                Id = ++InstancesCounter;
+                ClonInList = this.Clone(false);
+                ClonInList.Id = Id;
+                kinematics.Add(ClonInList);
+            }
             MaxVelocity = 50;
-        }
-
-        ~Kinematic()
-        {
-            kinematics.Remove(this);
         }
 
         public virtual void Update(float deltaTime, SteeringOutput steering)
@@ -65,6 +70,16 @@ namespace WaveProject
 
             Position += Velocity * deltaTime;
             Orientation += Rotation * deltaTime;
+
+            if (ClonInList != null)
+            {
+                ClonInList.LastOutput = LastOutput;
+                ClonInList.MaxVelocity = MaxVelocity;
+                ClonInList.Orientation = Orientation;
+                ClonInList.Position = Position;
+                ClonInList.Rotation = Rotation;
+                ClonInList.Velocity = Velocity;
+            }
         }
 
         public Vector2 ConvertToLocalPos(Vector2 position)
@@ -115,6 +130,12 @@ namespace WaveProject
                     Position = targetMouse;
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            if (ClonInList != null)
+                kinematics.Remove(ClonInList);
         }
     }
 }

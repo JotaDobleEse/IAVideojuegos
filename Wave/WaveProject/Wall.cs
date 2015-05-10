@@ -7,8 +7,11 @@ using WaveEngine.Common.Math;
 
 namespace WaveProject
 {
-    public class Wall
+    public class Wall : IDisposable
     {
+        private static int InstancesCounter = 0;
+        public int Id { get; private set; }
+
         private static List<Wall> walls = new List<Wall>();
         public static List<Wall> Walls { get { return walls; } }
 
@@ -39,7 +42,12 @@ namespace WaveProject
         public Wall(RectangleF rectangle, bool stable = false)
         {
             if (stable)
-                walls.Add(this);
+            {
+                Id = ++InstancesCounter;
+                Wall Clon = this.Clone();
+                Clon.Id = Id;
+                walls.Add(Clon);
+            }
             WallRectangle = rectangle;
             WallCollider = new BoundingBox(new Vector3(WallRectangle.X, WallRectangle.Y, 0f), new Vector3(WallRectangle.X + WallRectangle.Width, WallRectangle.Y + WallRectangle.Height, 0f));
         }
@@ -60,9 +68,17 @@ namespace WaveProject
             WallCollider = new BoundingBox(new Vector3(x, y, 0f), new Vector3(x + width, y + height, 0f));
         }
 
-        ~Wall()
+        public Wall Clone()
         {
-            walls.Remove(this);
+            Wall w = new Wall(WallRectangle);
+            return w;
+        }
+
+        public void Dispose()
+        {
+            Wall w = walls.FirstOrDefault(f => f.Id == Id);
+            if (w != null)
+                walls.Remove(w);
         }
     }
 }

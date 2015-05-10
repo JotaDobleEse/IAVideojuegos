@@ -10,6 +10,12 @@ namespace WaveProject.DecisionManager
     {
         public Action[] Actions { get; set; }
 
+        public ActionCombination(Action[] actions)
+            : base(0, 0, false, null)
+        {
+            Actions = actions;
+        }
+
         public override bool CanInterrupt()
         {
             return Actions.Any(a => a.CanInterrupt());

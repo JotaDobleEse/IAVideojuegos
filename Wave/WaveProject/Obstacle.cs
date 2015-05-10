@@ -7,22 +7,40 @@ using WaveEngine.Common.Math;
 
 namespace WaveProject
 {
-    public class Obstacle
+    public class Obstacle : IDisposable
     {
+        private static int InstancesCounter = 0;
+        public int Id { get; private set; }
+
         private static List<Obstacle> obstacles = new List<Obstacle>();
         public static List<Obstacle> Obstacles { get { return obstacles; } }
-        public Vector2 Position { get; set; }
-        public float BRadius { get; set; }
+        public Vector2 Position { get; private set; }
+        public float BRadius { get; private set; }
 
-        public Obstacle(bool stable = false)
+        public Obstacle(Vector2 position, float bRadius, bool stable = false)
         {
+            Position = position;
+            BRadius = bRadius;
             if (stable)
-                obstacles.Add(this);
+            {
+                Id = ++InstancesCounter;
+                Obstacle Clon = this.Clone();
+                Clon.Id = Id;
+                obstacles.Add(Clon);
+            }
         }
 
-        ~Obstacle()
+        public Obstacle Clone()
         {
-            obstacles.Remove(this);
+            Obstacle o = new Obstacle(Position, BRadius);
+            return o;
+        }
+
+        public void Dispose()
+        {
+            Obstacle o = obstacles.FirstOrDefault(f => f.Id == Id);
+            if (o != null)
+                obstacles.Remove(o);
         }
     }
 }

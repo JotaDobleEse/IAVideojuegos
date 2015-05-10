@@ -15,6 +15,7 @@ namespace WaveProject
     {
         private static Map instance = new Map();
         public static Map CurrentMap { get { return instance; } }
+
         public TiledMap TiledMap { get; private set; }
         public Node[,] NodeMap { get; private set; }
 

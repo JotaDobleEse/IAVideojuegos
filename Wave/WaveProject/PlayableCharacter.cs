@@ -16,8 +16,9 @@ using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
-    public class PlayableCharacter : Behavior
+    public class PlayableCharacter : Behavior, IDisposable
     {
+        private bool disposed = false;
         [RequiredComponent]
         public Transform2D Transform { get; private set; }
         [RequiredComponent]
@@ -97,6 +98,28 @@ namespace WaveProject
                 Transform.Position += new Vector2(0, Map.CurrentMap.TotalHeight);
             }
             #endregion
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                Kinematic.Dispose();
+                Kinematic = null;
+                Steering = null;
+                PathFollowing = null;
+                Type = null;
+            }
+
+            disposed = true;
         }
     }
 }

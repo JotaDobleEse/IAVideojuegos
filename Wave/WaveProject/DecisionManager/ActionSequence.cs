@@ -12,6 +12,12 @@ namespace WaveProject.DecisionManager
 
         public int CurrentAction { get; set; }
 
+        public ActionSequence(Action[] actions)
+            : base(0, 0, false, null)
+        {
+            Actions = actions;
+        }
+
         public override bool CanInterrupt()
         {
             return Actions[0].CanInterrupt();

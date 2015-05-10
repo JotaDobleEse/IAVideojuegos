@@ -83,11 +83,13 @@ namespace WaveProject
         {
             Mouse.Update((float)gameTime.TotalMilliseconds, new Steerings.SteeringOutput());
 
+            // Si el botón izquierdo del ratón no está pultado y la tecla estaba pulsada
             if ((WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release && ControlSelect))
             {
                 ControlSelect = false;
             }
 
+            // Si está suelto el botón izquierdo del raton y antes estaba pulsado
             if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release && MousePressed)
             {
                 IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
@@ -103,8 +105,10 @@ namespace WaveProject
                 MouseRectangle = RectangleF.Empty;
             }
 
+            // Si está pulsado el botón izquierdo del ratón y antes no estaba pulsado
             if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed && !MousePressed)
             {
+                // Si está pulsada la tecla control y antes no lo estaba
                 if (WaveServices.Input.KeyboardState.LeftControl == WaveEngine.Common.Input.ButtonState.Pressed && !ControlSelect)
                 {
                     ControlSelect = true;
@@ -123,6 +127,7 @@ namespace WaveProject
                             SelectedCharacters.Add(selectedCharacter);
                     }
                 }
+                // Si no está, ni estaba pulsada la tecla control
                 else if (!ControlSelect)
                 {
                     MousePressed = true;
@@ -132,6 +137,7 @@ namespace WaveProject
                 }
             }
 
+            // Si está pulsado el botón izquierdo del ratón y estaba pulsado antes
             if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Pressed && MousePressed)
             {
                 MouseRectangle.Width = Mouse.Position.X - MouseRectangle.X;
@@ -143,6 +149,7 @@ namespace WaveProject
                 SelectedCharacters = characters.Where(w => w.Kinematic.Position.IsContent(MouseRectangle.Center, new Vector2(MouseRectangle.Width.Abs(), MouseRectangle.Height.Abs()))).ToList();
             }
 
+            // Si está pulsado el botón derecho del ratón y está en una posición valida del mapa
             if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && Map.CurrentMap.PositionInMap(Mouse.Position))
             {
                 foreach (var selectedCharacter in SelectedCharacters)
@@ -160,6 +167,19 @@ namespace WaveProject
             }
             LastMousePosition = Mouse.Position;
             Debug.Controller = this;
+
+            // R para eliminar personajes
+            if (WaveServices.Input.KeyboardState.R == WaveEngine.Common.Input.ButtonState.Pressed && SelectedCharacters.Count > 0)
+            {
+                foreach (var character in SelectedCharacters.ToArray())
+                {
+                    var entity = EntityManager.AllEntities.FirstOrDefault(w => w.FindComponent<PlayableCharacter>() != null && w.FindComponent<PlayableCharacter>() == character);
+                    if (entity != null)
+                        EntityManager.Remove(entity);
+                    SelectedCharacters.Remove(character);
+                    character.Dispose();
+                }
+            }
         }
 
         public void Draw(LineBatch2D lb)

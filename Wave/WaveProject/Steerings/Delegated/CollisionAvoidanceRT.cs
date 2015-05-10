@@ -19,13 +19,13 @@ namespace WaveProject.Steerings.Delegated
 
         public CollisionAvoidanceRT(bool stable = false) : base(stable)
         {
-            MaxAcceleration = 10f;
+            MaxAcceleration = 8f;
             Radius = 20f;
         }
 
         public override SteeringOutput GetSteering()
         {
-            float shortestTime = float.MaxValue;
+            float shortestTime = float.PositiveInfinity;
 
             Kinematic firstTarget = null;
             float firstMinSeparation = 0f;
@@ -42,7 +42,7 @@ namespace WaveProject.Steerings.Delegated
 
                 float distance = relativePos.Length();
                 float minSeparation = distance - relativeSpeed * timeToCollision;
-                if (minSeparation < 2 * Radius)
+                if (minSeparation > 2 * Radius)
                     continue;
 
                 if (timeToCollision > 0 && timeToCollision < shortestTime)
@@ -73,7 +73,6 @@ namespace WaveProject.Steerings.Delegated
                 steering.Linear = relativeP * MaxAcceleration;
                 steering.Angular = 0;
 
-                Console.WriteLine(steering.Linear);
                 //Character.Orientation = Character.Velocity.ToRotation(); // Despues
                 return steering;
             }
@@ -82,8 +81,7 @@ namespace WaveProject.Steerings.Delegated
 
         private IEnumerable<Kinematic> GetCollisionCandidates(Kinematic origin)
         {
-            return Kinematic.Kinematics.Where(w => w != origin/* && (w.Position - origin.Position).Length() <= Radius * 4*/);
-            //return EntityManager.AllEntities.Where(w => w.FindComponent<SteeringBehavior>() != null && w.FindComponent<SteeringBehavior>().Kinematic != origin).Select(s => s.FindComponent<SteeringBehavior>().Kinematic);
+            return Kinematic.Kinematics.Where(w => w != origin);
         }
 
         public override void Draw(LineBatch2D lb)

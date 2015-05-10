@@ -180,6 +180,7 @@ namespace WaveProject
                     character.Dispose();
                 }
             }
+            Console.WriteLine(Kinematic.Kinematics.Count);
         }
 
         public void Draw(LineBatch2D lb)

@@ -9,9 +9,6 @@ namespace WaveProject
 {
     public class Obstacle : IDisposable
     {
-        private static int InstancesCounter = 0;
-        public int Id { get; private set; }
-
         private static List<Obstacle> obstacles = new List<Obstacle>();
         public static List<Obstacle> Obstacles { get { return obstacles; } }
         public Vector2 Position { get; private set; }
@@ -23,10 +20,7 @@ namespace WaveProject
             BRadius = bRadius;
             if (stable)
             {
-                Id = ++InstancesCounter;
-                Obstacle Clon = this.Clone();
-                Clon.Id = Id;
-                obstacles.Add(Clon);
+                obstacles.Add(this);
             }
         }
 
@@ -38,9 +32,7 @@ namespace WaveProject
 
         public void Dispose()
         {
-            Obstacle o = obstacles.FirstOrDefault(f => f.Id == Id);
-            if (o != null)
-                obstacles.Remove(o);
+            obstacles.Remove(this);
         }
     }
 }

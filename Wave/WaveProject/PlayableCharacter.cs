@@ -35,14 +35,13 @@ namespace WaveProject
             Kinematic.MaxVelocity = maxVelocity;
             Type = type;
 
-            Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.3f };
-            //Steering = new FollowPath() { Character = Kinematic };
-            PathFollowing = (PredictivePathFollowing)Steering;
+            //Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.3f };
+            ////Steering = new FollowPath() { Character = Kinematic };
+            //PathFollowing = (PredictivePathFollowing)Steering;
 
-            //BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
-            //var steering = new BlendedSteering(behaviors);
-            //Steering = steering;
-            //PathFollowing = steering;
+            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            Steering = new BlendedSteering(behaviors);
+            PathFollowing = (PredictivePathFollowing)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is PredictivePathFollowing);
             
 
             Color = color;

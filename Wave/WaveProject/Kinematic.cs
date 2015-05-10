@@ -12,11 +12,6 @@ namespace WaveProject
 {
     public class Kinematic : IDisposable
     {
-        private static int InstancesCounter = 0;
-        public int Id { get; private set; }
-        
-        private Kinematic ClonInList;
-
         private static List<Kinematic> kinematics = new List<Kinematic>();
         public static List<Kinematic> Kinematics { get { return kinematics; } }
 
@@ -45,10 +40,7 @@ namespace WaveProject
             IsStable = stable;
             if (stable)
             {
-                Id = ++InstancesCounter;
-                ClonInList = this.Clone(false);
-                ClonInList.Id = Id;
-                kinematics.Add(ClonInList);
+                kinematics.Add(this);
             }
             MaxVelocity = 50;
         }
@@ -71,15 +63,6 @@ namespace WaveProject
             Position += Velocity * deltaTime;
             Orientation += Rotation * deltaTime;
 
-            if (ClonInList != null)
-            {
-                ClonInList.LastOutput = LastOutput;
-                ClonInList.MaxVelocity = MaxVelocity;
-                ClonInList.Orientation = Orientation;
-                ClonInList.Position = Position;
-                ClonInList.Rotation = Rotation;
-                ClonInList.Velocity = Velocity;
-            }
         }
 
         public Vector2 ConvertToLocalPos(Vector2 position)
@@ -134,8 +117,7 @@ namespace WaveProject
 
         public void Dispose()
         {
-            if (ClonInList != null)
-                kinematics.Remove(ClonInList);
+            kinematics.Remove(this);
         }
     }
 }

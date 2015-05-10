@@ -9,9 +9,6 @@ namespace WaveProject
 {
     public class Wall : IDisposable
     {
-        private static int InstancesCounter = 0;
-        public int Id { get; private set; }
-
         private static List<Wall> walls = new List<Wall>();
         public static List<Wall> Walls { get { return walls; } }
 
@@ -43,10 +40,7 @@ namespace WaveProject
         {
             if (stable)
             {
-                Id = ++InstancesCounter;
-                Wall Clon = this.Clone();
-                Clon.Id = Id;
-                walls.Add(Clon);
+                walls.Add(this);
             }
             WallRectangle = rectangle;
             WallCollider = new BoundingBox(new Vector3(WallRectangle.X, WallRectangle.Y, 0f), new Vector3(WallRectangle.X + WallRectangle.Width, WallRectangle.Y + WallRectangle.Height, 0f));
@@ -76,9 +70,7 @@ namespace WaveProject
 
         public void Dispose()
         {
-            Wall w = walls.FirstOrDefault(f => f.Id == Id);
-            if (w != null)
-                walls.Remove(w);
+            walls.Remove(this);
         }
     }
 }

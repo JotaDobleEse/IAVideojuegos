@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaveProject.Steerings;
+using WaveProject.Steerings.Delegated;
 
 namespace WaveProject.Steerings.Combined
 {
@@ -27,6 +28,13 @@ namespace WaveProject.Steerings.Combined
             }
 
             return steering;
+        }
+        public static implicit operator PredictivePathFollowing(BlendedSteering steering)
+        {
+            var s = Steerings.FirstOrDefault(f => f is PredictivePathFollowing);
+            if (s != null)
+                return (PredictivePathFollowing)s;
+            return null;
         }
     }
 }

@@ -23,6 +23,7 @@ using WaveProject.Steerings.Pathfinding;
 using System.Globalization;
 using System.Threading;
 using WaveProject.CharacterTypes;
+using WaveEngine.Materials;
 #endregion
 
 namespace WaveProject
@@ -32,6 +33,7 @@ namespace WaveProject
         TiledMap TiledMap;
         DebugLines MyDebug;
         GameController Controller;
+
         protected override void CreateScene()
         {
             // Controlador principal
@@ -47,22 +49,6 @@ namespace WaveProject
             EntityManager.Add(LRTAChevychev);
             EntityManager.Add(LRTAEuclidean);
 
-            TextBlock text = new TextBlock("axis")
-            {
-                Margin = new Thickness((WaveServices.Platform.ScreenWidth / 2f) - 100, 10, 0, 0),
-                FontPath = "Content/Fonts/verdana.wpk",
-                Height = 130,
-            };
-
-            text.IsVisible = true;
-
-            // Create a 2D camera
-            var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.Black }
-                .Entity.AddComponent(MyDebug = new DebugLines(text))
-                .AddComponent(new CameraController()); // Transparent background need this clearFlags.
-            EntityManager.Add(camera2D);
-            EntityManager.Add(text);
-
             Entity map = new Entity("mapa")
                 .AddComponent(new Transform2D())
                 .AddComponent(TiledMap = new TiledMap("Content/Maps/mapa.tmx")
@@ -71,6 +57,23 @@ namespace WaveProject
                     MaxLayerDrawOrder = -0
                 });
             EntityManager.Add(map);
+
+            TextBlock text = new TextBlock("axis")
+            {
+                Margin = new Thickness((WaveServices.Platform.ScreenWidth / 2f) - 100, 10, 0, 0),
+                FontPath = "Content/Fonts/verdana.wpk",
+                Height = 130,
+            };
+            text.IsVisible = true;
+
+            // Create a 2D camera
+            var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.Black }
+                .Entity.AddComponent(MyDebug = new DebugLines(text))
+                .AddComponent(new CameraController());
+
+            EntityManager.Add(camera2D);
+            EntityManager.Add(text);
+
 
             #region Basic Steerings
             //Kinematic wallAvoidanceChar = new Kinematic(true) { Position = new Vector2(20, 220) };

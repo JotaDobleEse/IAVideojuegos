@@ -51,36 +51,32 @@ namespace WaveProject
             LRTAChevychev.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAManhattan.Width - 10, 100);
             LRTAEuclidean.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAManhattan.Width - 10, 150);
 
-            LRTAManhattan.Click += LRTAManhattan_Click;
-            LRTAChevychev.Click += LRTAChevychev_Click;
-            LRTAEuclidean.Click += LRTAEuclidean_Click;
+            LRTAManhattan.Click += (s, e) =>
+            {
+                CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
+                LRTAManhattan.IsVisible = false;
+                LRTAChevychev.IsVisible = true;
+                LRTAEuclidean.IsVisible = true;
+            };
+
+            LRTAChevychev.Click += (s, e) =>
+            {
+                CurrentLrtaAlgorithm = DistanceAlgorith.CHEVYCHEV;
+                LRTAManhattan.IsVisible = true;
+                LRTAChevychev.IsVisible = false;
+                LRTAEuclidean.IsVisible = true;
+            };
+
+            LRTAEuclidean.Click += (s, e) =>
+            {
+                CurrentLrtaAlgorithm = DistanceAlgorith.EUCLIDEAN;
+                LRTAManhattan.IsVisible = true;
+                LRTAChevychev.IsVisible = true;
+                LRTAEuclidean.IsVisible = false;
+            };
 
             LRTAManhattan.IsVisible = false;
             //base.Initialize();
-        }
-
-        void LRTAEuclidean_Click(object sender, EventArgs e)
-        {
-            CurrentLrtaAlgorithm = DistanceAlgorith.EUCLIDEAN;
-            LRTAManhattan.IsVisible = true;
-            LRTAChevychev.IsVisible = true;
-            LRTAEuclidean.IsVisible = false;
-        }
-
-        void LRTAChevychev_Click(object sender, EventArgs e)
-        {
-            CurrentLrtaAlgorithm = DistanceAlgorith.CHEVYCHEV;
-            LRTAManhattan.IsVisible = true;
-            LRTAChevychev.IsVisible = false;
-            LRTAEuclidean.IsVisible = true;
-        }
-
-        void LRTAManhattan_Click(object sender, EventArgs e)
-        {
-            CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
-            LRTAManhattan.IsVisible = false;
-            LRTAChevychev.IsVisible = true;
-            LRTAEuclidean.IsVisible = true;
         }
 
         protected override void Update(TimeSpan gameTime)

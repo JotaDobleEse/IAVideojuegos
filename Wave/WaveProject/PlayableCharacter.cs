@@ -38,9 +38,11 @@ namespace WaveProject
             //Steering = new FollowPath() { Character = Kinematic };
             PathFollowing = (PredictivePathFollowing)Steering;
 
-            /*BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
-            Steering = new BlendedSteering(behaviors);
-            PathFollowing = (PredictivePathFollowing)(behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is PredictivePathFollowing) ?? new PredictivePathFollowing());*/
+            //BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            //var steering = new BlendedSteering(behaviors);
+            //Steering = steering;
+            //PathFollowing = steering;
+            
 
             Color = color;
         }
@@ -59,7 +61,7 @@ namespace WaveProject
 
         public void Draw(LineBatch2D lb)
         {
-            lb.DrawCircleVM(Kinematic.Position, 35, Color.Red, 1f);
+            lb.DrawCircleVM(Kinematic.Position, Math.Max(Texture.Texture.Width, Texture.Texture.Height) / 1.8f, Color.Cyan, 1f);
         }
 
         protected override void Update(TimeSpan gameTime)

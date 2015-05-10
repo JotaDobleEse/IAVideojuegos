@@ -53,6 +53,10 @@
     <Compile Include="CharacterTypes\ExplorerCharacter.cs" />
     <Compile Include="CharacterTypes\MeleeCharacter.cs" />
     <Compile Include="CharacterTypes\RangedCharacter.cs" />
+    <Compile Include="DecisionManager\Action.cs" />
+    <Compile Include="DecisionManager\ActionCombination.cs" />
+    <Compile Include="DecisionManager\ActionManager.cs" />
+    <Compile Include="DecisionManager\ActionSequence.cs" />
     <Compile Include="Extensiones.cs" />
     <Compile Include="GameController.cs" />
     <Compile Include="Kinematic.cs" />

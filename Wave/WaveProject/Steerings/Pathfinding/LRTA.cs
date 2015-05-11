@@ -279,8 +279,11 @@ namespace WaveProject.Steerings.Pathfinding
         {
             for (int i = 0; i < path.Count-2; i++)
             {
-                if (CanDelete(path[i], path[i + 1], path[i + 2]))
-                    path.RemoveAt(i + 1);
+                while ((i < path.Count - 2) && CanGoDirectly(path[i], path[i + 1], path[i + 2]))
+                //if (CanDelete(path[i], path[i + 1], path[i + 2]))
+                {
+                    path.Remove(path[i + 1]);
+                }
             }
             return path;
         }
@@ -318,9 +321,44 @@ namespace WaveProject.Steerings.Pathfinding
                 Vector2 newPos = (p1 - p2) + (p3 - p2);
                 newPos += p2;
                 if (p2 != newPos)
+                {
                     return (NodeMap[newPos.X(), newPos.Y()].Passable);
+                }
+                else return true;
             }
             return false;
+        }
+
+        private bool CanGoDirectly(Vector2 p1, Vector2 p2, Vector2 p3)
+        {
+            var diff = p3 - p1;
+            var max = Math.Max(Math.Abs(diff.X), Math.Abs(diff.Y));
+            //diff.Normalize();
+            Vector2 factor = new Vector2(diff.X / max, diff.Y / max);
+
+            float lastCost = Character.Cost(NodeMap[p1.X(), p2.Y()].Terrain);
+            Vector2 pAux = p1 + factor;
+            pAux = new Vector2((int)Math.Round(pAux.X, 0), (int)Math.Round(pAux.Y, 0));
+
+            while (pAux != p3)
+            {
+                if (NodeMap[pAux.X(), pAux.Y()].Passable)
+                {
+                    float cost = Character.Cost(NodeMap[pAux.X(), pAux.Y()].Terrain);
+                    if (cost <= lastCost || cost == Character.Cost(NodeMap[p3.X(), p3.Y()].Terrain))
+                    {
+                        lastCost = cost;
+                        pAux += factor;
+                        pAux = new Vector2((int)Math.Round(pAux.X, 0), (int)Math.Round(pAux.Y, 0));
+                    }
+                    else
+                        return false;
+                }
+                else 
+                    return false;
+            }
+
+            return true;
         }
         #endregion
 

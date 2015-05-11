@@ -55,7 +55,7 @@ namespace WaveProject.Steerings.Delegated
 
         public override void Draw(LineBatch2D lb)
         {
-            Path.DrawPath(lb);
+            Path.DrawPath(lb, Character.Position, CurrentParam);
         }
     }
 }

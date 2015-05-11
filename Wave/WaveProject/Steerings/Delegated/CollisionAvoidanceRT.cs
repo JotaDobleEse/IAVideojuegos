@@ -75,7 +75,7 @@ namespace WaveProject.Steerings.Delegated
 
                 SteeringOutput steering = new SteeringOutput();
                 steering.Linear = relativeP * MaxAcceleration;
-                Console.WriteLine(steering.Linear);
+                //Console.WriteLine(steering.Linear);
                 steering.Angular = 0;
 
                 //Character.Orientation = Character.Velocity.ToRotation(); // Despues

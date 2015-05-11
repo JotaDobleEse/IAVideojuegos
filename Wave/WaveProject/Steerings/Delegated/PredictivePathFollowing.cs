@@ -20,7 +20,7 @@ namespace WaveProject.Steerings.Delegated
             : base(stable)
         {
             Path = new Path();
-            PredictTime = 1f;
+            PredictTime = 0.2f;
             PathOffset = 1;
         }
 
@@ -76,7 +76,7 @@ namespace WaveProject.Steerings.Delegated
 
         public override void Draw(LineBatch2D lb)
         {
-            Path.DrawPath(lb);
+            Path.DrawPath(lb, Character.Position, CurrentParam);
         }
     }
 }

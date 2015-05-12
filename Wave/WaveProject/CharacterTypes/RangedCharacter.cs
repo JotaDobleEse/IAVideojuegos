@@ -28,7 +28,7 @@ namespace WaveProject.CharacterTypes
                 case Terrain.PLAIN:
                     return 0.7f;
                 case Terrain.WATER:
-                    return float.PositiveInfinity;
+                    return 8f;
             }
             return 1;
         }

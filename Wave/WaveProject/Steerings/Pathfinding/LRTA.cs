@@ -141,7 +141,7 @@ namespace WaveProject.Steerings.Pathfinding
                     if (pathMatrix[current.X(), current.Y()].IsNull())
                         pathMatrix[current.X(), current.Y()] = origin.Position;
                 }
-                while (neighbors.Any(a => a.X == current.X() && a.Y == current.Y()));
+                while (neighbors.Any(a => a.X == current.X && a.Y == current.Y));
             }
 
             // Reconstruimos el camino de atrás hacia adelante.
@@ -345,7 +345,7 @@ namespace WaveProject.Steerings.Pathfinding
                 if (NodeMap[pAux.X(), pAux.Y()].Passable)
                 {
                     float cost = Character.Cost(NodeMap[pAux.X(), pAux.Y()].Terrain);
-                    if (cost <= lastCost /*|| cost == Character.Cost(NodeMap[p3.X(), p3.Y()].Terrain)*/)
+                    if (cost <= lastCost || cost == Character.Cost(NodeMap[p3.X(), p3.Y()].Terrain))
                     {
                         lastCost = cost;
                         pAux += factor;

@@ -86,7 +86,11 @@ namespace WaveProject
                     int x, y;
                     x = tile.X * Map.CurrentMap.TileWidth;
                     y = tile.Y * Map.CurrentMap.TileHeight;
-                    lb.DrawRectangleVM(new RectangleF(x, y, Map.CurrentMap.TileWidth, Map.CurrentMap.TileHeight), Color.Green, 1);
+                    if (Map.CurrentMap.NodeMap[tile.X, tile.Y].Passable)
+                        lb.DrawRectangleVM(new RectangleF(x, y, Map.CurrentMap.TileWidth, Map.CurrentMap.TileHeight), Color.Green, 1);
+                    else
+                        lb.DrawRectangleVM(new RectangleF(x, y, Map.CurrentMap.TileWidth, Map.CurrentMap.TileHeight), Color.Red, 1);
+
                 }
             }
         }

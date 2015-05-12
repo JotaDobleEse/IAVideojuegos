@@ -26,7 +26,7 @@ namespace WaveProject
         public Kinematic Kinematic { get; private set; }
         public Color Color { get; set; }
         public Steering Steering { get; set; }
-        public PredictivePathFollowing PathFollowing { get; set; }
+        public FollowPath PathFollowing { get; set; }
         public CharacterType Type { get; private set; }
 
         public PlayableCharacter(Kinematic kinematic, CharacterType type, Color color, float maxVelocity = 50)
@@ -41,7 +41,7 @@ namespace WaveProject
 
             BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
             Steering = new BlendedSteering(behaviors);
-            PathFollowing = (PredictivePathFollowing)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is PredictivePathFollowing);
+            PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
             
 
             Color = color;

@@ -21,6 +21,13 @@ namespace WaveProject.Steerings.Delegated
             PathOffset = 1;
         }
 
+        public void SetPath(List<Vector2> path)
+        {
+            CurrentParam = 0;
+            Path.SetPath(path);
+            CurrentParam = Path.GetParam(Character.Position, CurrentParam);
+        }
+
         public override SteeringOutput GetSteering()
         {
             if (Path.Length == 0)
@@ -35,6 +42,15 @@ namespace WaveProject.Steerings.Delegated
 
             if (Path.Length - 1 == CurrentParam)
             {
+                // HACK
+                if ((targetPosition - Character.Position).Length() < 5f)
+                {
+                    Character.Velocity = Vector2.Zero;
+                    Character.Rotation = 0f;
+                    return new SteeringOutput();
+                }
+                // END HACK
+
                 Arrive arrive = new Arrive();
                 Face face = new Face();
                 arrive.Character = face.Character = Character;

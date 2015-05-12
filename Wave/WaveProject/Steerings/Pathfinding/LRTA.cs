@@ -338,18 +338,18 @@ namespace WaveProject.Steerings.Pathfinding
 
             float lastCost = Character.Cost(NodeMap[p1.X(), p2.Y()].Terrain);
             Vector2 pAux = p1 + factor;
-            pAux = new Vector2((int)Math.Round(pAux.X, 0), (int)Math.Round(pAux.Y, 0));
+            Vector2 pAuxTile = new Vector2((int)Math.Round(pAux.X, 0), (int)Math.Round(pAux.Y, 0));
 
-            while (pAux != p3)
+            while (pAuxTile != p3)
             {
                 if (NodeMap[pAux.X(), pAux.Y()].Passable)
                 {
                     float cost = Character.Cost(NodeMap[pAux.X(), pAux.Y()].Terrain);
-                    if (cost <= lastCost || cost == Character.Cost(NodeMap[p3.X(), p3.Y()].Terrain))
+                    if (cost <= lastCost /*|| cost == Character.Cost(NodeMap[p3.X(), p3.Y()].Terrain)*/)
                     {
                         lastCost = cost;
                         pAux += factor;
-                        pAux = new Vector2((int)Math.Round(pAux.X, 0), (int)Math.Round(pAux.Y, 0));
+                        pAuxTile = new Vector2((int)Math.Round(pAux.X, 0), (int)Math.Round(pAux.Y, 0));
                     }
                     else
                         return false;

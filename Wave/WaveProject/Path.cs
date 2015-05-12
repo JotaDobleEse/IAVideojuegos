@@ -23,12 +23,12 @@ namespace WaveProject
         {
             float dist1 = (position - GetPosition(lastParam)).Length();
             float dist2 = (position - GetPosition(lastParam + 1)).Length();
-            if (dist1 > dist2)
-            {
+            //if (dist1 > dist2)
+            //{
+            //    return Math.Min((lastParam + 1), Points.Count - 1);
+            //}
+            if (dist2 / (dist1 + dist2) < 0.2)
                 return Math.Min((lastParam + 1), Points.Count - 1);
-            }
-            //if (dist2 < 10)
-            //    return Math.Min((lastParam + 1),  Points.Count - 1);
             return lastParam;
         }
 

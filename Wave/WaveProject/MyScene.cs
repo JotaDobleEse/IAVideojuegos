@@ -315,7 +315,7 @@ namespace WaveProject
                  .AddComponent(new Transform2D() { Position = kinematic.Position })
                  .AddComponent(new Sprite("Content/Textures/malabestia"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, new MeleeCharacter(), Color.White, 20));
+                 .AddComponent(new PlayableCharacter(kinematic, new MeleeCharacter(), 1, Color.White));
             EntityManager.Add(char1);
 
             kinematic = new Kinematic(true) { Position = new Vector2(500, 500) };
@@ -324,7 +324,7 @@ namespace WaveProject
                  .AddComponent(new Transform2D() { Position = kinematic.Position })
                  .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, new RangedCharacter(), Color.White, 25));
+                 .AddComponent(new PlayableCharacter(kinematic, new RangedCharacter(), 1, Color.White));
             EntityManager.Add(char2);
 
             kinematic = new Kinematic(true) { Position = new Vector2(550, 200) };
@@ -333,7 +333,7 @@ namespace WaveProject
                  .AddComponent(new Transform2D() { Position = kinematic.Position })
                  .AddComponent(new Sprite("Content/Textures/lagarto"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, new ExplorerCharacter(), Color.White, 30));
+                 .AddComponent(new PlayableCharacter(kinematic, new ExplorerCharacter(), 2, Color.White));
             EntityManager.Add(char3);
         }
 

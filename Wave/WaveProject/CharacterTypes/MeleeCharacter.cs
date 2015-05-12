@@ -50,5 +50,10 @@ namespace WaveProject.CharacterTypes
             }
             return 20;
         }
+
+        public override EnumeratedCharacterType GetType()
+        {
+            return EnumeratedCharacterType.MELEE;
+        }
     }
 }

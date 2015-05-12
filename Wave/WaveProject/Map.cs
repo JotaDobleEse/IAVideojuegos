@@ -9,10 +9,17 @@ using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.TiledMap;
+using WaveProject.CharacterTypes;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
+    public struct HealPoint
+    {
+        public Vector2 Position { get; set; }
+        public int Team { get; set; }
+    }
+
     public class Map
     {
         private static Map instance = new Map();
@@ -22,7 +29,7 @@ namespace WaveProject
         public Node[,] NodeMap { get; private set; }
         public const int HealRatio = 10;
 
-        public List<Vector2> HealPoints { get; private set; }
+        public List<HealPoint> HealPoints { get; private set; }
 
         public int Width { get { return TiledMap.Width; } }
         public int Height { get { return TiledMap.Height; } }
@@ -35,7 +42,7 @@ namespace WaveProject
 
         public void Initialize(TiledMap map)
         {
-            HealPoints = new List<Vector2>();
+            HealPoints = new List<HealPoint>();
             TiledMap = map;
 
             #region Node Map Base
@@ -73,7 +80,10 @@ namespace WaveProject
                     string heal = tile.TilesetTile.Properties["heal"];
                     if (bool.Parse(textInfo.ToTitleCase(heal)))
                     {
-                        HealPoints.Add(new Vector2(tile.X, tile.Y));
+                        // Obtenemos el bando del punto de curación
+                        string team = tile.TilesetTile.Properties["team"];
+                        int t = int.Parse(team);
+                        HealPoints.Add(new HealPoint() { Position = new Vector2(tile.X, tile.Y), Team = t });
                     }
 
                     // Guardamos el nodo en la matriz
@@ -130,13 +140,24 @@ namespace WaveProject
             return TiledMap.PositionInMap(position);
         }
 
+        public Vector2 GetBestHealPoinPosition(ICharacterInfo character)
+        {
+            var hp = HealPoints.Where(w => w.Team == character.GetTeam())
+                .OrderBy(o => (o.Position - character.GetPostion()).Length())
+                .First();
+            return hp.Position;
+        }
+
         public void Draw(LineBatch2D lb)
         {
             foreach (var healpoint in HealPoints)
             {
-                Vector2 src = WolrdPositionByTilePosition(healpoint - new Vector2(HealRatio, HealRatio));
+                Vector2 src = WolrdPositionByTilePosition(healpoint.Position - new Vector2(HealRatio, HealRatio));
                 Vector2 dst = WolrdPositionByTilePosition(new Vector2(HealRatio, HealRatio) * 2);
-                lb.DrawRectangleVM(new RectangleF(src.X, src.Y, dst.X, dst.Y), Color.Green, 1f);
+                if (healpoint.Team == 1)
+                    lb.DrawRectangleVM(new RectangleF(src.X, src.Y, dst.X, dst.Y), Color.Cyan, 1f);
+                else
+                    lb.DrawRectangleVM(new RectangleF(src.X, src.Y, dst.X, dst.Y), Color.Red, 1f);
             }
         }
     }

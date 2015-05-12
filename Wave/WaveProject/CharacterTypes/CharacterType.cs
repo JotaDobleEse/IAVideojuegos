@@ -7,6 +7,10 @@ using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
 {
+    public enum EnumeratedCharacterType
+    {
+        EXPLORER, MELEE, RANGED
+    }
     public abstract class CharacterType
     {
         public int HP { get; set; }
@@ -23,5 +27,6 @@ namespace WaveProject.CharacterTypes
         public abstract float Cost(Terrain terrain);
 
         public abstract float MaxVelocity(Terrain terrain);
+        public abstract EnumeratedCharacterType GetType();
     }
 }

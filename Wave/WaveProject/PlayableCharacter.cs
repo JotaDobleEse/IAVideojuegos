@@ -16,7 +16,7 @@ using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
-    public class PlayableCharacter : Behavior, IDisposable
+    public class PlayableCharacter : Behavior, IDisposable, ICharacterInfo
     {
         private bool disposed = false;
         [RequiredComponent]
@@ -28,12 +28,14 @@ namespace WaveProject
         public Steering Steering { get; set; }
         public FollowPath PathFollowing { get; set; }
         public CharacterType Type { get; private set; }
+        public int Team { get; set; }
 
-        public PlayableCharacter(Kinematic kinematic, CharacterType type, Color color, float maxVelocity = 50)
+        public PlayableCharacter(Kinematic kinematic, CharacterType type, int team, Color color)
         {
             Kinematic = kinematic;
-            Kinematic.MaxVelocity = maxVelocity;
+            Kinematic.MaxVelocity = 30;
             Type = type;
+            Team = team;
 
             //Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.3f };
             ////Steering = new FollowPath() { Character = Kinematic };
@@ -42,9 +44,12 @@ namespace WaveProject
             BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
             Steering = new BlendedSteering(behaviors);
             PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
-            
 
-            Color = color;
+            if (team == 1)
+                Color = Color.Cyan;
+            if (team == 2)
+                Color = Color.Red;
+            //Color = color;
         }
 
         public void SetPath(List<Vector2> path)
@@ -119,6 +124,21 @@ namespace WaveProject
             }
 
             disposed = true;
+        }
+
+        public Vector2 GetPostion()
+        {
+            return Kinematic.Position;
+        }
+
+        public int GetTeam()
+        {
+            return Team;
+        }
+
+        public EnumeratedCharacterType GetType()
+        {
+            return Type.GetType();
         }
     }
 }

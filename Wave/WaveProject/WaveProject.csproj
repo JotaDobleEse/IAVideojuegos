@@ -59,6 +59,7 @@
     <Compile Include="DecisionManager\ActionSequence.cs" />
     <Compile Include="Extensiones.cs" />
     <Compile Include="GameController.cs" />
+    <Compile Include="ICharacterInfo.cs" />
     <Compile Include="Kinematic.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Obstacle.cs" />

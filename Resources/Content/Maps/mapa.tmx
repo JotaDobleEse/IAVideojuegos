@@ -5648,6 +5648,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -5655,6 +5656,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -5662,6 +5664,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -5872,6 +5875,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -5879,6 +5883,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -5886,6 +5891,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -5914,6 +5920,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -5921,6 +5928,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -5928,6 +5936,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6096,6 +6105,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6103,6 +6113,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6110,6 +6121,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="1"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6138,6 +6150,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6145,6 +6158,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6152,6 +6166,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6362,6 +6377,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6369,6 +6385,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -6376,6 +6393,7 @@
    <properties>
     <property name="heal" value="true"/>
     <property name="passable" value="false"/>
+    <property name="team" value="2"/>
     <property name="terrain" value="plain"/>
    </properties>
   </tile>
@@ -12195,19 +12213,19 @@
    <tile gid="98"/>
    <tile gid="98"/>
    <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
-   <tile gid="98"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
+   <tile gid="711"/>
    <tile gid="711"/>
    <tile gid="98"/>
    <tile gid="98"/>
@@ -12285,20 +12303,20 @@
    <tile gid="98"/>
    <tile gid="98"/>
    <tile gid="98"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
-   <tile gid="711"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
+   <tile gid="98"/>
    <tile gid="98"/>
    <tile gid="98"/>
    <tile gid="98"/>
@@ -12583,8 +12601,8 @@
   <object id="26" x="1184" y="784" width="48" height="48"/>
   <object id="29" x="1088" y="656" width="16" height="208"/>
   <object id="30" x="1088" y="656" width="288" height="16"/>
-  <object id="31" x="1360" y="656" width="16" height="256"/>
-  <object id="32" x="1152" y="896" width="224" height="16"/>
+  <object id="31" x="1360" y="656" width="16" height="240"/>
+  <object id="32" x="1152" y="880" width="224" height="16"/>
  </objectgroup>
  <objectgroup name="Muros">
   <object id="9" x="384" y="0" width="1056" height="16"/>

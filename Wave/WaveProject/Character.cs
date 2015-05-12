@@ -9,12 +9,14 @@ using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
+using WaveProject.CharacterTypes;
 using WaveProject.Steerings;
 
 namespace WaveProject
 {
-    public class Character : Behavior
+    public class Character : Behavior, IDisposable, ICharacterInfo
     {
+        private bool disposed = false;
         [RequiredComponent]
         public Transform2D Transform { get; private set; }
         [RequiredComponent]
@@ -22,13 +24,21 @@ namespace WaveProject
         public Kinematic Kinematic { get; private set; }
         public Color Color { get; set; }
         public Steering Steering { get; set; }
+        public CharacterType Type { get; private set; }
+        public int Team { get; set; }
 
-        public Character(Steering steering, Kinematic kinematic, Color color, float maxVelocity = 50)
+        public Character(Steering steering, Kinematic kinematic, int team, Color color)
         {
             Kinematic = kinematic;
-            Kinematic.MaxVelocity = maxVelocity;
+            Kinematic.MaxVelocity = 30;
             Steering = steering;
-            Color = color;
+            Team = team;
+
+            if (team == 1)
+                Color = Color.Cyan;
+            if (team == 2)
+                Color = Color.Red;
+            //Color = color;
         }
 
         protected override void Initialize()
@@ -68,6 +78,41 @@ namespace WaveProject
                 Transform.Position += new Vector2(0, Map.CurrentMap.TotalHeight);
             }
             #endregion
+        }
+
+        public Vector2 GetPostion()
+        {
+            return Kinematic.Position;
+        }
+
+        public int GetTeam()
+        {
+            return Team;
+        }
+
+        public EnumeratedCharacterType GetType()
+        {
+            return Type.GetType();
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                Kinematic.Dispose();
+                Kinematic = null;
+                Steering = null;
+                Type = null;
+            }
+
+            disposed = true;
         }
     }
 }

@@ -50,5 +50,10 @@ namespace WaveProject.CharacterTypes
             }
             return 30;
         }
+
+        public override EnumeratedCharacterType GetType()
+        {
+            return EnumeratedCharacterType.EXPLORER;
+        }
     }
 }

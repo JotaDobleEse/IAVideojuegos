@@ -92,6 +92,8 @@ namespace WaveProject
                         lb.DrawRectangleVM(new RectangleF(x, y, Map.CurrentMap.TileWidth, Map.CurrentMap.TileHeight), Color.Red, 1);
 
                 }
+
+                Map.CurrentMap.Draw(lb);
             }
         }
 

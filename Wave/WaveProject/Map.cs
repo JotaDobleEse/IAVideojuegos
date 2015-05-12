@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
+using WaveEngine.Framework.Graphics;
 using WaveEngine.TiledMap;
 using WaveProject.Steerings.Pathfinding;
 
@@ -18,6 +20,9 @@ namespace WaveProject
 
         public TiledMap TiledMap { get; private set; }
         public Node[,] NodeMap { get; private set; }
+        public const int HealRatio = 10;
+
+        public List<Vector2> HealPoints { get; private set; }
 
         public int Width { get { return TiledMap.Width; } }
         public int Height { get { return TiledMap.Height; } }
@@ -30,6 +35,7 @@ namespace WaveProject
 
         public void Initialize(TiledMap map)
         {
+            HealPoints = new List<Vector2>();
             TiledMap = map;
 
             #region Node Map Base
@@ -63,6 +69,13 @@ namespace WaveProject
                     string passable = tile.TilesetTile.Properties["passable"];
                     node.Passable = bool.Parse(textInfo.ToTitleCase(passable));
 
+                    // Obtenemos el valor que indica si un punto de curación
+                    string heal = tile.TilesetTile.Properties["heal"];
+                    if (bool.Parse(textInfo.ToTitleCase(heal)))
+                    {
+                        HealPoints.Add(new Vector2(tile.X, tile.Y));
+                    }
+
                     // Guardamos el nodo en la matriz
                     NodeMap[node.X, node.Y] = node;
                 }
@@ -88,6 +101,11 @@ namespace WaveProject
             }
         }
 
+        public Vector2 WolrdPositionByTilePosition(Vector2 position)
+        {
+            return position * new Vector2(TiledMap.TileWidth, TiledMap.TileHeight);
+        }
+
         public LayerTile TileByWolrdPosition(Vector2 position)
         {
             var layer = TiledMap.TileLayers.First().Value;
@@ -110,6 +128,16 @@ namespace WaveProject
         public bool PositionInMap(Vector2 position)
         {
             return TiledMap.PositionInMap(position);
+        }
+
+        public void Draw(LineBatch2D lb)
+        {
+            foreach (var healpoint in HealPoints)
+            {
+                Vector2 src = WolrdPositionByTilePosition(healpoint - new Vector2(HealRatio, HealRatio));
+                Vector2 dst = WolrdPositionByTilePosition(new Vector2(HealRatio, HealRatio) * 2);
+                lb.DrawRectangleVM(new RectangleF(src.X, src.Y, dst.X, dst.Y), Color.Green, 1f);
+            }
         }
     }
 }

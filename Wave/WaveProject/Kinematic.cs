@@ -48,6 +48,10 @@ namespace WaveProject
         public virtual void Update(float deltaTime, SteeringOutput steering)
         {
             LastOutput = steering;
+
+            Position += Velocity * deltaTime;
+            Orientation += Rotation * deltaTime;
+
             Velocity += steering.Linear * deltaTime;
             Rotation += steering.Angular * deltaTime;
 
@@ -59,9 +63,6 @@ namespace WaveProject
                 Velocity = new Vector2(Velocity.X, MaxVelocity);
             else if (Velocity.Y < -MaxVelocity)
                 Velocity = new Vector2(Velocity.X, -MaxVelocity);
-
-            Position += Velocity * deltaTime;
-            Orientation += Rotation * deltaTime;
 
         }
 
@@ -115,7 +116,7 @@ namespace WaveProject
             }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             kinematics.Remove(this);
         }

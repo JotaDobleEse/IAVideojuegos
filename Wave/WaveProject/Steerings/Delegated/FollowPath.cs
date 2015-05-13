@@ -68,10 +68,16 @@ namespace WaveProject.Steerings.Delegated
                 return seek.GetSteering() + face.GetSteering();
             }
         }
+        public override void Dispose()
+        {
+            Path = null;
+            base.Dispose();
+        }
 
         public override void Draw(LineBatch2D lb)
         {
-            Path.DrawPath(lb, Character.Position, CurrentParam);
+            if (Path != null)
+                Path.DrawPath(lb, Character.Position, CurrentParam);
         }
     }
 }

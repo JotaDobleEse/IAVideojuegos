@@ -41,15 +41,22 @@ namespace WaveProject
             ////Steering = new FollowPath() { Character = Kinematic };
             //PathFollowing = (PredictivePathFollowing)Steering;
 
-            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
-            Steering = new BlendedSteering(behaviors);
-            PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
+            SetPathFollowing();
 
             if (team == 1)
                 Color = Color.Cyan;
             if (team == 2)
                 Color = Color.Red;
             //Color = color;
+        }
+
+        public void SetPathFollowing()
+        {
+            if (Steering != null)
+                Steering.Dispose();
+            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            Steering = new BlendedSteering(behaviors);
+            PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
         }
 
         public void SetPath(List<Vector2> path)
@@ -148,11 +155,15 @@ namespace WaveProject
 
         public void SetTarget(Kinematic target)
         {
-            Steering = new Arrive()
+            Steering.Dispose();
+            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            List<BehaviorAndWeight> allBehaviors = new List<BehaviorAndWeight>(behaviors);
+            allBehaviors.Add(new BehaviorAndWeight()
             {
-                Character = Kinematic,
-                Target = target
-            };
+                Behavior = Steering = new Arrive() { Character = Kinematic, Target = target },
+                Weight = 1.0f
+            });
+            Steering = new BlendedSteering(allBehaviors.ToArray());
             //Steering.SetTarget(target);
         }
     }

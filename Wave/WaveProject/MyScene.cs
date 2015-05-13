@@ -24,6 +24,7 @@ using System.Globalization;
 using System.Threading;
 using WaveProject.CharacterTypes;
 using WaveEngine.Materials;
+using System.Collections.Generic;
 #endregion
 
 namespace WaveProject
@@ -33,6 +34,7 @@ namespace WaveProject
         TiledMap TiledMap;
         DebugLines MyDebug;
         GameController Controller;
+        private string[] Textures = new string[] { "malabestia", "soldado", "lagarto", "juggernaut" };
 
         protected override void CreateScene()
         {
@@ -44,10 +46,12 @@ namespace WaveProject
             Button LRTAManhattan = new Button("LRTA_Manhattan") { BackgroundColor = Color.Gray, Text = "LRTA Manhattan", Width = 150, IsBorder = false };
             Button LRTAChevychev = new Button("LRTA_Chevychev") { BackgroundColor = Color.Gray, Text = "LRTA Chevychev", Width = 150, IsBorder = false };
             Button LRTAEuclidean = new Button("LRTA_Euclidean") { BackgroundColor = Color.Gray, Text = "LRTA Euclidean", Width = 150, IsBorder = false };
+            Button FormationMode = new Button("FormationMode") { BackgroundColor = Color.Green, Text = "Enable Formation Mode", Width = 200, IsBorder = false };
 
             EntityManager.Add(LRTAManhattan);
             EntityManager.Add(LRTAChevychev);
             EntityManager.Add(LRTAEuclidean);
+            EntityManager.Add(FormationMode);
 
             Entity map = new Entity("mapa")
                 .AddComponent(new Transform2D())
@@ -309,7 +313,42 @@ namespace WaveProject
             //EntityManager.Add(follower3);
             #endregion
 
-            Kinematic kinematic = new Kinematic(true) { Position = new Vector2(50, 50) };
+            var r = new System.Random();
+            for (int i = 0; i < 10; i++)
+            {
+                float x = r.Next(1000);
+                float y = r.Next(800);
+
+                Kinematic position = new Kinematic(true) { Position = new Vector2(x, y) };
+                string texture = Textures[(int)y % Textures.Length];
+                CharacterType type = null;
+                switch (texture)
+                {
+                    case "malabestia":
+                        type = new MeleeCharacter();
+                        break;
+                    case "soldado":
+                        type = new RangedCharacter();
+                        break;
+                    case "lagarto":
+                        type = new ExplorerCharacter();
+                        break;
+                    case "juggernaut":
+                        type = new MeleeCharacter();
+                        break;
+                }
+
+                Entity character = new Entity("char" + i)
+                     .AddComponent(new Transform2D() { Position = position.Position })
+                     .AddComponent(new Sprite("Content/Textures/" + texture))
+                     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                     .AddComponent(new PlayableCharacter(position, type, ((int)x % 2) + 1, Color.White));
+                EntityManager.Add(character);
+
+                Console.WriteLine("Add character {2}_{0} in position {1}", i + 1, position.Position, texture);
+            }
+
+            /*Kinematic kinematic = new Kinematic(true) { Position = new Vector2(50, 50) };
 
             Entity char1 = new Entity("char1")
                  .AddComponent(new Transform2D() { Position = kinematic.Position })
@@ -334,7 +373,7 @@ namespace WaveProject
                  .AddComponent(new Sprite("Content/Textures/lagarto"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                  .AddComponent(new PlayableCharacter(kinematic, new ExplorerCharacter(), 2, Color.White));
-            EntityManager.Add(char3);
+            EntityManager.Add(char3);*/
         }
 
         protected override void Start()

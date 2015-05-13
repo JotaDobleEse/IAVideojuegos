@@ -34,5 +34,22 @@ namespace WaveProject.Steerings.Combined
 
             return steering;
         }
+
+        public override void SetTarget(Kinematic target)
+        {
+            foreach (var steering in Groups)
+            {
+                steering.SetTarget(target);
+            }
+        }
+
+        public override void Dispose()
+        {
+            foreach (var steering in Groups)
+            {
+                steering.Dispose();
+            }
+        }
     }
+    
 }

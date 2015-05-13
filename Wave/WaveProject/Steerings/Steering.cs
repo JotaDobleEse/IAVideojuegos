@@ -58,7 +58,7 @@ namespace WaveProject.Steerings
         }
     };
 
-    public abstract class Steering
+    public abstract class Steering : IDisposable
     {
         private static List<Steering> steerings = new List<Steering>();
         public static List<Steering> Steerings { get { return steerings; } }
@@ -102,5 +102,10 @@ namespace WaveProject.Steerings
             }
         }
         #endregion
+
+        public virtual void Dispose()
+        {
+            Steerings.Remove(this);
+        }
     }
 }

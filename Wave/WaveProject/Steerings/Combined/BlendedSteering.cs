@@ -37,5 +37,13 @@ namespace WaveProject.Steerings.Combined
                 steering.Behavior.SetTarget(target);
             }
         }
+
+        public override void Dispose()
+        {
+            foreach (var steering in Behaviors)
+            {
+                steering.Behavior.Dispose();
+            }
+        }
     }
 }

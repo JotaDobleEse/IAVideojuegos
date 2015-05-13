@@ -63,7 +63,6 @@ namespace WaveProject
 
         public void DrawPath(LineBatch2D batch, Vector2 position, int current)
         {
-            Console.WriteLine(Length);
             if (Length == 0)
                 return;
             for (int i = 1; i < Points.Count; i++)

@@ -9,7 +9,9 @@ using WaveEngine.Components.UI;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
+using WaveProject.Steerings.Combined;
 using WaveProject.Steerings.Coordinated;
+using WaveProject.Steerings.Delegated;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
@@ -24,6 +26,7 @@ namespace WaveProject
         Button LRTAManhattan;
         Button LRTAChevychev;
         Button LRTAEuclidean;
+        Button FormationMode;
         DistanceAlgorith CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
         public DebugLines Debug { get; set; }
         private List<PlayableCharacter> SelectedCharacters;
@@ -31,6 +34,7 @@ namespace WaveProject
         private bool MousePressed = false;
         private bool ControlSelect = false;
         private RectangleF MouseRectangle;
+        private bool IsFormationMode = false;
 
         public GameController(Kinematic mouse)
         {
@@ -46,12 +50,14 @@ namespace WaveProject
             LRTAManhattan = EntityManager.Find<Button>("LRTA_Manhattan");
             LRTAChevychev = EntityManager.Find<Button>("LRTA_Chevychev");
             LRTAEuclidean = EntityManager.Find<Button>("LRTA_Euclidean");
+            FormationMode = EntityManager.Find<Button>("FormationMode");
             
             float width = WaveServices.ViewportManager.ScreenWidth;
             float height = WaveServices.ViewportManager.ScreenHeight;
             LRTAManhattan.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAManhattan.Width - 10, 50);
-            LRTAChevychev.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAManhattan.Width - 10, 100);
-            LRTAEuclidean.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAManhattan.Width - 10, 150);
+            LRTAChevychev.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAChevychev.Width - 10, 100);
+            LRTAEuclidean.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAEuclidean.Width - 10, 150);
+            FormationMode.Entity.FindComponent<Transform2D>().Position = new Vector2(width - FormationMode.Width - 10, 200);
 
             LRTAManhattan.Click += (s, e) =>
             {
@@ -75,6 +81,27 @@ namespace WaveProject
                 LRTAManhattan.IsVisible = true;
                 LRTAChevychev.IsVisible = true;
                 LRTAEuclidean.IsVisible = false;
+            };
+
+            FormationMode.Click += (s, e) =>
+            {
+                IsFormationMode = !IsFormationMode;
+                if (IsFormationMode)
+                {
+                    FormationMode.Text = "Disable Formation Mode";
+                    FormationMode.BackgroundColor = Color.Red;
+                }
+                else
+                {
+                    FormationMode.Text = "Enable Formation Mode";
+                    FormationMode.BackgroundColor = Color.Green;
+                    ActiveFormation = null;
+                    
+                    foreach (var character in EntityManager.AllEntities.Where(w => w.FindComponent<PlayableCharacter>() != null).Select(sel => sel.FindComponent<PlayableCharacter>()))
+                    {
+                        character.SetPathFollowing();
+                    }
+                }
             };
 
             LRTAManhattan.IsVisible = false;
@@ -154,22 +181,28 @@ namespace WaveProject
             // Si está pulsado el botón derecho del ratón y está en una posición valida del mapa
             if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && Map.CurrentMap.PositionInMap(Mouse.Position))
             {
-                if (ActiveFormation != null)
+                if (IsFormationMode)
                 {
-                    ActiveFormation.MoveToPosition(Mouse.Position);
+                    if (ActiveFormation != null)
+                    {
+                        ActiveFormation.MoveToPosition(Mouse.Position);
+                    }
                 }
-                //foreach (var selectedCharacter in SelectedCharacters)
-                //{
-                //    LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
-                //    if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
-                //    {
-                //        LastStartTile = lrta.StartPos;
-                //        LastEndTile = lrta.EndPos;
-                //        List<Vector2> path = lrta.Execute();
-                //        selectedCharacter.SetPath(path);
-                //        Debug.Path = path;
-                //    }
-                //}
+                else
+                {
+                    foreach (var selectedCharacter in SelectedCharacters)
+                    {
+                        LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
+                        if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
+                        {
+                            LastStartTile = lrta.StartPos;
+                            LastEndTile = lrta.EndPos;
+                            List<Vector2> path = lrta.Execute();
+                            selectedCharacter.SetPath(path);
+                            Debug.Path = path;
+                        }
+                    }
+                }
             }
             LastMousePosition = Mouse.Position;
             Debug.Controller = this;
@@ -187,19 +220,22 @@ namespace WaveProject
                 }
             }
 
-            // R para eliminar personajes
-            if (WaveServices.Input.KeyboardState.F == WaveEngine.Common.Input.ButtonState.Pressed && SelectedCharacters.Count > 1)
+            if (IsFormationMode)
             {
-                ActiveFormation = new FormationManager() { Pattern = new DefensiveCirclePattern() { CharacterRadius = 60f } };
-                foreach (var selectedCharacter in SelectedCharacters)
+                // R para eliminar personajes
+                if (WaveServices.Input.KeyboardState.F == WaveEngine.Common.Input.ButtonState.Pressed && SelectedCharacters.Count > 1)
                 {
-                    ActiveFormation.AddCharacter(selectedCharacter);
+                    ActiveFormation = new FormationManager() { Pattern = new DefensiveCirclePattern() { CharacterRadius = 60f } };
+                    foreach (var selectedCharacter in SelectedCharacters)
+                    {
+                        ActiveFormation.AddCharacter(selectedCharacter);
+                    }
+                    ActiveFormation.UpdateSlot();
                 }
-                ActiveFormation.UpdateSlot();
-            }
 
-            if (ActiveFormation != null)
-                ActiveFormation.Update((float)gameTime.TotalSeconds);
+                if (ActiveFormation != null)
+                    ActiveFormation.Update((float)gameTime.TotalSeconds);
+            }
         }
 
         public void Draw(LineBatch2D lb)

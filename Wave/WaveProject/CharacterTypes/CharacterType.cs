@@ -30,6 +30,8 @@ namespace WaveProject.CharacterTypes
         public abstract float Cost(Terrain terrain);
 
         public abstract float MaxVelocity(Terrain terrain);
-        public abstract EnumeratedCharacterType GetType();
+        public abstract EnumeratedCharacterType GetCharacterType();
+
+        public abstract void Update();
     }
 }

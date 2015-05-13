@@ -58,7 +58,7 @@ namespace WaveProject.CharacterTypes
 
         public override void Update()
         {
-            CharacterType enemy = FindEnemyNear();
+            CharacterType enemy = null;//FindEnemyNear();
             //ATAQUE
             if (HP >= HP*0.75)
             {
@@ -66,7 +66,7 @@ namespace WaveProject.CharacterTypes
 
                 if (enemy != null)
                 {
-                    Attack(enemy);
+                    //Attack(enemy);
                 }
                 else
                 {
@@ -81,7 +81,7 @@ namespace WaveProject.CharacterTypes
                 //SI ENCONTRAMOS UN ENEMIGO Y
                 if (enemy !=null )
                 {
-                    GoToWaypoint();
+                    //GoToWaypoint();
                 }
 
                 //else
@@ -94,6 +94,6 @@ namespace WaveProject.CharacterTypes
 
             }
         }
-        }
+        
     }
 }

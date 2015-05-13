@@ -61,11 +61,11 @@ namespace WaveProject.CharacterTypes
             //ATAQUE
             if (HP > HP *0.60)
             {
-                CharacterType enemy = FindEnemyNear();
+                CharacterType enemy = null; // FindEnemyNear();
 
                 if (enemy != null)
                 {
-                    Attack(enemy);
+                    //Attack(enemy);
                 }
                 else
                 {
@@ -76,12 +76,12 @@ namespace WaveProject.CharacterTypes
             //DEFENSA
             else if (HP <= HP *0.60)
             {
-                CharacterType enemy = FindEnemyNear();
+                CharacterType enemy = null;// FindEnemyNear();
 
                 //SI ENCONTRAMOS UN ENEMIGO Y NO ES UN ENEMIGO QUE ATAQUE CON RANGO
-                if (enemy !=null && enemy.GetType() != EnumeratedCharacterType.RANGED)
+                if (enemy !=null && enemy.GetCharacterType() != EnumeratedCharacterType.RANGED)
                 {
-                    Attack(enemy);
+                    //Attack(enemy);
                 }
 
                 //else

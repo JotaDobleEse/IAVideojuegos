@@ -27,5 +27,10 @@ namespace WaveProject.CharacterTypes
         {
             return EnumeratedCharacterType.NONE;
         }
+
+        public override void Update()
+        {
+
+        }
     }
 }

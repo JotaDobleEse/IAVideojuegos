@@ -16,6 +16,9 @@ namespace WaveProject.CharacterTypes
         public int HP { get; set; }
         public int Atk { get; set; }
         public int Def { get; set; }
+        //definir ActualHP o MAXHP
+        //definir visibilidad (float?)
+        //definir RAngo de ataque, Arquero tendra mayor rango
 
         public CharacterType(int hp = 0, int atk = 0, int def = 0)
         {
@@ -27,6 +30,6 @@ namespace WaveProject.CharacterTypes
         public abstract float Cost(Terrain terrain);
 
         public abstract float MaxVelocity(Terrain terrain);
-        public abstract EnumeratedCharacterType GetCharacterType();
+        public abstract EnumeratedCharacterType GetType();
     }
 }

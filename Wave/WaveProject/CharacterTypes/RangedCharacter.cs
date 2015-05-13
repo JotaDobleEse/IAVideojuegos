@@ -55,5 +55,46 @@ namespace WaveProject.CharacterTypes
         {
             return EnumeratedCharacterType.RANGED;
         }
+
+        public override void Update()
+        {
+            //ATAQUE
+            if (HP > HP *0.60)
+            {
+                CharacterType enemy = FindEnemyNear();
+
+                if (enemy != null)
+                {
+                    Attack(enemy);
+                }
+                else
+                {
+                    //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
+                    //GoToBase(otherTeam)
+                }
+            }
+            //DEFENSA
+            else if (HP <= HP *0.60)
+            {
+                CharacterType enemy = FindEnemyNear();
+
+                //SI ENCONTRAMOS UN ENEMIGO Y NO ES UN ENEMIGO QUE ATAQUE CON RANGO
+                if (enemy !=null && enemy.GetType() != EnumeratedCharacterType.RANGED)
+                {
+                    Attack(enemy);
+                }
+
+                //else
+                //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
+                //GoToBase(myteam)
+                //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
+                //GoToNextWaypoint()
+                
+
+
+            }
+        }
+
+
     }
 }

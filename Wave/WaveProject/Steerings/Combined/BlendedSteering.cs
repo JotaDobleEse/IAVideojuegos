@@ -29,12 +29,13 @@ namespace WaveProject.Steerings.Combined
 
             return steering;
         }
-        public static implicit operator PredictivePathFollowing(BlendedSteering steering)
+
+        public override void SetTarget(Kinematic target)
         {
-            var s = Steerings.FirstOrDefault(f => f is PredictivePathFollowing);
-            if (s != null)
-                return (PredictivePathFollowing)s;
-            return null;
+            foreach (var steering in Behaviors)
+            {
+                steering.Behavior.SetTarget(target);
+            }
         }
     }
 }

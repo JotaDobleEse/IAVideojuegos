@@ -9,6 +9,7 @@ using WaveEngine.Components.UI;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
+using WaveProject.Steerings.Coordinated;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
@@ -26,6 +27,7 @@ namespace WaveProject
         DistanceAlgorith CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
         public DebugLines Debug { get; set; }
         private List<PlayableCharacter> SelectedCharacters;
+        private FormationManager ActiveFormation;
         private bool MousePressed = false;
         private bool ControlSelect = false;
         private RectangleF MouseRectangle;
@@ -123,7 +125,7 @@ namespace WaveProject
                     {
                         if (SelectedCharacters.Contains(selectedCharacter))
                             SelectedCharacters.Remove(selectedCharacter);
-                        else 
+                        else
                             SelectedCharacters.Add(selectedCharacter);
                     }
                 }
@@ -152,6 +154,10 @@ namespace WaveProject
             // Si está pulsado el botón derecho del ratón y está en una posición valida del mapa
             if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && Map.CurrentMap.PositionInMap(Mouse.Position))
             {
+                /*if (ActiveFormation != null)
+                {
+                    ActiveFormation.MoveToPosition(Mouse.Position);
+                }*/
                 foreach (var selectedCharacter in SelectedCharacters)
                 {
                     LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
@@ -180,6 +186,20 @@ namespace WaveProject
                     character.Dispose();
                 }
             }
+
+            // R para eliminar personajes
+            if (WaveServices.Input.KeyboardState.F == WaveEngine.Common.Input.ButtonState.Pressed && SelectedCharacters.Count > 1)
+            {
+                ActiveFormation = new FormationManager() { Pattern = new DefensiveCirclePattern() { CharacterRadius = 60f } };
+                foreach (var selectedCharacter in SelectedCharacters)
+                {
+                    ActiveFormation.AddCharacter(selectedCharacter);
+                }
+                ActiveFormation.UpdateSlot();
+            }
+
+            if (ActiveFormation != null)
+                ActiveFormation.Update((float)gameTime.TotalMilliseconds);
         }
 
         public void Draw(LineBatch2D lb)
@@ -190,6 +210,8 @@ namespace WaveProject
             {
                 selectedCharacter.Draw(lb);
             }
+            if (ActiveFormation != null)
+                ActiveFormation.Draw(lb);
         }
     }
 

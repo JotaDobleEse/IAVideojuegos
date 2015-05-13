@@ -20,6 +20,7 @@ namespace WaveProject.Steerings.Coordinated
         public abstract SlotLocation GetDriftOffset(List<SlotAssignment> slotAssignments);
 
         public abstract SlotLocation GetSlotLocation(int slotNumber);
+        public abstract int CalculateNumberOfSlots(List<SlotAssignment> slotAssignments);
 
         public virtual bool SupportSlots(int slotCounts)
         {

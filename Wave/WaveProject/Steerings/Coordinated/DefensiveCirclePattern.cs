@@ -11,7 +11,7 @@ namespace WaveProject.Steerings.Coordinated
     {
         public float CharacterRadius { get; set; }
 
-        public int CalculateNumberOfSlots(List<SlotAssignment> slotAssignments)
+        public override int CalculateNumberOfSlots(List<SlotAssignment> slotAssignments)
         {
             NumberOfSlots = slotAssignments.Count;
             return NumberOfSlots;
@@ -35,13 +35,16 @@ namespace WaveProject.Steerings.Coordinated
 
         public override SlotLocation GetSlotLocation(int slotNumber)
         {
-            var angleAroundCircle = slotNumber / NumberOfSlots * (float)Math.PI * 2;
-            var radius = CharacterRadius / (float)Math.Sin(Math.PI / NumberOfSlots);
+            var angleAroundCircle = NumberOfSlots * CharacterRadius / (float)Math.PI;
+            //var radius = CharacterRadius / (float)Math.Sin(Math.PI / NumberOfSlots);
+            var o = ((2 * (float)Math.PI) / NumberOfSlots) * slotNumber;
 
             var location = new SlotLocation();
+            location.Position = angleAroundCircle * new Vector2((float)Math.Cos(o), (float)Math.Sin(o));
+            location.Orientation = o;
             //location.Position = new Vector2((float)Math.Cos(angleAroundCircle), (float)Math.Sin(angleAroundCircle)) * radius;
-            location.Position = angleAroundCircle.RotationToVector() * radius;
-            location.Orientation = angleAroundCircle;
+            //location.Position = angleAroundCircle.RotationToVector() * radius;
+            //location.Orientation = angleAroundCircle;
 
             return location;
         }

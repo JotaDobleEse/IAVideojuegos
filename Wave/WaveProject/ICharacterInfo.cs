@@ -11,7 +11,9 @@ namespace WaveProject
     public interface ICharacterInfo
     {
         Vector2 GetPostion();
+        Vector2 GetVelocity();
         int GetTeam();
-        EnumeratedCharacterType GetType();
+        EnumeratedCharacterType GetCharacterType();
+        void SetTarget(Kinematic target);
     }
 }

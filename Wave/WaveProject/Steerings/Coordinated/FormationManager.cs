@@ -103,7 +103,7 @@ namespace WaveProject.Steerings.Coordinated
             OrientationMatrix = new Matrix3x3(sin, -cos, 0, 
                                              cos, sin, 0, 
                                              0, 0, 1);
-
+            Positions.Clear();
             foreach (var slot in SlotAssignments)
             {
                 //Obtenemos el location
@@ -120,11 +120,8 @@ namespace WaveProject.Steerings.Coordinated
                 //Deja el resultado en relativeLoc, esperemos
                 Matrix3x3 result = Matrix3x3.Multiply(OrientationMatrix, relativeLocMatrix);
 
-                //var result = new Vector2(relativeLoc.Position.X * cos + relativeLoc.Position.Y * -sin, relativeLoc.Position.X * sin + relativeLoc.Position.Y * cos);
-
                 //Obtenemos los nuevos valores de la matriz despues de la multiplicacion
                 var newPos = result.Translation;
-                //var newPos = new Vector2(result.X, result.Y);
                 //Sumamos el offset
                 newPos += positionOffset;
 
@@ -146,7 +143,7 @@ namespace WaveProject.Steerings.Coordinated
 
         public void MoveToPosition(Vector2 dst)
         {
-            LRTA lrta = new LRTA(AnchorPoint.Position, dst, new FormationType(), DistanceAlgorith.CHEVYCHEV);
+            LRTA lrta = new LRTA(AnchorPoint.Position, dst, Type, DistanceAlgorith.CHEVYCHEV);
             List<Vector2> path = lrta.Execute();
             Steering.SetPath(path);
         }

@@ -83,7 +83,7 @@ namespace WaveProject
 
         protected override void Update(TimeSpan gameTime)
         {
-            Mouse.Update((float)gameTime.TotalMilliseconds, new Steerings.SteeringOutput());
+            Mouse.Update((float)gameTime.TotalSeconds, new Steerings.SteeringOutput());
 
             // Si el botón izquierdo del ratón no está pultado y la tecla estaba pulsada
             if ((WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release && ControlSelect))
@@ -154,22 +154,22 @@ namespace WaveProject
             // Si está pulsado el botón derecho del ratón y está en una posición valida del mapa
             if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && Map.CurrentMap.PositionInMap(Mouse.Position))
             {
-                /*if (ActiveFormation != null)
+                if (ActiveFormation != null)
                 {
                     ActiveFormation.MoveToPosition(Mouse.Position);
-                }*/
-                foreach (var selectedCharacter in SelectedCharacters)
-                {
-                    LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
-                    if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
-                    {
-                        LastStartTile = lrta.StartPos;
-                        LastEndTile = lrta.EndPos;
-                        List<Vector2> path = lrta.Execute();
-                        selectedCharacter.SetPath(path);
-                        Debug.Path = path;
-                    }
                 }
+                //foreach (var selectedCharacter in SelectedCharacters)
+                //{
+                //    LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
+                //    if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
+                //    {
+                //        LastStartTile = lrta.StartPos;
+                //        LastEndTile = lrta.EndPos;
+                //        List<Vector2> path = lrta.Execute();
+                //        selectedCharacter.SetPath(path);
+                //        Debug.Path = path;
+                //    }
+                //}
             }
             LastMousePosition = Mouse.Position;
             Debug.Controller = this;
@@ -199,7 +199,7 @@ namespace WaveProject
             }
 
             if (ActiveFormation != null)
-                ActiveFormation.Update((float)gameTime.TotalMilliseconds);
+                ActiveFormation.Update((float)gameTime.TotalSeconds);
         }
 
         public void Draw(LineBatch2D lb)

@@ -67,10 +67,10 @@ namespace WaveProject
 
                 Controller.Draw(lb);
 
-                /*foreach (var wall in Wall.Walls)
+                foreach (var wall in Wall.Walls)
                 {
                     lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1f);
-                }*/
+                }
 
                 /*for (int i = 0; i < Path.Count-1; i++)
                 {

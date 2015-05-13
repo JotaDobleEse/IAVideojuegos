@@ -90,9 +90,9 @@ namespace WaveProject
             return Team;
         }
 
-        public EnumeratedCharacterType GetType()
+        public EnumeratedCharacterType GetCharacterType()
         {
-            return Type.GetType();
+            return Type.GetCharacterType();
         }
         public void Dispose()
         {
@@ -113,6 +113,16 @@ namespace WaveProject
             }
 
             disposed = true;
+        }
+
+        public Vector2 GetVelocity()
+        {
+            return Kinematic.Velocity;
+        }
+
+        public void SetTarget(Kinematic target)
+        {
+            Steering.SetTarget(target);
         }
     }
 }

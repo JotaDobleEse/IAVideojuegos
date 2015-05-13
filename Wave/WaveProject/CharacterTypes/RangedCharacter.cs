@@ -51,7 +51,7 @@ namespace WaveProject.CharacterTypes
             return 25;
         }
 
-        public override EnumeratedCharacterType GetType()
+        public override EnumeratedCharacterType GetCharacterType()
         {
             return EnumeratedCharacterType.RANGED;
         }

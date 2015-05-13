@@ -51,6 +51,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="CharacterTypes\CharacterType.cs" />
     <Compile Include="CharacterTypes\ExplorerCharacter.cs" />
+    <Compile Include="CharacterTypes\FormationType.cs" />
     <Compile Include="CharacterTypes\MeleeCharacter.cs" />
     <Compile Include="CharacterTypes\RangedCharacter.cs" />
     <Compile Include="DecisionManager\Action.cs" />

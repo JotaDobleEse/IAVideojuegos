@@ -86,6 +86,11 @@ namespace WaveProject.Steerings
 
         }
 
+        public virtual void SetTarget(Kinematic target)
+        {
+            Target = target;
+        }
+
         #region SteeringContenedor
         public class LookMouseSteering : Steering
         {

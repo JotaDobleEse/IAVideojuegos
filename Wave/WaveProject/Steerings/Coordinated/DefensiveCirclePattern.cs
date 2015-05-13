@@ -35,16 +35,12 @@ namespace WaveProject.Steerings.Coordinated
 
         public override SlotLocation GetSlotLocation(int slotNumber)
         {
-            var angleAroundCircle = NumberOfSlots * CharacterRadius / (float)Math.PI;
-            //var radius = CharacterRadius / (float)Math.Sin(Math.PI / NumberOfSlots);
+            var rn = NumberOfSlots * CharacterRadius / (float)Math.PI;
             var o = ((2 * (float)Math.PI) / NumberOfSlots) * slotNumber;
 
             var location = new SlotLocation();
-            location.Position = angleAroundCircle * new Vector2((float)Math.Cos(o), (float)Math.Sin(o));
+            location.Position = rn * new Vector2((float)Math.Cos(o), (float)Math.Sin(o));
             location.Orientation = o;
-            //location.Position = new Vector2((float)Math.Cos(angleAroundCircle), (float)Math.Sin(angleAroundCircle)) * radius;
-            //location.Position = angleAroundCircle.RotationToVector() * radius;
-            //location.Orientation = angleAroundCircle;
 
             return location;
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
+using WaveEngine.Components.Graphics2D;
 using WaveEngine.Components.UI;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
@@ -35,6 +36,7 @@ namespace WaveProject
         private bool ControlSelect = false;
         private RectangleF MouseRectangle;
         private bool IsFormationMode = false;
+        private float TimeToUpdateInfluence = 0f;
 
         public GameController(Kinematic mouse)
         {
@@ -236,6 +238,18 @@ namespace WaveProject
                 if (ActiveFormation != null)
                     ActiveFormation.Update((float)gameTime.TotalSeconds);
             }
+
+            TimeToUpdateInfluence -= (float)gameTime.TotalSeconds;
+
+            if (TimeToUpdateInfluence <= 0f)
+            {
+                var entityMap = EntityManager.Find("InfluenceMap");
+                var sprite = entityMap.FindComponent<Sprite>();
+                sprite.Texture.IsUploaded = false;
+                InfluenceMap.Influence.GenerateInfluenteMap((Texture2D)sprite.Texture);
+                TimeToUpdateInfluence = 2f;
+            }
+
         }
 
         public void Draw(LineBatch2D lb)

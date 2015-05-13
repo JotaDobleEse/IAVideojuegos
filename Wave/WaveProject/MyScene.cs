@@ -38,6 +38,8 @@ namespace WaveProject
 
         protected override void CreateScene()
         {
+            InfluenceMap.Influence.Initialize(EntityManager);
+
             // Controlador principal
             var gameController = new Entity("Controller")
                 .AddComponent(Controller = new GameController(Kinematic.Mouse));
@@ -314,7 +316,7 @@ namespace WaveProject
             #endregion
 
             var r = new System.Random();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 float x = r.Next(1000);
                 float y = r.Next(800);
@@ -345,35 +347,21 @@ namespace WaveProject
                      .AddComponent(new PlayableCharacter(position, type, ((int)x % 2) + 1, Color.White));
                 EntityManager.Add(character);
 
-                Console.WriteLine("Add character {2}_{0} in position {1}", i + 1, position.Position, texture);
+                Console.WriteLine("{0}: Add character {2} as {3} of team {4} in position {1}{5}", i + 1, position.Position, texture, type.GetCharacterType(), ((int)x % 2) + 1, Environment.NewLine);
             }
 
-            /*Kinematic kinematic = new Kinematic(true) { Position = new Vector2(50, 50) };
+            Entity influenceMap = new Entity("InfluenceMap")
+                .AddComponent(new Transform2D())
+                .AddComponent(new Sprite(new Texture2D()
+                {
+                    Format = PixelFormat.R8G8B8A8,
+                    Width = TiledMap.Width() / InfluenceMap.Scale,
+                    Height = TiledMap.Height() / InfluenceMap.Scale,
+                    Levels = 1
+                }))
+                .AddComponent(new SpriteRenderer(DefaultLayers.GUI));
+            EntityManager.Add(influenceMap);
 
-            Entity char1 = new Entity("char1")
-                 .AddComponent(new Transform2D() { Position = kinematic.Position })
-                 .AddComponent(new Sprite("Content/Textures/malabestia"))
-                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, new MeleeCharacter(), 1, Color.White));
-            EntityManager.Add(char1);
-
-            kinematic = new Kinematic(true) { Position = new Vector2(500, 500) };
-
-            Entity char2 = new Entity("char2")
-                 .AddComponent(new Transform2D() { Position = kinematic.Position })
-                 .AddComponent(new Sprite("Content/Textures/soldado"))
-                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, new RangedCharacter(), 1, Color.White));
-            EntityManager.Add(char2);
-
-            kinematic = new Kinematic(true) { Position = new Vector2(550, 200) };
-
-            Entity char3 = new Entity("char3")
-                 .AddComponent(new Transform2D() { Position = kinematic.Position })
-                 .AddComponent(new Sprite("Content/Textures/lagarto"))
-                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new PlayableCharacter(kinematic, new ExplorerCharacter(), 2, Color.White));
-            EntityManager.Add(char3);*/
         }
 
         protected override void Start()
@@ -381,6 +369,13 @@ namespace WaveProject
             base.Start();
 
             Map.CurrentMap.Initialize(TiledMap);
+
+            float width = WaveServices.ViewportManager.ScreenWidth;
+            float height = WaveServices.ViewportManager.ScreenHeight;
+            var entityMap = EntityManager.Find("InfluenceMap");
+            var sprite = entityMap.FindComponent<Sprite>();
+            sprite.SourceRectangle = new Rectangle(0, 0, TiledMap.Width() / InfluenceMap.Scale, TiledMap.Height() / InfluenceMap.Scale);
+            sprite.Transform2D.Position = new Vector2(width - sprite.SourceRectangle.Value.Width - 20, height - sprite.SourceRectangle.Value.Height - 20);
 
             // Carga todas las capas de objeto del mapa como Muros
             if (TiledMap.ObjectLayers.Count > 0)

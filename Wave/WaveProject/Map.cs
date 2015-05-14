@@ -30,6 +30,7 @@ namespace WaveProject
         public const int HealRatio = 10;
 
         public List<HealPoint> HealPoints { get; private set; }
+        public List<Vector2> Waypoints { get; private set; }
 
         public int Width { get { return TiledMap.Width; } }
         public int Height { get { return TiledMap.Height; } }
@@ -43,6 +44,8 @@ namespace WaveProject
         public void Initialize(TiledMap map)
         {
             HealPoints = new List<HealPoint>();
+            Waypoints = new List<Vector2>();
+
             TiledMap = map;
 
             #region Node Map Base

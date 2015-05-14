@@ -44,9 +44,9 @@ namespace WaveProject.Steerings.Combined
         {
             BehaviorAndWeight[] behaviors = new BehaviorAndWeight[3];
 
-            behaviors[0] = new BehaviorAndWeight() { Behavior = new CollisionAvoidance() { Character = character }, Weight = 0.4f };
-            behaviors[1] = new BehaviorAndWeight() { Behavior = new WallAvoidance() { Character = character, LookAhead = 30f }, Weight = 0.9f };
-            behaviors[2] = new BehaviorAndWeight() { Behavior = new CollisionAvoidanceRT() { Character = character }, Weight = 0.5f };
+            behaviors[0] = new BehaviorAndWeight() { Behavior = new CollisionAvoidance() { Character = character }, Weight = 0.6f };
+            behaviors[1] = new BehaviorAndWeight() { Behavior = new WallAvoidance() { Character = character, LookAhead = 30f }, Weight = 1.2f };
+            behaviors[2] = new BehaviorAndWeight() { Behavior = new CollisionAvoidanceRT() { Character = character }, Weight = 0.9f };
 
             return behaviors;
         }

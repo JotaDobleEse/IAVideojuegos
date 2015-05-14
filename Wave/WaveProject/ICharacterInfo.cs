@@ -15,5 +15,6 @@ namespace WaveProject
         int GetTeam();
         EnumeratedCharacterType GetCharacterType();
         void SetTarget(Kinematic target);
+        void SetPathFinding(Vector2 target);
     }
 }

@@ -9,6 +9,10 @@ namespace WaveProject.CharacterTypes
 {
     public class FormationType : CharacterType
     {
+        public FormationType() : base(null, null)
+        {
+                
+        }
         public override float Cost(Terrain terrain)
         {
             if (terrain == Terrain.WATER)
@@ -31,6 +35,11 @@ namespace WaveProject.CharacterTypes
         public override void Update()
         {
 
+        }
+
+        public override void Attack(CharacterType character)
+        {
+            throw new NotImplementedException();
         }
     }
 }

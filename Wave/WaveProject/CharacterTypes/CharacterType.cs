@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Math;
+using WaveEngine.Framework.Managers;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
@@ -13,16 +15,20 @@ namespace WaveProject.CharacterTypes
     }
     public abstract class CharacterType
     {
+        public EntityManager EntityManager { get; set; }
+        public int MaxHP { get; set; }
         public int HP { get; set; }
         public int Atk { get; set; }
         public int Def { get; set; }
-        //definir ActualHP o MAXHP
-        //definir visibilidad (float?)
+        public float VisibilityRadius { get; set; }
+        public ICharacterInfo MyInfo { get; set; }
         //definir RAngo de ataque, Arquero tendra mayor rango
 
-        public CharacterType(int hp = 0, int atk = 0, int def = 0)
+        public CharacterType(ICharacterInfo myInfo, EntityManager entityManager, int hp = 0, int atk = 0, int def = 0)
         {
-            HP = hp;
+            MyInfo = myInfo;
+            EntityManager = entityManager;
+            MaxHP = HP = hp;
             Atk = atk;
             Def = def;
         }
@@ -35,57 +41,87 @@ namespace WaveProject.CharacterTypes
         public abstract void Update();
         public abstract void Attack(CharacterType character);
 
-        public CharacterType FindEnemyNear()
+        public ICharacterInfo FindEnemyNear()
         {
+            var characters = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo))
+                .Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo)
+                .Where(w => w.GetTeam() == (MyInfo.GetTeam() % 2) + 1);
+
             //Buscamos el mejor objetivo de entre los enemigos, debemos de utilizar la visibilidad para comprobar los enemigos en el grid
+            var enemy = characters.Where(w => (w.GetPostion() - MyInfo.GetPostion()).Length() <= VisibilityRadius)
+                .FirstOrDefault();
 
-            /**
-             * for (int i = (int) (-visibility/2); i <= visibility/2; i++)
-             *      for(int j = (int) (-visibility/2); j <= visibility/2; j++)
-             *          //posicion en el grid x + i
-             *          //posicion en el grid y + j
-             *          //si nos salimos del grid, continue
-             *          
-             *          //SI LA POSICION NO ES NULA, Y SE ENCUENTRA EN EL EQUIPO CONTRARIO
-             *          //AÑADE AL ENEMIGO A UNA LISTA Y SELECCIONAMOS EL MEJOR
-             *          // O
-             *          //ESCOJE UNO AL AZAR
-             * 
-             * 
-             */
-            throw new NotImplementedException();
+            return enemy;
         }
 
-        public bool GoToHeal()
+        public void GoToHeal()
         {
-            //Comprueba si esta en la base de tu equipo
-            //No se si pasarle el equipo o pasarle la posición de la base
-            //si esta en la base return true
-            /*
-             * if (InBase(character)){
-             *      HP += healRatio;
-             *      if(HP>HPMAX){
-             *          HP=MAXHP
-             *          GoToCover para salir de la base
-             *      
-             *      }
-             * }
-             * else GoToBase(mybase)
-             * 
-             *  
-             */
+            var healpoint = Map.CurrentMap.HealPoints.Where(w => w.Team == MyInfo.GetTeam())
+                .OrderBy(o => (o.Position - MyInfo.GetPostion()).Length())
+                .Select(s => s.Position)
+                .FirstOrDefault();
 
-            return true;
+            healpoint += new Vector2(Map.HealRatio, -Map.HealRatio);
+
+            if ((healpoint - MyInfo.GetPostion()).Length() < Map.HealRatio)
+            {
+                HP = Math.Max(HP + 1, MaxHP);
+            }
+            else
+            {
+                List<Vector2> ps = new List<Vector2>();
+                ps.Add(healpoint + new Vector2(Map.HealRatio, Map.HealRatio));
+                ps.Add(healpoint + new Vector2(Map.HealRatio, -Map.HealRatio));
+                ps.Add(healpoint + new Vector2(-Map.HealRatio, Map.HealRatio));
+                ps.Add(healpoint + new Vector2(-Map.HealRatio, -Map.HealRatio));
+
+                foreach (var p in ps)
+                {
+                    var pos = Map.CurrentMap.TilePositionByWolrdPosition(p);
+                    if (pos != new Vector2(-1, -1) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
+                    {
+                        healpoint = pos;
+                        break;
+                    }
+                }
+
+                // PATHFINDING
+                MyInfo.SetPathFinding(healpoint);
+            }
         }
 
-        public void GoToEnemyBase(/*Base enemiga o tu base*/)
+        public void GoToEnemyBase()
         {
-            //Llamar al pathfinding pasandole tu posicion de origen y de destino la de la base enemiga
+            var healpoint = Map.CurrentMap.HealPoints.Where(w => w.Team != MyInfo.GetTeam())
+                .OrderBy(o => (o.Position - MyInfo.GetPostion()).Length())
+                .Select(s => s.Position)
+                .FirstOrDefault();
+
+            healpoint += new Vector2(Map.HealRatio, -Map.HealRatio);
+
+            List<Vector2> ps = new List<Vector2>();
+            ps.Add(healpoint + new Vector2(Map.HealRatio, Map.HealRatio));
+            ps.Add(healpoint + new Vector2(Map.HealRatio, -Map.HealRatio));
+            ps.Add(healpoint + new Vector2(-Map.HealRatio, Map.HealRatio));
+            ps.Add(healpoint + new Vector2(-Map.HealRatio, -Map.HealRatio));
+
+            foreach (var p in ps)
+            {
+                var pos = Map.CurrentMap.TilePositionByWolrdPosition(p);
+                if (pos != new Vector2(-1, -1) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
+                {
+                    healpoint = pos;
+                    break;
+                }
+            }
+
+            // PATHFINDING
+            MyInfo.SetPathFinding(healpoint);
         }
 
         public void GoToMyBase()
         {
-
+            GoToHeal();
         }
 
         public void GoToWaypoint()

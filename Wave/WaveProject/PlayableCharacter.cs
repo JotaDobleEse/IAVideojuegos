@@ -30,12 +30,26 @@ namespace WaveProject
         public CharacterType Type { get; private set; }
         public int Team { get; set; }
 
-        public PlayableCharacter(Kinematic kinematic, CharacterType type, int team, Color color)
+        public PlayableCharacter(Kinematic kinematic, EnumeratedCharacterType type, int team, Color color)
         {
             Kinematic = kinematic;
             Kinematic.MaxVelocity = 30;
-            Type = type;
             Team = team;
+            switch (type)
+            {
+                case EnumeratedCharacterType.EXPLORER:
+                    Type = new ExplorerCharacter(this, EntityManager);
+                    break;
+                case EnumeratedCharacterType.MELEE:
+                    Type = new MeleeCharacter(this, EntityManager);
+                    break;
+                case EnumeratedCharacterType.RANGED:
+                    Type = new RangedCharacter(this, EntityManager);
+                    break;
+                case EnumeratedCharacterType.NONE:
+                    Type = new MeleeCharacter(this, EntityManager);
+                    break;
+            }
 
             //Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.3f };
             ////Steering = new FollowPath() { Character = Kinematic };
@@ -50,6 +64,13 @@ namespace WaveProject
             //Color = color;
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+            Transform.Origin = Vector2.Center;
+            Texture.TintColor = Color;
+        }
+
         public void SetPathFollowing()
         {
             if (Steering != null)
@@ -62,13 +83,6 @@ namespace WaveProject
         public void SetPath(List<Vector2> path)
         {
             PathFollowing.SetPath(path);
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-            Transform.Origin = Vector2.Center;
-            Texture.TintColor = Color;
         }
 
         public void Draw(LineBatch2D lb)
@@ -165,6 +179,20 @@ namespace WaveProject
             });
             Steering = new BlendedSteering(allBehaviors.ToArray());
             //Steering.SetTarget(target);
+        }
+
+
+        public void SetPathFinding(Vector2 target)
+        {
+            if (Steering != null)
+                Steering.Dispose();
+            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            Steering = new BlendedSteering(behaviors);
+            PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
+
+            LRTA lrta = new LRTA(Kinematic.Position, target, Type, DistanceAlgorith.CHEVYCHEV);
+            var path = lrta.Execute();
+            PathFollowing.SetPath(path);
         }
     }
 }

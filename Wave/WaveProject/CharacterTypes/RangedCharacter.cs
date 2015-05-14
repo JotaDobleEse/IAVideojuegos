@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Framework.Managers;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
 {
     public class RangedCharacter : CharacterType
     {
-        public RangedCharacter()
-            : base(100, 60, 34)
+        public RangedCharacter(ICharacterInfo myInfo, EntityManager entityManager)
+            : base(myInfo, entityManager, 100, 60, 34)
         {
 
         }
@@ -96,5 +97,10 @@ namespace WaveProject.CharacterTypes
         }
 
 
+
+        public override void Attack(CharacterType character)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

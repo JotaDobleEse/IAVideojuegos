@@ -321,20 +321,20 @@ namespace WaveProject
 
                 Kinematic position = new Kinematic(true) { Position = new Vector2(x, y) };
                 string texture = Textures[(int)y % Textures.Length];
-                CharacterType type = null;
+                EnumeratedCharacterType type = EnumeratedCharacterType.NONE;
                 switch (texture)
                 {
                     case "malabestia":
-                        type = new MeleeCharacter();
+                        type = EnumeratedCharacterType.MELEE;
                         break;
                     case "soldado":
-                        type = new RangedCharacter();
+                        type = EnumeratedCharacterType.RANGED;
                         break;
                     case "lagarto":
-                        type = new ExplorerCharacter();
+                        type = EnumeratedCharacterType.EXPLORER;
                         break;
                     case "juggernaut":
-                        type = new MeleeCharacter();
+                        type = EnumeratedCharacterType.MELEE;
                         break;
                 }
 
@@ -345,7 +345,7 @@ namespace WaveProject
                      .AddComponent(new PlayableCharacter(position, type, ((int)x % 2) + 1, Color.White));
                 EntityManager.Add(character);
 
-                Console.WriteLine("{0}: Add character {2} as {3} of team {4} in position {1}{5}", i + 1, position.Position, texture, type.GetCharacterType(), ((int)x % 2) + 1, Environment.NewLine);
+                Console.WriteLine("{0}: Add character {2} as {3} of team {4} in position {1}{5}", i + 1, position.Position, texture, type, ((int)x % 2) + 1, Environment.NewLine);
             }
 
             Entity influenceMap = new Entity("InfluenceMap")

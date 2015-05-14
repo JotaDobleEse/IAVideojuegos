@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Framework.Managers;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
 {
     public class MeleeCharacter : CharacterType
     {
-        public MeleeCharacter()
-            : base(120, 60, 45)
+        public MeleeCharacter(ICharacterInfo myInfo, EntityManager entityManager)
+            : base(myInfo, entityManager, 120, 60, 45)
         {
 
         }
@@ -93,6 +94,11 @@ namespace WaveProject.CharacterTypes
 
 
             }
+        }
+
+        public override void Attack(CharacterType character)
+        {
+            throw new NotImplementedException();
         }
     }
 }

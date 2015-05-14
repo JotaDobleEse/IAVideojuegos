@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -47,6 +48,8 @@ namespace WaveProject
             Waypoints = new List<Vector2>();
 
             TiledMap = map;
+
+            LoadWaypoints();
 
             #region Node Map Base
             // Esto es para que los valores true o false recuperados de los tiles,
@@ -149,6 +152,19 @@ namespace WaveProject
                 .OrderBy(o => (o.Position - character.GetPostion()).Length())
                 .First();
             return hp.Position;
+        }
+
+        private void LoadWaypoints()
+        {
+            string[] lines = File.ReadAllLines(@"Content\waypoints.txt");
+            foreach (var line in lines)
+            {
+                string[] waypoint = line.Split(',');
+                int x, y;
+                x = int.Parse(waypoint[0]);
+                y = int.Parse(waypoint[1]);
+                Waypoints.Add(new Vector2(x, y));
+            }
         }
 
         public void Draw(LineBatch2D lb)

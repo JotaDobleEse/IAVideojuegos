@@ -96,7 +96,7 @@ namespace WaveProject.CharacterTypes
             }
         }
 
-        public override void Attack(CharacterType character)
+        public override void Attack(ICharacterInfo character)
         {
             throw new NotImplementedException();
         }

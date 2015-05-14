@@ -46,7 +46,7 @@ namespace WaveProject.Steerings.Coordinated
             for (int i = 0; i < SlotAssignments.Count; i++)
             {
                 SlotAssignments[i].SlotNumber = i;
-                position += SlotAssignments[i].Character.GetPostion();
+                position += SlotAssignments[i].Character.GetPosition();
             }
             AnchorPoint.Position = position / SlotAssignments.Count;
             DriftOffset = Pattern.GetDriftOffset(SlotAssignments);

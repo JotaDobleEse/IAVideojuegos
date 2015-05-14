@@ -23,7 +23,14 @@ namespace WaveProject.Steerings.Pathfinding
         public Terrain Terrain { get; set; }
         public bool Passable { get; set; }
 
+        public int[] InfluenceTeam { get; set; }
+
         public Vector2 Position { get { return new Vector2(X, Y); } }
+
+        public Node()
+        {
+            InfluenceTeam = new int[2];
+        }
 
         public static bool operator ==(Node n1, Node n2)
         {

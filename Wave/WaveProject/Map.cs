@@ -149,7 +149,7 @@ namespace WaveProject
         public Vector2 GetBestHealPoinPosition(ICharacterInfo character)
         {
             var hp = HealPoints.Where(w => w.Team == character.GetTeam())
-                .OrderBy(o => (o.Position - character.GetPostion()).Length())
+                .OrderBy(o => (o.Position - character.GetPosition()).Length())
                 .First();
             return hp.Position;
         }
@@ -169,6 +169,10 @@ namespace WaveProject
 
         public void Draw(LineBatch2D lb)
         {
+            foreach (var waypoint in Waypoints)
+            {
+                lb.DrawCircleVM(WolrdPositionByTilePosition(waypoint), 5f, Color.White, 2f);
+            }
             foreach (var healpoint in HealPoints)
             {
                 Vector2 src = WolrdPositionByTilePosition(healpoint.Position - new Vector2(HealRatio, HealRatio));

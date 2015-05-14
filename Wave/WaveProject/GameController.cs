@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
@@ -36,7 +37,9 @@ namespace WaveProject
         private bool ControlSelect = false;
         private RectangleF MouseRectangle;
         private bool IsFormationMode = false;
+        private bool Shoot = false;
         private float TimeToUpdateInfluence = 0f;
+        private Thread CurrentThread = null;
 
         public GameController(Kinematic mouse)
         {
@@ -206,8 +209,17 @@ namespace WaveProject
                     }
                 }
             }
-            LastMousePosition = Mouse.Position;
-            Debug.Controller = this;
+
+            if (WaveServices.Input.KeyboardState.S == WaveEngine.Common.Input.ButtonState.Pressed && SelectedCharacters.Count > 0 && !Shoot)
+            {
+                var target = SelectedCharacters[0].Type.FindEnemyNear();
+                SelectedCharacters[0].Type.Attack(target);
+                Shoot = true;
+            }
+            else if (WaveServices.Input.KeyboardState.S == WaveEngine.Common.Input.ButtonState.Release && Shoot)
+            {
+                Shoot = false;
+            }
 
             // R para eliminar personajes
             if (WaveServices.Input.KeyboardState.R == WaveEngine.Common.Input.ButtonState.Pressed && SelectedCharacters.Count > 0)
@@ -246,11 +258,18 @@ namespace WaveProject
                 /*var entityMap = EntityManager.Find("InfluenceMap");
                 var sprite = entityMap.FindComponent<Sprite>();
                 sprite.Texture.IsUploaded = false;*/
-                InfluenceMap.Influence.Texture.IsUploaded = false;
-                InfluenceMap.Influence.GenerateInfluenteMap();
-                TimeToUpdateInfluence = 2f;
+                if (CurrentThread == null || !CurrentThread.IsAlive)
+                {
+                    InfluenceMap.Influence.Texture.IsUploaded = false;
+                    CurrentThread = new Thread(InfluenceMap.Influence.GenerateInfluenteMap);
+                    CurrentThread.Start();
+                }
+                //InfluenceMap.Influence.GenerateInfluenteMap();
+                TimeToUpdateInfluence = 1f;
             }
 
+            LastMousePosition = Mouse.Position;
+            Debug.Controller = this;
         }
 
         public void Draw(LineBatch2D lb)

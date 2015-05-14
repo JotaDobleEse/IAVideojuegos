@@ -24,13 +24,14 @@ namespace WaveProject.CharacterTypes
         public ICharacterInfo MyInfo { get; set; }
         //definir RAngo de ataque, Arquero tendra mayor rango
 
-        public CharacterType(ICharacterInfo myInfo, EntityManager entityManager, int hp = 0, int atk = 0, int def = 0)
+        public CharacterType(ICharacterInfo myInfo, EntityManager entityManager, int hp = 0, int atk = 0, int def = 0, float visibilityRadius = 0f)
         {
             MyInfo = myInfo;
             EntityManager = entityManager;
             MaxHP = HP = hp;
             Atk = atk;
             Def = def;
+            VisibilityRadius = visibilityRadius;
         }
 
         public abstract float Cost(Terrain terrain);
@@ -39,7 +40,7 @@ namespace WaveProject.CharacterTypes
         public abstract EnumeratedCharacterType GetCharacterType();
 
         public abstract void Update();
-        public abstract void Attack(CharacterType character);
+        public abstract void Attack(ICharacterInfo character);
 
         public ICharacterInfo FindEnemyNear()
         {
@@ -48,7 +49,8 @@ namespace WaveProject.CharacterTypes
                 .Where(w => w.GetTeam() == (MyInfo.GetTeam() % 2) + 1);
 
             //Buscamos el mejor objetivo de entre los enemigos, debemos de utilizar la visibilidad para comprobar los enemigos en el grid
-            var enemy = characters.Where(w => (w.GetPostion() - MyInfo.GetPostion()).Length() <= VisibilityRadius)
+            var enemy = characters.Where(w => (w.GetPosition() - MyInfo.GetPosition()).Length() <= VisibilityRadius)
+                .OrderBy(o => (o.GetPosition() - MyInfo.GetPosition()).Length())
                 .FirstOrDefault();
 
             return enemy;
@@ -57,13 +59,13 @@ namespace WaveProject.CharacterTypes
         public void GoToHeal()
         {
             var healpoint = Map.CurrentMap.HealPoints.Where(w => w.Team == MyInfo.GetTeam())
-                .OrderBy(o => (o.Position - MyInfo.GetPostion()).Length())
+                .OrderBy(o => (o.Position - MyInfo.GetPosition()).Length())
                 .Select(s => s.Position)
                 .FirstOrDefault();
 
             healpoint += new Vector2(Map.HealRatio, -Map.HealRatio);
 
-            if ((healpoint - MyInfo.GetPostion()).Length() < Map.HealRatio)
+            if ((healpoint - MyInfo.GetPosition()).Length() < Map.HealRatio)
             {
                 HP = Math.Max(HP + 1, MaxHP);
             }
@@ -93,7 +95,7 @@ namespace WaveProject.CharacterTypes
         public void GoToEnemyBase()
         {
             var healpoint = Map.CurrentMap.HealPoints.Where(w => w.Team != MyInfo.GetTeam())
-                .OrderBy(o => (o.Position - MyInfo.GetPostion()).Length())
+                .OrderBy(o => (o.Position - MyInfo.GetPosition()).Length())
                 .Select(s => s.Position)
                 .FirstOrDefault();
 
@@ -126,7 +128,9 @@ namespace WaveProject.CharacterTypes
 
         public void GoToWaypoint()
         {
+            var waypoint = Map.CurrentMap.Waypoints.OrderBy(o => (o - MyInfo.GetPosition()).Length()).FirstOrDefault();
 
+            MyInfo.SetPathFinding(Map.CurrentMap.WolrdPositionByTilePosition(waypoint));
         }
     }
 }

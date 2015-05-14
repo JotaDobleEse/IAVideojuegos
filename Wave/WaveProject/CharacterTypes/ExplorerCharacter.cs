@@ -59,7 +59,7 @@ namespace WaveProject.CharacterTypes
 
         public override void Update()
         {
-            CharacterType enemy = null;//FindEnemyNear();
+            var enemy = FindEnemyNear();
             //ATAQUE
             if (HP >= HP*0.75)
             {
@@ -97,7 +97,7 @@ namespace WaveProject.CharacterTypes
         }
 
 
-        public override void Attack(CharacterType character)
+        public override void Attack(ICharacterInfo character)
         {
             throw new NotImplementedException();
         }

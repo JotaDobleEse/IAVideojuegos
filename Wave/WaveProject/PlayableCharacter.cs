@@ -69,6 +69,7 @@ namespace WaveProject
             base.Initialize();
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
+            Type.EntityManager = EntityManager;
         }
 
         public void SetPathFollowing()
@@ -147,7 +148,7 @@ namespace WaveProject
             disposed = true;
         }
 
-        public Vector2 GetPostion()
+        public Vector2 GetPosition()
         {
             return Kinematic.Position;
         }

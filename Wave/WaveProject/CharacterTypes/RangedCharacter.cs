@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Framework.Managers;
+using WaveProject.DecisionManager;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
@@ -11,7 +12,7 @@ namespace WaveProject.CharacterTypes
     public class RangedCharacter : CharacterType
     {
         public RangedCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 100, 60, 34)
+            : base(myInfo, entityManager, 100, 60, 34, 300)
         {
 
         }
@@ -60,34 +61,36 @@ namespace WaveProject.CharacterTypes
         public override void Update()
         {
             //ATAQUE
-            if (HP > HP *0.60)
+            if (HP > MaxHP *0.60)
             {
-                CharacterType enemy = null; // FindEnemyNear();
+                var enemy = FindEnemyNear();
 
                 if (enemy != null)
                 {
-                    //Attack(enemy);
+                    Attack(enemy);
                 }
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
-                    //GoToBase(otherTeam)
+                    GoToEnemyBase();
                 }
             }
             //DEFENSA
-            else if (HP <= HP *0.60)
+            else if (HP <= MaxHP *0.60)
             {
-                CharacterType enemy = null;// FindEnemyNear();
+                var enemy =  FindEnemyNear();
 
                 //SI ENCONTRAMOS UN ENEMIGO Y NO ES UN ENEMIGO QUE ATAQUE CON RANGO
-                if (enemy !=null && enemy.GetCharacterType() != EnumeratedCharacterType.RANGED)
+                if (enemy != null && enemy.GetCharacterType() != EnumeratedCharacterType.RANGED)
                 {
-                    //Attack(enemy);
+                    Attack(enemy);
                 }
 
-                //else
-                //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
-                //GoToBase(myteam)
+                else
+                {
+                    //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
+                    GoToMyBase();
+                }
                 //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
                 //GoToNextWaypoint()
                 
@@ -96,11 +99,10 @@ namespace WaveProject.CharacterTypes
             }
         }
 
-
-
-        public override void Attack(CharacterType character)
+        public override void Attack(ICharacterInfo character)
         {
-            throw new NotImplementedException();
+            if (character != null)
+                EntityManager.Add(EntityFactory.Shoot(MyInfo.GetPosition(), character.GetPosition()));
         }
     }
 }

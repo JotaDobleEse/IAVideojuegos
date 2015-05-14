@@ -99,7 +99,7 @@ namespace WaveProject
             #endregion
         }
 
-        public Vector2 GetPostion()
+        public Vector2 GetPosition()
         {
             return Kinematic.Position;
         }

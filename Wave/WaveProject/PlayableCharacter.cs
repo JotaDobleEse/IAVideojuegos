@@ -156,7 +156,7 @@ namespace WaveProject
         public void SetTarget(Kinematic target)
         {
             Steering.Dispose();
-            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            BehaviorAndWeight[] behaviors = SteeringsFactory.CollisionPrevent(Kinematic);
             List<BehaviorAndWeight> allBehaviors = new List<BehaviorAndWeight>(behaviors);
             allBehaviors.Add(new BehaviorAndWeight()
             {

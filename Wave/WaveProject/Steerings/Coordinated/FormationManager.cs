@@ -73,6 +73,7 @@ namespace WaveProject.Steerings.Coordinated
         {
             if (SlotAssignments.Any(a => a.Character == character) && SlotAssignments.Remove(SlotAssignments.First(f => f.Character == character)))
             {
+                Pattern.CalculateNumberOfSlots(SlotAssignments);
                 UpdateSlotAssignments();
             }
         }
@@ -80,7 +81,7 @@ namespace WaveProject.Steerings.Coordinated
         private SlotLocation getAnchorPoint()
         {
             //Centro de masas + driftOffset * Velocidad centro de masas
-            return new SlotLocation() { Position = AnchorPoint.Position/* + DriftOffset.Position * AnchorPoint.Velocity*/, Orientation = AnchorPoint.Orientation };
+            return new SlotLocation() { Position = AnchorPoint.Position, Orientation = AnchorPoint.Orientation };
         }
 
         public void UpdateSlot()

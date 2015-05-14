@@ -38,8 +38,6 @@ namespace WaveProject
 
         protected override void CreateScene()
         {
-            InfluenceMap.Influence.Initialize(EntityManager);
-
             // Controlador principal
             var gameController = new Entity("Controller")
                 .AddComponent(Controller = new GameController(Kinematic.Mouse));
@@ -316,7 +314,7 @@ namespace WaveProject
             #endregion
 
             var r = new System.Random();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
                 float x = r.Next(1000);
                 float y = r.Next(800);
@@ -352,13 +350,7 @@ namespace WaveProject
 
             Entity influenceMap = new Entity("InfluenceMap")
                 .AddComponent(new Transform2D())
-                .AddComponent(new Sprite(new Texture2D()
-                {
-                    Format = PixelFormat.R8G8B8A8,
-                    Width = TiledMap.Width() / InfluenceMap.Scale,
-                    Height = TiledMap.Height() / InfluenceMap.Scale,
-                    Levels = 1
-                }))
+                .AddComponent(new Sprite(InfluenceMap.Influence.Texture))
                 .AddComponent(new SpriteRenderer(DefaultLayers.GUI));
             EntityManager.Add(influenceMap);
 
@@ -369,6 +361,7 @@ namespace WaveProject
             base.Start();
 
             Map.CurrentMap.Initialize(TiledMap);
+            InfluenceMap.Influence.Initialize(EntityManager);
 
             float width = WaveServices.ViewportManager.ScreenWidth;
             float height = WaveServices.ViewportManager.ScreenHeight;

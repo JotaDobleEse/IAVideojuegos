@@ -21,12 +21,24 @@ namespace WaveProject
         public static InfluenceMap Influence { get { return instance; } }
         public EntityManager EntityManager { get; private set; }
         public const int Scale = 5;
+        public Texture2D Texture { get; private set; }
 
-        private InfluenceMap() {  }
+        private InfluenceMap()
+        {
+            Texture = new Texture2D()
+                {
+                    Format = PixelFormat.R8G8B8A8,
+                    //Width = Map.CurrentMap.TotalWidth / Scale,
+                    //Height = Map.CurrentMap.TotalWidth / Scale,
+                    Levels = 1
+                };
+        }
 
         public void Initialize(EntityManager entity)
         {
-            EntityManager = entity;   
+            EntityManager = entity;
+            Texture.Width = Map.CurrentMap.TotalWidth / Scale;
+            Texture.Height = Map.CurrentMap.TotalWidth / Scale;
         }
 
         public List<Vector2> GetTeamCharacters(int team)
@@ -38,7 +50,7 @@ namespace WaveProject
             return characters.Select(s => s.GetPostion()).ToList();
         }
 
-        public void GenerateInfluenteMap(Texture2D texture)
+        public void GenerateInfluenteMap()
         {
             var team1 = GetTeamCharacters(1);
             var team2 = GetTeamCharacters(2);
@@ -62,33 +74,23 @@ namespace WaveProject
                 batch.FillRectangle(System.Drawing.Brushes.Blue, position.X, Math.Abs(position.Y - bitmap.Height), recWidth, recHeight);
             }
 
-            /*Texture2D texture = new Texture2D()
-            {
-                Format = PixelFormat.R8G8B8A8,
-                Width = bitmap.Width,
-                Height = bitmap.Height,
-                Levels = 1
-            };*/
-
             byte[] values = new byte[bitmap.Width * bitmap.Height * 4];
             using (MemoryStream stream = new MemoryStream())
             {
                 bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
                 stream.Seek(54, SeekOrigin.Begin);
                 stream.Read(values, 0, values.Length);
-                //values = stream.GetBuffer();
-                //texture.Load(WaveServices.GraphicsDevice, stream);
             }
 
-            texture.Data = new byte[1][][];   // only 1 texture part
-            texture.Data[0] = new byte[1][];  // 1 mipmap level
-            texture.Data[0][0] = new byte[values.Length];
-            texture.Data[0][0] = values;
+            Texture.Data = new byte[1][][];   // only 1 texture part
+            Texture.Data[0] = new byte[1][];  // 1 mipmap level
+            Texture.Data[0][0] = new byte[values.Length];
+            Texture.Data[0][0] = values;
 
-            if (!texture.IsUploaded)
+            if (!Texture.IsUploaded)
             {
-                WaveServices.GraphicsDevice.Graphics.TextureManager.UploadTexture(texture);
-                Console.WriteLine("Updated");
+                WaveServices.GraphicsDevice.Graphics.TextureManager.UploadTexture(Texture);
+                //Console.WriteLine("Updated");
             }
 
         }

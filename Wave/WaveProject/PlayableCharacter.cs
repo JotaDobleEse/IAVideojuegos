@@ -35,6 +35,7 @@ namespace WaveProject
             Kinematic = kinematic;
             Kinematic.MaxVelocity = 30;
             Team = team;
+
             switch (type)
             {
                 case EnumeratedCharacterType.EXPLORER:
@@ -55,13 +56,12 @@ namespace WaveProject
             ////Steering = new FollowPath() { Character = Kinematic };
             //PathFollowing = (PredictivePathFollowing)Steering;
 
-            SetPathFollowing();
-
-            if (team == 1)
+            if (Team == 1)
                 Color = Color.Cyan;
-            if (team == 2)
+            else if (Team == 2)
                 Color = Color.Red;
-            //Color = color;
+
+            SetPathFollowing();
         }
 
         protected override void Initialize()

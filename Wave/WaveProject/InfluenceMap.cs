@@ -34,8 +34,6 @@ namespace WaveProject
             Texture = new Texture2D()
                 {
                     Format = PixelFormat.R8G8B8A8,
-                    //Width = Map.CurrentMap.TotalWidth / Scale,
-                    //Height = Map.CurrentMap.TotalWidth / Scale,
                     Levels = 1
                 };
         }
@@ -65,8 +63,6 @@ namespace WaveProject
                 {
                     var node = nodes[i, j];
                     result[i, j] = node.Clone() as Node;
-                    result[i, j].InfluenceTeam[0] = node.InfluenceTeam[0];
-                    result[i, j].InfluenceTeam[1] = node.InfluenceTeam[1];
                 }
             });
             return result;
@@ -91,11 +87,11 @@ namespace WaveProject
             var team2 = GetTeamCharacters(2);
 
             var NodeMap = Map.CurrentMap.NodeMap;
-            for (int i = 0; i < NodeMap.GetLength(0); i++)
+            for (int i = 0; i < Map.CurrentMap.NodeMap.GetLength(0); i++)
             {
-                for (int j = 0; j < NodeMap.GetLength(1); j++)
+                for (int j = 0; j < Map.CurrentMap.NodeMap.GetLength(1); j++)
                 {
-                    var node = NodeMap[i, j];
+                    var node = Map.CurrentMap.NodeMap[i, j];
                     node.InfluenceTeam[0] = 0;
                     node.InfluenceTeam[1] = 0;
                 }
@@ -104,18 +100,17 @@ namespace WaveProject
             foreach (var ch1 in team1)
             {
                 var pos = Map.CurrentMap.TilePositionByWolrdPosition(ch1);
-                NodeMap[pos.X(), pos.Y()].InfluenceTeam[0] = MaxAlpha;
+                Map.CurrentMap.NodeMap[pos.X(), pos.Y()].InfluenceTeam[0] = MaxAlpha;
             }
 
             foreach (var ch2 in team2)
             {
                 var pos = Map.CurrentMap.TilePositionByWolrdPosition(ch2);
-                NodeMap[pos.X(), pos.Y()].InfluenceTeam[1] = MaxAlpha;
+                Map.CurrentMap.NodeMap[pos.X(), pos.Y()].InfluenceTeam[1] = MaxAlpha;
             }
 
-            for (int k = 0; k < 100; k++)
+            for (int k = 0; k < 40; k++)
             {
-                NodeMap = Map.CurrentMap.NodeMap;
                 var nodeAux = Copy(NodeMap);
 
                 //for (int i = 0; i < NodeMap.GetLength(0); i++)
@@ -145,14 +140,12 @@ namespace WaveProject
                         }
                     }
                 });
+                NodeMap = Map.CurrentMap.NodeMap;
             }
         }
 
         public void GenerateInfluenteMap()
         {
-            //var team1 = GetTeamCharacters(1);
-            //var team2 = GetTeamCharacters(2);
-
             UpdateInfluenceNodes();
 
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(Map.CurrentMap.TotalWidth / Scale, Map.CurrentMap.TotalHeight / Scale);
@@ -164,20 +157,6 @@ namespace WaveProject
 
             batch.FillRectangle(System.Drawing.Brushes.Black, 0, 0, bitmap.Width, bitmap.Height);
 
-            //foreach (var ch1 in team1)
-            //{
-            //    var position = Map.CurrentMap.TileByWolrdPosition(ch1).Position() * new Vector2(recWidth, recHeight);
-            //    batch.FillRectangle(System.Drawing.Brushes.Red, position.X, Math.Abs(position.Y - bitmap.Height), recWidth, recHeight);
-            //}
-            //foreach (var ch2 in team2)
-            //{
-            //    var position = Map.CurrentMap.TileByWolrdPosition(ch2).Position() * new Vector2(recWidth, recHeight);
-            //    batch.FillRectangle(System.Drawing.Brushes.Blue, position.X, Math.Abs(position.Y - bitmap.Height), recWidth, recHeight);
-            //}
-
-            //var result = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
-            
-
             for (int i = 0; i < Map.CurrentMap.NodeMap.GetLength(0); i++)
             {
                 for (int j = 0; j < Map.CurrentMap.NodeMap.GetLength(1); j++)
@@ -186,13 +165,14 @@ namespace WaveProject
                     if (node.InfluenceTeam[0] == 0 && node.InfluenceTeam[1] == 0)
                         continue;
                     var position = node.Position * new Vector2(recWidth, recHeight);
+                    System.Drawing.RectangleF rectangle = new System.Drawing.RectangleF(position.X, Math.Abs(position.Y - bitmap.Height), recWidth, recHeight);
                     if (node.InfluenceTeam[0] != 0)
                     {
-                        batch.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(node.InfluenceTeam[0], 255, 0, 0)), position.X, Math.Abs(position.Y - bitmap.Height), recWidth, recHeight);
+                        batch.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(node.InfluenceTeam[0], 255, 0, 0)), rectangle);
                     }
                     if (node.InfluenceTeam[1] != 0)
                     {
-                        batch.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(node.InfluenceTeam[1], 0, 0, 255)), position.X, Math.Abs(position.Y - bitmap.Height), recWidth, recHeight);
+                        batch.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(node.InfluenceTeam[1], 0, 0, 255)), rectangle);
                     }
                 }
             }

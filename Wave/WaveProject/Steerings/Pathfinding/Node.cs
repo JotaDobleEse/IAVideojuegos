@@ -98,6 +98,8 @@ namespace WaveProject.Steerings.Pathfinding
             n.H = float.PositiveInfinity;
             n.Passable = Passable;
             n.Terrain = Terrain;
+            n.InfluenceTeam[0] = InfluenceTeam[0];
+            n.InfluenceTeam[1] = InfluenceTeam[1];
             return n;
         }
     }

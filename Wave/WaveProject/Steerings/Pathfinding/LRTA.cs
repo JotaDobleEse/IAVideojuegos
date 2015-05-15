@@ -198,13 +198,13 @@ namespace WaveProject.Steerings.Pathfinding
                 foreach (var n in sLss)
                 {
                     // Vecino de arriba
-                    n.Hup = NodeMap.GetValueOrDefault(n.X, n.Y - 1, float.PositiveInfinity) + Weigth(n, NodeMap[n.X, n.Y - 1]);
+                    n.Hup = NodeMap.GetValueOrDefault(n.X, n.Y - 1, float.PositiveInfinity) + Weight(n, NodeMap[n.X, n.Y - 1]);
                     // Vecino de abajo
-                    n.Hdown = NodeMap.GetValueOrDefault(n.X, n.Y + 1, float.PositiveInfinity) + Weigth(n, NodeMap[n.X, n.Y + 1]);
+                    n.Hdown = NodeMap.GetValueOrDefault(n.X, n.Y + 1, float.PositiveInfinity) + Weight(n, NodeMap[n.X, n.Y + 1]);
                     // Vecino derecho
-                    n.Hright = NodeMap.GetValueOrDefault(n.X + 1, n.Y, float.PositiveInfinity) + Weigth(n, NodeMap[n.X + 1, n.Y]);
+                    n.Hright = NodeMap.GetValueOrDefault(n.X + 1, n.Y, float.PositiveInfinity) + Weight(n, NodeMap[n.X + 1, n.Y]);
                     // Vecino izquierdo
-                    n.Hleft = NodeMap.GetValueOrDefault(n.X - 1, n.Y, float.PositiveInfinity) + Weigth(n, NodeMap[n.X - 1, n.Y]);
+                    n.Hleft = NodeMap.GetValueOrDefault(n.X - 1, n.Y, float.PositiveInfinity) + Weight(n, NodeMap[n.X - 1, n.Y]);
 
                     // Mejor heurístico local de los vecinos
                     n.Hneightbors = Math.Min(n.Hup, Math.Min(n.Hdown, Math.Min(n.Hleft, n.Hright)));
@@ -256,16 +256,25 @@ namespace WaveProject.Steerings.Pathfinding
             return current;
         }
 
+        private float NodeCost(Node node)
+        {
+            float n_t = Character.Cost(node.Terrain);
+            float n_i = (node.InfluenceTeam[Character.MyInfo.GetTeam() % 2]) / 20f;
+            float res = n_t * 0.4f + n_i * 0.6f;
+            return n_t;// res;
+        }
+
         /// <summary>
         /// Coste de llegar al nodo objetivo.
         /// </summary>
         /// <param name="target">Nodo al que nos vamos a mover.</param>
         /// <returns></returns>
-        private float Weigth(Node origin, Node target)
+        private float Weight(Node origin, Node target)
         {
-            float n1 = Character.Cost(origin.Terrain);
-            float n2 = Character.Cost(target.Terrain);
-            return (n1 + n2) / 2;
+            float n1 = NodeCost(origin);
+            float n2 = NodeCost(target);
+
+            return (float)Math.Round((n1 + n2) / 2, 1);
         }
         #endregion
 
@@ -336,7 +345,8 @@ namespace WaveProject.Steerings.Pathfinding
             //diff.Normalize();
             Vector2 factor = new Vector2(diff.X / max, diff.Y / max);
 
-            float lastCost = Character.Cost(NodeMap[p1.X(), p2.Y()].Terrain);
+            //float lastCost = Character.Cost(NodeMap[p1.X(), p1.Y()].Terrain);
+            float lastCost = NodeCost(NodeMap[p1.X(), p1.Y()]);
             Vector2 pAux = p1 + factor;
             Vector2 pAuxTile1 = new Vector2((int)Math.Ceiling(pAux.X), (int)Math.Ceiling(pAux.Y));
             Vector2 pAuxTile2 = new Vector2((int)Math.Floor(pAux.X), (int)Math.Floor(pAux.Y));
@@ -345,8 +355,10 @@ namespace WaveProject.Steerings.Pathfinding
             {
                 if (NodeMap[pAuxTile1.X(), pAuxTile1.Y()].Passable && NodeMap[pAuxTile2.X(), pAuxTile2.Y()].Passable)
                 {
-                    float cost1 = Character.Cost(NodeMap[pAuxTile1.X(), pAuxTile1.Y()].Terrain);
-                    float cost2 = Character.Cost(NodeMap[pAuxTile2.X(), pAuxTile2.Y()].Terrain);
+                    float cost1 = NodeCost(NodeMap[pAuxTile1.X(), pAuxTile1.Y()]);
+                    float cost2 = NodeCost(NodeMap[pAuxTile2.X(), pAuxTile2.Y()]);
+                    //float cost1 = Character.Cost(NodeMap[pAuxTile1.X(), pAuxTile1.Y()].Terrain);
+                    //float cost2 = Character.Cost(NodeMap[pAuxTile2.X(), pAuxTile2.Y()].Terrain);
                     float cost = Math.Min(cost1, cost2);
                     if (cost <= lastCost || cost == Character.Cost(NodeMap[p3.X(), p3.Y()].Terrain))
                     {

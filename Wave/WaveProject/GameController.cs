@@ -255,16 +255,12 @@ namespace WaveProject
 
             if (TimeToUpdateInfluence <= 0f)
             {
-                /*var entityMap = EntityManager.Find("InfluenceMap");
-                var sprite = entityMap.FindComponent<Sprite>();
-                sprite.Texture.IsUploaded = false;*/
                 if (CurrentThread == null || !CurrentThread.IsAlive)
                 {
                     InfluenceMap.Influence.Texture.IsUploaded = false;
                     CurrentThread = new Thread(InfluenceMap.Influence.GenerateInfluenteMap);
                     CurrentThread.Start();
                 }
-                //InfluenceMap.Influence.GenerateInfluenteMap();
                 TimeToUpdateInfluence = 1f;
             }
 

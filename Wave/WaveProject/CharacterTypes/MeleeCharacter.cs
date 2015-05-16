@@ -57,43 +57,44 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.MELEE;
         }
 
-        public override void Update()
+        public override Action Update()
         {
             CharacterType enemy = null;// FindEnemyNear();
 
             //ATAQUE
-            if (HP >= HP*0.40)
+            if (HP >= MaxHP * 0.40)
             {
                 //SI ENCONTRAMOS UN ENEMIGO
                 if (enemy != null)
                 {
-                    //Attack(enemy);
+                    return AttackEnemyNear;
                 }
                 else
                 {
+                    return GoToEnemyBase;
                     //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
                     //GoToBase(otherTeam)
                 }
             }
             //DEFENSA
-            else if (HP < HP*0.40)
+            else if (HP > MaxHP*0.40 && HP > MaxHP*0.20)
             {
 
                 //SI ENCONTRAMOS UN ENEMIGO
                 if (enemy != null)
                 {
+                    return AttackEnemyNear;
                     //Attack(enemy);
                 }
 
                 //else
                 //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
                 //GoToBase(myteam)
+                return GoToWaypoint;
                 //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES CERCA, VETE A UN WAYPOINT
                 //GoToNextWaypoint()
-
-
-
             }
+            return GoToHeal;
         }
 
         public override void Attack(ICharacterInfo character)

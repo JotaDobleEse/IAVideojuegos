@@ -49,13 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraController.cs" />
-    <Compile Include="Character.cs" />
+    <Compile Include="CharacterNPC.cs" />
     <Compile Include="CharacterTypes\CharacterType.cs" />
     <Compile Include="CharacterTypes\ExplorerCharacter.cs" />
     <Compile Include="CharacterTypes\FormationType.cs" />
     <Compile Include="CharacterTypes\MeleeCharacter.cs" />
     <Compile Include="CharacterTypes\RangedCharacter.cs" />
-    <Compile Include="DecisionManager\Action.cs" />
+    <Compile Include="DecisionManager\GenericAction.cs" />
     <Compile Include="DecisionManager\ActionCombination.cs" />
     <Compile Include="DecisionManager\ActionManager.cs" />
     <Compile Include="DecisionManager\ActionSequence.cs" />

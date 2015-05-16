@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
+using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Managers;
 using WaveEngine.Framework.Services;
@@ -47,11 +48,18 @@ namespace WaveProject
 
         public List<Vector2> GetTeamCharacters(int team)
         {
-            var characters = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo))
-                .Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo)
-                .Where(w => w.GetTeam() == team);
+            try
+            {
+                var entities = EntityManager.AllEntities.ToArray();
+                var characters = entities.Where(w => w.Components.Any(a => a is ICharacterInfo))
+                    .Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo)
+                    .Where(w => w.GetTeam() == team).ToArray();
 
-            return characters.Select(s => s.GetPosition()).ToList();
+                return characters.Select(s => s.GetPosition()).ToList();
+            } catch (Exception)
+            {
+                return new List<Vector2>();
+            }
         }
 
         private Node[,] Copy(Node[,] nodes)

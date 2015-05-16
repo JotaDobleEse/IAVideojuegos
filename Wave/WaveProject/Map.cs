@@ -117,7 +117,7 @@ namespace WaveProject
             }
         }
 
-        public Vector2 WolrdPositionByTilePosition(Vector2 position)
+        public Vector2 WorldPositionByTilePosition(Vector2 position)
         {
             return position * new Vector2(TiledMap.TileWidth, TiledMap.TileHeight);
         }
@@ -148,10 +148,10 @@ namespace WaveProject
 
         public Vector2 GetBestHealPoinPosition(ICharacterInfo character)
         {
-            var hp = HealPoints.Where(w => w.Team == character.GetTeam())
-                .OrderBy(o => (o.Position - character.GetPosition()).Length())
+            var hp = HealPoints.Where(w => w.Team == character.GetTeam()).Select(s => s.Position)
+                .OrderBy(o => (WorldPositionByTilePosition(o) - character.GetPosition()).Length())
                 .First();
-            return hp.Position;
+            return hp;
         }
 
         private void LoadWaypoints()
@@ -167,16 +167,21 @@ namespace WaveProject
             }
         }
 
+        public bool Exists(Vector2 position)
+        {
+            return NodeMap.Exists(position);
+        }
+
         public void Draw(LineBatch2D lb)
         {
             foreach (var waypoint in Waypoints)
             {
-                lb.DrawCircleVM(WolrdPositionByTilePosition(waypoint), 5f, Color.White, 2f);
+                lb.DrawCircleVM(WorldPositionByTilePosition(waypoint), 5f, Color.White, 2f);
             }
             foreach (var healpoint in HealPoints)
             {
-                Vector2 src = WolrdPositionByTilePosition(healpoint.Position - new Vector2(HealRatio, HealRatio));
-                Vector2 dst = WolrdPositionByTilePosition(new Vector2(HealRatio, HealRatio) * 2);
+                Vector2 src = WorldPositionByTilePosition(healpoint.Position - new Vector2(HealRatio, HealRatio));
+                Vector2 dst = WorldPositionByTilePosition(new Vector2(HealRatio, HealRatio) * 2);
                 if (healpoint.Team == 1)
                     lb.DrawRectangleVM(new RectangleF(src.X, src.Y, dst.X, dst.Y), Color.Cyan, 1f);
                 else

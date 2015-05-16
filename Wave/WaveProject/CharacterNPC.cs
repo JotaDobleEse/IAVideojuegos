@@ -10,6 +10,7 @@ using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
 using WaveProject.CharacterTypes;
+using WaveProject.DecisionManager;
 using WaveProject.Steerings;
 using WaveProject.Steerings.Combined;
 using WaveProject.Steerings.Delegated;
@@ -17,7 +18,7 @@ using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
-    public class Character : Behavior, IDisposable, ICharacterInfo
+    public class CharacterNPC : Behavior, IDisposable, ICharacterInfo
     {
         private bool disposed = false;
         [RequiredComponent]
@@ -29,14 +30,16 @@ namespace WaveProject
         public Steering Steering { get; set; }
         public FollowPath PathFollowing { get; set; }
         public CharacterType Type { get; private set; }
+        public ActionManager ActionManager { get; set; }
         public int Team { get; set; }
 
-        public Character(Steering steering, Kinematic kinematic, EnumeratedCharacterType type, int team, Color color)
+        public CharacterNPC(Kinematic kinematic, EnumeratedCharacterType type, int team/*, Color color*/)
         {
             Kinematic = kinematic;
             Kinematic.MaxVelocity = 30;
-            Steering = steering;
+            //Steering = steering;
             Team = team;
+            ActionManager = new ActionManager();
             switch (type)
             {
                 case EnumeratedCharacterType.EXPLORER:
@@ -65,14 +68,21 @@ namespace WaveProject
             base.Initialize();
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
+            Type.EntityManager = EntityManager;
         }
 
         protected override void Update(TimeSpan gameTime)
         {
+            float dt = (float)gameTime.TotalSeconds;
+            Action newAction = Type.Update();
+            ActionManager.ScheduleAction(new GenericAction(1f, 1, true, newAction));
+            ActionManager.Execute(dt);
+
+            if (Steering == null)
+                return;
             Kinematic.Position = Transform.Position;
             Kinematic.Orientation = Transform.Rotation;
 
-            float dt = (float)gameTime.TotalSeconds;
             SteeringOutput output = Steering.GetSteering();
             Kinematic.Update(dt, output);
 

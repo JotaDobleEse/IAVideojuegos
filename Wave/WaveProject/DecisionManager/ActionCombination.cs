@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace WaveProject.DecisionManager
 {
-    public class ActionCombination : Action
+    public class ActionCombination : GenericAction
     {
-        public Action[] Actions { get; set; }
+        public GenericAction[] Actions { get; set; }
 
-        public ActionCombination(Action[] actions)
+        public ActionCombination(GenericAction[] actions)
             : base(0, 0, false, null)
         {
             Actions = actions;
@@ -21,7 +21,7 @@ namespace WaveProject.DecisionManager
             return Actions.Any(a => a.CanInterrupt());
         }
 
-        public override bool CanDoBoth(Action otherAction)
+        public override bool CanDoBoth(GenericAction otherAction)
         {
             return !Actions.Any(a => !a.CanDoBoth(otherAction));
         }

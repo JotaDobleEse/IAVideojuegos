@@ -314,7 +314,7 @@ namespace WaveProject
             #endregion
 
             var r = new System.Random();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 4; i++)
             {
                 float x = r.Next(1000);
                 float y = r.Next(800);
@@ -342,11 +342,13 @@ namespace WaveProject
                      .AddComponent(new Transform2D() { Position = position.Position })
                      .AddComponent(new Sprite("Content/Textures/" + texture))
                      .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                     .AddComponent(new PlayableCharacter(position, type, ((int)x % 2) + 1, Color.White));
+                     .AddComponent(new PlayableCharacter(position, type, 1/*((int)x % 2) + 1*/, Color.White));
                 EntityManager.Add(character);
 
                 Console.WriteLine("{0}: Add character {2} as {3} of team {4} in position {1}{5}", i + 1, position.Position, texture, type, ((int)x % 2) + 1, Environment.NewLine);
             }
+
+            EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED));
 
             Entity influenceMap = new Entity("InfluenceMap")
                 .AddComponent(new Transform2D())

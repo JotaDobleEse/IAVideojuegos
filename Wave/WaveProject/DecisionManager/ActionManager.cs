@@ -9,32 +9,47 @@ namespace WaveProject.DecisionManager
 {
     public class ActionManager
     {
-        public List<Action> Actions { get; set; }
-        public List<Action> Active { get; private set; }
-        public int CurrentTime { get; private set; }
+        public List<GenericAction> Actions { get; set; }
+        public List<GenericAction> Active { get; private set; }
+        //public int CurrentTime { get; private set; }
 
-        private Action NextAction()
+        public ActionManager()
+        {
+            Actions = new List<GenericAction>();
+            Active = new List<GenericAction>();
+        }
+
+        private GenericAction NextAction()
         {
             return Actions.OrderBy(o => o.Priority).FirstOrDefault();
         }
 
         private int GetHighestPriority()
         {
-            return Active.Select(s => s.Priority).OrderBy(o => o).First();
+            return Active.Select(s => s.Priority).OrderBy(o => o).FirstOrDefault();
         }
 
-        public void ScheduleAction(Action action)
+        public void ScheduleAction(GenericAction action)
         {
             Actions.Add(action);
         }
 
-        public void Execute()
+        public void Execute(float dt)
         {
-            CurrentTime++;
+            //CurrentTime++;
+            foreach (var action in Actions)
+            {
+                action.ExpireTime -= dt;
+            }
 
-            Actions = Actions.Where(w => w.ExpireTime > CurrentTime).ToList();
+            foreach (var action in Active)
+            {
+                action.ExpireTime -= dt;
+            }
 
-            Action nextAction = NextAction();
+            Actions = Actions.Where(w => w.ExpireTime > 0).ToList();
+
+            GenericAction nextAction = NextAction();
             if (nextAction != null && GetHighestPriority() > nextAction.Priority)
             {
                 if (nextAction.CanInterrupt())
@@ -44,21 +59,36 @@ namespace WaveProject.DecisionManager
                 }
             }
 
-            foreach (var action in Actions)
+            foreach (var action in Actions.OrderBy(o => o.Priority))
             {
+                bool ok = true;
                 foreach (var activeAction in Active)
                 {
                     if (!action.CanDoBoth(activeAction))
-                        continue;
+                    {
+                        ok = false;
+                        break;
+                    }
+                }
+                if (ok)
+                {
                     Actions.Remove(action);
                     Active.Add(action);
                 }
             }
 
-            Active = Actions.Where(w => !w.IsComplete()).ToList();
+            if (Active.Count == 0)
+            {
+                GenericAction action = NextAction();
+                Actions.Remove(action);
+                Active.Add(action);
+            }
+
+            Active = Active.Where(w => !w.IsComplete()).ToList();
 
             foreach (var activeAction in Active)
             {
+                Console.WriteLine(activeAction.Function.Method);
                 activeAction.Execute();
             }
 

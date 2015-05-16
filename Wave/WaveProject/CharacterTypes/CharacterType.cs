@@ -39,8 +39,13 @@ namespace WaveProject.CharacterTypes
         public abstract float MaxVelocity(Terrain terrain);
         public abstract EnumeratedCharacterType GetCharacterType();
 
-        public abstract void Update();
+        public abstract Action Update();
         public abstract void Attack(ICharacterInfo character);
+
+        public void AttackEnemyNear()
+        {
+            Attack(FindEnemyNear());
+        }
 
         public ICharacterInfo FindEnemyNear()
         {
@@ -58,12 +63,7 @@ namespace WaveProject.CharacterTypes
 
         public void GoToHeal()
         {
-            var healpoint = Map.CurrentMap.HealPoints.Where(w => w.Team == MyInfo.GetTeam())
-                .OrderBy(o => (o.Position - MyInfo.GetPosition()).Length())
-                .Select(s => s.Position)
-                .FirstOrDefault();
-
-            healpoint += new Vector2(Map.HealRatio, -Map.HealRatio);
+            var healpoint = Map.CurrentMap.GetBestHealPoinPosition(MyInfo);
 
             if ((healpoint - MyInfo.GetPosition()).Length() < Map.HealRatio)
             {
@@ -77,16 +77,22 @@ namespace WaveProject.CharacterTypes
                 ps.Add(healpoint + new Vector2(-Map.HealRatio, Map.HealRatio));
                 ps.Add(healpoint + new Vector2(-Map.HealRatio, -Map.HealRatio));
 
-                foreach (var p in ps)
+                float minLength = float.PositiveInfinity;
+                foreach (var pos in ps)
                 {
-                    var pos = Map.CurrentMap.TilePositionByWolrdPosition(p);
-                    if (pos != new Vector2(-1, -1) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
+                    if (Map.CurrentMap.Exists(pos) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
                     {
-                        healpoint = pos;
-                        break;
+                        var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
+                        var length = (worldPos - MyInfo.GetPosition()).Length();
+                        if (length < minLength)
+                        {
+                            minLength = length;
+                            healpoint = worldPos;
+                        }
                     }
                 }
 
+                Console.WriteLine(healpoint);
                 // PATHFINDING
                 MyInfo.SetPathFinding(healpoint);
             }
@@ -95,11 +101,9 @@ namespace WaveProject.CharacterTypes
         public void GoToEnemyBase()
         {
             var healpoint = Map.CurrentMap.HealPoints.Where(w => w.Team != MyInfo.GetTeam())
-                .OrderBy(o => (o.Position - MyInfo.GetPosition()).Length())
                 .Select(s => s.Position)
+                .OrderBy(o => (Map.CurrentMap.WorldPositionByTilePosition(o) - MyInfo.GetPosition()).Length())
                 .FirstOrDefault();
-
-            healpoint += new Vector2(Map.HealRatio, -Map.HealRatio);
 
             List<Vector2> ps = new List<Vector2>();
             ps.Add(healpoint + new Vector2(Map.HealRatio, Map.HealRatio));
@@ -107,30 +111,68 @@ namespace WaveProject.CharacterTypes
             ps.Add(healpoint + new Vector2(-Map.HealRatio, Map.HealRatio));
             ps.Add(healpoint + new Vector2(-Map.HealRatio, -Map.HealRatio));
 
-            foreach (var p in ps)
+            float minLength = float.PositiveInfinity;
+            foreach (var pos in ps)
             {
-                var pos = Map.CurrentMap.TilePositionByWolrdPosition(p);
-                if (pos != new Vector2(-1, -1) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
+                if (Map.CurrentMap.Exists(pos) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
                 {
-                    healpoint = pos;
-                    break;
+                    var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
+                    var length = (worldPos - MyInfo.GetPosition()).Length();
+                    if (length < minLength)
+                    {
+                        minLength = length;
+                        healpoint = worldPos;
+                    }
                 }
             }
 
+            Console.WriteLine(healpoint);
             // PATHFINDING
             MyInfo.SetPathFinding(healpoint);
         }
 
         public void GoToMyBase()
         {
-            GoToHeal();
+            var healpoint = Map.CurrentMap.GetBestHealPoinPosition(MyInfo);
+
+            if ((healpoint - MyInfo.GetPosition()).Length() < Map.HealRatio)
+            {
+                HP = Math.Max(HP + 1, MaxHP);
+            }
+            else
+            {
+                List<Vector2> ps = new List<Vector2>();
+                ps.Add(healpoint + new Vector2(1, 1));
+                ps.Add(healpoint + new Vector2(1, -1));
+                ps.Add(healpoint + new Vector2(-1, 1));
+                ps.Add(healpoint + new Vector2(-1, -1));
+
+                float minLength = float.PositiveInfinity;
+                foreach (var pos in ps)
+                {
+                    if (Map.CurrentMap.Exists(pos) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
+                    {
+                        var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
+                        var length = (worldPos - MyInfo.GetPosition()).Length();
+                        if (length < minLength)
+                        {
+                            minLength = length;
+                            healpoint = worldPos;
+                        }
+                    }
+                }
+
+                Console.WriteLine(healpoint);
+                // PATHFINDING
+                MyInfo.SetPathFinding(healpoint);
+            }
         }
 
         public void GoToWaypoint()
         {
             var waypoint = Map.CurrentMap.Waypoints.OrderBy(o => (o - MyInfo.GetPosition()).Length()).FirstOrDefault();
 
-            MyInfo.SetPathFinding(Map.CurrentMap.WolrdPositionByTilePosition(waypoint));
+            MyInfo.SetPathFinding(Map.CurrentMap.WorldPositionByTilePosition(waypoint));
         }
     }
 }

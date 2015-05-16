@@ -32,9 +32,9 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.NONE;
         }
 
-        public override void Update()
+        public override Action Update()
         {
-
+            return null;
         }
 
         public override void Attack(ICharacterInfo character)

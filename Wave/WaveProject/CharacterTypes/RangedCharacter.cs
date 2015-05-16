@@ -58,7 +58,7 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.RANGED;
         }
 
-        public override void Update()
+        public override Action Update()
         {
             //ATAQUE
             if (HP > MaxHP *0.60)
@@ -67,42 +67,42 @@ namespace WaveProject.CharacterTypes
 
                 if (enemy != null)
                 {
-                    Attack(enemy);
+                    return AttackEnemyNear;
+                    //Attack(enemy);
                 }
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
-                    GoToEnemyBase();
+                    return GoToEnemyBase;
                 }
             }
             //DEFENSA
-            else if (HP <= MaxHP *0.60)
+            else if (HP <= MaxHP * 0.60 && HP > MaxHP * 0.40)
             {
                 var enemy =  FindEnemyNear();
 
                 //SI ENCONTRAMOS UN ENEMIGO Y NO ES UN ENEMIGO QUE ATAQUE CON RANGO
                 if (enemy != null && enemy.GetCharacterType() != EnumeratedCharacterType.RANGED)
                 {
-                    Attack(enemy);
+                    return AttackEnemyNear;
                 }
 
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
-                    GoToMyBase();
+                    return GoToWaypoint;
                 }
                 //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
                 //GoToNextWaypoint()
-                
-
-
             }
+            return GoToMyBase;
         }
 
         public override void Attack(ICharacterInfo character)
         {
             if (character != null)
                 EntityManager.Add(EntityFactory.Shoot(MyInfo.GetPosition(), character.GetPosition()));
+            HP -= 5;
         }
     }
 }

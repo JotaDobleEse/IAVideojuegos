@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace WaveProject.DecisionManager
 {
-    public class ActionSequence : Action
+    public class ActionSequence : GenericAction
     {
-        public Action[] Actions { get; set; }
+        public GenericAction[] Actions { get; set; }
 
         public int CurrentAction { get; set; }
 
-        public ActionSequence(Action[] actions)
+        public ActionSequence(GenericAction[] actions)
             : base(0, 0, false, null)
         {
             Actions = actions;
@@ -23,7 +23,7 @@ namespace WaveProject.DecisionManager
             return Actions[0].CanInterrupt();
         }
 
-        public override bool CanDoBoth(Action otherAction)
+        public override bool CanDoBoth(GenericAction otherAction)
         {
             return !Actions.Any(a => !a.CanDoBoth(otherAction));
         }

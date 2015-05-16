@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace WaveProject.DecisionManager
 {
-    public class Action
+    public class GenericAction
     {
-        public int ExpireTime { get; set; }
+        public float ExpireTime { get; set; }
         public int Priority { get; set; }
-        public Func<object> Function { get; set; }
+        public Action Function { get; set; }
 
         private bool canInterrupt = true;
         private bool isComplete = false;
 
-        public Action(int expireTime, int priority, bool canInterrupt, Func<object> action)
+        public GenericAction(float expireTime, int priority, bool canInterrupt, Action action)
         {
             ExpireTime = expireTime;
             Priority = priority;
@@ -28,9 +28,10 @@ namespace WaveProject.DecisionManager
             return canInterrupt;
         }
 
-        public virtual bool CanDoBoth(Action otherAction)
+        public virtual bool CanDoBoth(GenericAction otherAction)
         {
-            return true;
+            return !Function.Method.Equals(otherAction.Function.Method);
+            //return true;
         }
 
         public virtual bool IsComplete()

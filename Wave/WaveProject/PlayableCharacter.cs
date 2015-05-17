@@ -29,6 +29,9 @@ namespace WaveProject
         public FollowPath PathFollowing { get; set; }
         public CharacterType Type { get; private set; }
         public int Team { get; set; }
+        private ICharacterInfo Target = null;
+        public const float ExecutionTime = 0.3f;
+        private float CurrentTime = 0f;
 
         public PlayableCharacter(Kinematic kinematic, EnumeratedCharacterType type, int team)
         {
@@ -93,13 +96,26 @@ namespace WaveProject
 
         protected override void Update(TimeSpan gameTime)
         {
+            float dt = (float)gameTime.TotalSeconds;
+            CurrentTime += dt;
+            if (CurrentTime >= ExecutionTime)
+            {
+                if (Target != null)
+                {
+                    if (Target.IsDisposed())
+                        Target = null;
+                    else
+                        Type.Attack(Target);
+                }
+                CurrentTime = 0f;
+            }
+
             Kinematic.Position = Transform.Position;
             Kinematic.Orientation = Transform.Rotation;
 
             Terrain terrain = Map.CurrentMap.TerrainOnWorldPosition(Kinematic.Position);
             Kinematic.MaxVelocity = Type.MaxVelocity(terrain);
 
-            float dt = (float)gameTime.TotalSeconds;
             SteeringOutput output = Steering.GetSteering();
             Kinematic.Update(dt, output);
 
@@ -210,12 +226,18 @@ namespace WaveProject
 
         public void Attack(ICharacterInfo target)
         {
-            Type.Attack(target);
+            Target = target;
+            //Type.Attack(target);
         }
 
         public bool IsDead()
         {
             return Type.HP <= 0;
+        }
+
+        public bool IsDisposed()
+        {
+            return disposed;
         }
     }
 }

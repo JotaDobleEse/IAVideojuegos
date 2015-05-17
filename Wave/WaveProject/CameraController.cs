@@ -15,7 +15,7 @@ namespace WaveProject
     {
         [RequiredComponent]
         public Camera2D Camera { get; set; }
-        private float Velocity = 80f;
+        private float Velocity = 100f;
         private bool PressedMouse = false;
         private Vector2 LastPositionMouse;
 

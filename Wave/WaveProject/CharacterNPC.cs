@@ -138,6 +138,7 @@ namespace WaveProject
 
             if (disposing)
             {
+                Steering.Dispose();
                 Kinematic.Dispose();
                 Kinematic = null;
                 Steering = null;
@@ -185,6 +186,11 @@ namespace WaveProject
         public bool IsDead()
         {
             return Type.HP <= 0;
+        }
+
+        public bool IsDisposed()
+        {
+            return disposed;
         }
     }
 }

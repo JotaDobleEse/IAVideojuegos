@@ -19,5 +19,6 @@ namespace WaveProject
         void ReceiveHeal(int hp);
         void ReceiveAttack(int atk);
         bool IsDead();
+        bool IsDisposed();
     }
 }

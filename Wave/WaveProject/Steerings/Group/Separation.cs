@@ -21,9 +21,9 @@ namespace WaveProject.Steerings.Group
 
         public Separation()
         {
-            Threshold = 50f;
-            DecayCoefficient = 200f;
-            MaxAcceleration = 20f;
+            Threshold = 100;
+            DecayCoefficient = 1000;
+            MaxAcceleration = 50f;
         }
 
 
@@ -38,7 +38,7 @@ namespace WaveProject.Steerings.Group
                 Vector2 direction = targets.Position - Character.Position;
                 var distance = direction.Length();
                 //Calculo de strength
-                float strength = Math.Min(DecayCoefficient / (distance*distance), MaxAcceleration) * -1;
+                float strength = Math.Min(DecayCoefficient / (distance * distance), MaxAcceleration) *-1;
 
                 //añadir la aceleracion
                 direction.Normalize();

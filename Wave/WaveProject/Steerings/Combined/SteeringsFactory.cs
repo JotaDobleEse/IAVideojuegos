@@ -19,12 +19,12 @@ namespace WaveProject.Steerings.Combined
     {
         public static BehaviorAndWeight[] Flocking(Kinematic character)
         {
-            BehaviorAndWeight[] behaviors = new BehaviorAndWeight[3];
+            BehaviorAndWeight[] behaviors = new BehaviorAndWeight[4];
 
-            behaviors[0] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character, Threshold = 100f }, Weight = 0.9f };
-            behaviors[1] = new BehaviorAndWeight() { Behavior = new Cohesion() { Character = character }, Weight = 0.9f };
-            behaviors[2] = new BehaviorAndWeight() { Behavior = new Alignment() { Character = character }, Weight = 0.9f };
-            //behaviors[3] = new BehaviorAndWeight() { Behavior = new Wander() { Character = character }, Weight = 0.5f };
+            behaviors[0] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character, Threshold = 100f }, Weight = 1f };
+            behaviors[1] = new BehaviorAndWeight() { Behavior = new Cohesion() { Character = character }, Weight = 0.1f };
+            behaviors[2] = new BehaviorAndWeight() { Behavior = new Alignment() { Character = character }, Weight = 1f };
+            behaviors[3] = new BehaviorAndWeight() { Behavior = new Wander() { Character = character }, Weight = 1f };
 
             return behaviors;
         }

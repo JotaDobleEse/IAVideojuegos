@@ -12,7 +12,7 @@ namespace WaveProject.CharacterTypes
     public class RangedCharacter : CharacterType
     {
         public RangedCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 100, 60, 34, 300)
+            : base(myInfo, entityManager, 100, 40, 34, 300)
         {
 
         }
@@ -90,7 +90,7 @@ namespace WaveProject.CharacterTypes
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
-                    return GoToWaypoint;
+                    return GoToHeal;
                 }
                 //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
                 //GoToNextWaypoint()
@@ -100,9 +100,11 @@ namespace WaveProject.CharacterTypes
 
         public override void Attack(ICharacterInfo character)
         {
-            if (character != null)
-                EntityManager.Add(EntityFactory.Shoot(MyInfo.GetPosition(), character.GetPosition()));
-            HP -= 5;
+            if (character == null)
+                return;
+            EntityManager.Add(EntityFactory.Shoot(MyInfo.GetPosition(), character.GetPosition()));
+            character.Attack(base.Atk);
+            MyInfo.SetPathFinding(MyInfo.GetPosition());
         }
     }
 }

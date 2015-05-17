@@ -16,7 +16,7 @@ using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
-    public class PlayableCharacter : Behavior, IDisposable, ICharacterInfo
+    public class PlayableCharacter : Behavior, ICharacterInfo
     {
         private bool disposed = false;
         [RequiredComponent]
@@ -30,7 +30,7 @@ namespace WaveProject
         public CharacterType Type { get; private set; }
         public int Team { get; set; }
 
-        public PlayableCharacter(Kinematic kinematic, EnumeratedCharacterType type, int team, Color color)
+        public PlayableCharacter(Kinematic kinematic, EnumeratedCharacterType type, int team)
         {
             Kinematic = kinematic;
             Kinematic.MaxVelocity = 30;
@@ -194,6 +194,23 @@ namespace WaveProject
             LRTA lrta = new LRTA(Kinematic.Position, target, Type, DistanceAlgorith.CHEVYCHEV);
             var path = lrta.Execute();
             PathFollowing.SetPath(path);
+        }
+
+        public void Heal(int hp)
+        {
+            Type.HP = Math.Min(Type.HP + hp, Type.MaxHP);
+        }
+
+        public void Attack(int atk)
+        {
+            float damage = (atk / (float)Type.Def) * 10;
+            Type.HP = Math.Max(Type.HP - (int)damage, 0);
+            Console.WriteLine(Type.HP);
+        }
+
+        public bool IsDead()
+        {
+            return Type.HP <= 0;
         }
     }
 }

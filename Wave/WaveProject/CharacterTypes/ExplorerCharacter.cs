@@ -11,7 +11,7 @@ namespace WaveProject.CharacterTypes
     public class ExplorerCharacter : CharacterType
     {
         public ExplorerCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 150, 20, 30)
+            : base(myInfo, entityManager, 180, 20, 30)
         {
 
         }

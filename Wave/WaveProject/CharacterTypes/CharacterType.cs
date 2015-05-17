@@ -26,11 +26,12 @@ namespace WaveProject.CharacterTypes
 
         public CharacterType(ICharacterInfo myInfo, EntityManager entityManager, int hp = 0, int atk = 0, int def = 0, float visibilityRadius = 0f)
         {
+            Random r = new Random();
             MyInfo = myInfo;
             EntityManager = entityManager;
-            MaxHP = HP = hp;
-            Atk = atk;
-            Def = def;
+            MaxHP = HP = hp + (r.Next(20));
+            Atk = atk + (r.Next(5));
+            Def = def + (r.Next(5));
             VisibilityRadius = visibilityRadius;
         }
 
@@ -65,9 +66,9 @@ namespace WaveProject.CharacterTypes
         {
             var healpoint = Map.CurrentMap.GetBestHealPoinPosition(MyInfo);
 
-            if ((healpoint - MyInfo.GetPosition()).Length() < Map.HealRatio)
+            if ((Map.CurrentMap.WorldPositionByTilePosition(healpoint) - MyInfo.GetPosition()).Length() < Map.HealRatio)
             {
-                HP = Math.Max(HP + 1, MaxHP);
+                HP = Math.Max(HP + 5, MaxHP);
             }
             else
             {
@@ -92,7 +93,7 @@ namespace WaveProject.CharacterTypes
                     }
                 }
 
-                Console.WriteLine(healpoint);
+                //Console.WriteLine(healpoint);
                 // PATHFINDING
                 MyInfo.SetPathFinding(healpoint);
             }
@@ -126,7 +127,7 @@ namespace WaveProject.CharacterTypes
                 }
             }
 
-            Console.WriteLine(healpoint);
+            //Console.WriteLine(healpoint);
             // PATHFINDING
             MyInfo.SetPathFinding(healpoint);
         }
@@ -162,7 +163,7 @@ namespace WaveProject.CharacterTypes
                     }
                 }
 
-                Console.WriteLine(healpoint);
+                //Console.WriteLine(healpoint);
                 // PATHFINDING
                 MyInfo.SetPathFinding(healpoint);
             }
@@ -170,7 +171,9 @@ namespace WaveProject.CharacterTypes
 
         public void GoToWaypoint()
         {
-            var waypoint = Map.CurrentMap.Waypoints.OrderBy(o => (o - MyInfo.GetPosition()).Length()).FirstOrDefault();
+            var waypoint = Map.CurrentMap.Waypoints.Where(w => Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition()) != w)
+                .OrderBy(o => (o - Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition())).Length())
+                .FirstOrDefault();
 
             MyInfo.SetPathFinding(Map.CurrentMap.WorldPositionByTilePosition(waypoint));
         }

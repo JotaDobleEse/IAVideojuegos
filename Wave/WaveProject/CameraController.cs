@@ -33,7 +33,7 @@ namespace WaveProject
             Vector2 Speed = Vector2.Zero;
             // Keyboard
             var keyboard = WaveServices.Input.KeyboardState;
-            if (keyboard.W == ButtonState.Pressed)
+            /*if (keyboard.W == ButtonState.Pressed)
             {
                 Speed -= new Vector2(0f, Velocity);
             }
@@ -48,7 +48,7 @@ namespace WaveProject
             else if (keyboard.D == ButtonState.Pressed)
             {
                 Speed += new Vector2(Velocity, 0f);
-            }
+            }*/
 
             if (WaveServices.Input.MouseState.Wheel > 0)
             {
@@ -82,6 +82,6 @@ namespace WaveProject
             }
 
             Camera.Position += new Vector3(Speed * (float)gameTime.TotalSeconds, 0f);
-        } 
+        }
     }
 }

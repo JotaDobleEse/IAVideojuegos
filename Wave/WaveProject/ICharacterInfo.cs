@@ -8,7 +8,7 @@ using WaveProject.CharacterTypes;
 
 namespace WaveProject
 {
-    public interface ICharacterInfo
+    public interface ICharacterInfo : IDisposable
     {
         Vector2 GetPosition();
         Vector2 GetVelocity();
@@ -16,5 +16,8 @@ namespace WaveProject
         EnumeratedCharacterType GetCharacterType();
         void SetTarget(Kinematic target);
         void SetPathFinding(Vector2 target);
+        void Heal(int hp);
+        void Attack(int atk);
+        bool IsDead();
     }
 }

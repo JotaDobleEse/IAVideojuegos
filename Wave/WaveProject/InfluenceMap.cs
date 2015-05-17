@@ -21,9 +21,9 @@ namespace WaveProject
 
         private static InfluenceMap instance = new InfluenceMap();
         public static InfluenceMap Influence { get { return instance; } }
-        public EntityManager EntityManager { get; private set; }
         public const int Scale = 5;
         public const int MaxAlpha = 160;
+        public Entity[] Entities { get; set; }
 
         private const float Expand = 0.95f;
 
@@ -39,9 +39,8 @@ namespace WaveProject
                 };
         }
 
-        public void Initialize(EntityManager entity)
+        public void Initialize()
         {
-            EntityManager = entity;
             Texture.Width = Map.CurrentMap.TotalWidth / Scale;
             Texture.Height = Map.CurrentMap.TotalHeight / Scale;
         }
@@ -50,8 +49,8 @@ namespace WaveProject
         {
             try
             {
-                var entities = EntityManager.AllEntities.ToArray();
-                var characters = entities.Where(w => w.Components.Any(a => a is ICharacterInfo))
+                //var entities = EntityManager.AllEntities.ToArray();
+                var characters = Entities.Where(w => w.Components.Any(a => a is ICharacterInfo))
                     .Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo)
                     .Where(w => w.GetTeam() == team).ToArray();
 

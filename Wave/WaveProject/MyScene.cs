@@ -313,42 +313,13 @@ namespace WaveProject
             //EntityManager.Add(follower3);
             #endregion
 
-            var r = new System.Random();
             for (int i = 0; i < 4; i++)
             {
-                float x = r.Next(1000);
-                float y = r.Next(800);
-
-                Kinematic position = new Kinematic(true) { Position = new Vector2(x, y) };
-                string texture = Textures[(int)y % Textures.Length];
-                EnumeratedCharacterType type = EnumeratedCharacterType.NONE;
-                switch (texture)
-                {
-                    case "malabestia":
-                        type = EnumeratedCharacterType.MELEE;
-                        break;
-                    case "soldado":
-                        type = EnumeratedCharacterType.RANGED;
-                        break;
-                    case "lagarto":
-                        type = EnumeratedCharacterType.EXPLORER;
-                        break;
-                    case "juggernaut":
-                        type = EnumeratedCharacterType.MELEE;
-                        break;
-                }
-
-                Entity character = new Entity("char" + i)
-                     .AddComponent(new Transform2D() { Position = position.Position })
-                     .AddComponent(new Sprite("Content/Textures/" + texture))
-                     .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                     .AddComponent(new PlayableCharacter(position, type, 1/*((int)x % 2) + 1*/, Color.White));
-                EntityManager.Add(character);
-
-                Console.WriteLine("{0}: Add character {2} as {3} of team {4} in position {1}{5}", i + 1, position.Position, texture, type, ((int)x % 2) + 1, Environment.NewLine);
+                EntityManager.Add(EntityFactory.PlayableCharacterRandom(1));
             }
 
             EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED));
+            EntityManager.Add(EntityFactory.Character(800, 800, 2, EnumeratedCharacterType.MELEE));
 
             Entity influenceMap = new Entity("InfluenceMap")
                 .AddComponent(new Transform2D())
@@ -363,7 +334,7 @@ namespace WaveProject
             base.Start();
 
             Map.CurrentMap.Initialize(TiledMap);
-            InfluenceMap.Influence.Initialize(EntityManager);
+            InfluenceMap.Influence.Initialize();
 
             float width = WaveServices.ViewportManager.ScreenWidth;
             float height = WaveServices.ViewportManager.ScreenHeight;

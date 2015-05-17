@@ -154,6 +154,13 @@ namespace WaveProject
             return hp;
         }
 
+        public bool IsInHealArea(ICharacterInfo character)
+        {
+            var hp = HealPoints.Where(w => w.Team == character.GetTeam())
+                .Any(a => (TilePositionByWolrdPosition(character.GetPosition()) - a.Position).Length() <= new Vector2(HealRatio, HealRatio).Length());
+            return hp;
+        }
+
         private void LoadWaypoints()
         {
             string[] lines = File.ReadAllLines(@"Content\waypoints.txt");

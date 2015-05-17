@@ -11,6 +11,8 @@ namespace WaveProject.DecisionManager
     {
         public List<GenericAction> Actions { get; set; }
         public List<GenericAction> Active { get; private set; }
+        public const float ExecutionTime = 0.3f;
+        private float CurrentTime = 0f;
         //public int CurrentTime { get; private set; }
 
         public ActionManager()
@@ -47,51 +49,56 @@ namespace WaveProject.DecisionManager
                 action.ExpireTime -= dt;
             }
 
-            Actions = Actions.Where(w => w.ExpireTime > 0).ToList();
-
-            GenericAction nextAction = NextAction();
-            if (nextAction != null && GetHighestPriority() > nextAction.Priority)
+            CurrentTime += dt;
+            if (CurrentTime >= ExecutionTime)
             {
-                if (nextAction.CanInterrupt())
-                {
-                    Active.Clear();
-                    Active.Add(nextAction);
-                }
-            }
 
-            foreach (var action in Actions.OrderBy(o => o.Priority))
-            {
-                bool ok = true;
-                foreach (var activeAction in Active)
+                Actions = Actions.Where(w => w.ExpireTime > 0).ToList();
+
+                GenericAction nextAction = NextAction();
+                if (nextAction != null && GetHighestPriority() > nextAction.Priority)
                 {
-                    if (!action.CanDoBoth(activeAction))
+                    if (nextAction.CanInterrupt())
                     {
-                        ok = false;
-                        break;
+                        Active.Clear();
+                        Active.Add(nextAction);
                     }
                 }
-                if (ok)
+
+                foreach (var action in Actions.OrderBy(o => o.Priority))
                 {
+                    bool ok = true;
+                    foreach (var activeAction in Active)
+                    {
+                        if (!action.CanDoBoth(activeAction))
+                        {
+                            ok = false;
+                            break;
+                        }
+                    }
+                    if (ok)
+                    {
+                        Actions.Remove(action);
+                        Active.Add(action);
+                    }
+                }
+
+                if (Active.Count == 0)
+                {
+                    GenericAction action = NextAction();
                     Actions.Remove(action);
                     Active.Add(action);
                 }
+
+                Active = Active.Where(w => !w.IsComplete()).ToList();
+
+                foreach (var activeAction in Active)
+                {
+                    //Console.WriteLine(activeAction.Function.Method);
+                    activeAction.Execute();
+                }
+                CurrentTime = 0f;
             }
-
-            if (Active.Count == 0)
-            {
-                GenericAction action = NextAction();
-                Actions.Remove(action);
-                Active.Add(action);
-            }
-
-            Active = Active.Where(w => !w.IsComplete()).ToList();
-
-            foreach (var activeAction in Active)
-            {
-                Console.WriteLine(activeAction.Function.Method);
-                activeAction.Execute();
-            }
-
         }
     }
 }

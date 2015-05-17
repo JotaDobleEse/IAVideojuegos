@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Math;
 using WaveEngine.Framework.Managers;
 using WaveProject.Steerings.Pathfinding;
 
@@ -11,7 +12,7 @@ namespace WaveProject.CharacterTypes
     public class MeleeCharacter : CharacterType
     {
         public MeleeCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 120, 60, 45)
+            : base(myInfo, entityManager, 120, 60, 45, 200)
         {
 
         }
@@ -59,11 +60,11 @@ namespace WaveProject.CharacterTypes
 
         public override Action Update()
         {
-            CharacterType enemy = null;// FindEnemyNear();
-
             //ATAQUE
             if (HP >= MaxHP * 0.40)
             {
+                var enemy = FindEnemyNear();
+
                 //SI ENCONTRAMOS UN ENEMIGO
                 if (enemy != null)
                 {
@@ -79,6 +80,7 @@ namespace WaveProject.CharacterTypes
             //DEFENSA
             else if (HP > MaxHP*0.40 && HP > MaxHP*0.20)
             {
+                var enemy = FindEnemyNear();
 
                 //SI ENCONTRAMOS UN ENEMIGO
                 if (enemy != null)
@@ -99,7 +101,48 @@ namespace WaveProject.CharacterTypes
 
         public override void Attack(ICharacterInfo character)
         {
-            throw new NotImplementedException();
+            if (character == null)
+                return;
+            var attackPoint = Map.CurrentMap.TilePositionByWolrdPosition(character.GetPosition());
+            List<Vector2> ps = new List<Vector2>();
+            ps.Add(attackPoint + new Vector2(1, 1));
+            ps.Add(attackPoint + new Vector2(1, -1));
+            ps.Add(attackPoint + new Vector2(-1, 1));
+            ps.Add(attackPoint + new Vector2(-1, -1));
+            ps.Add(attackPoint + new Vector2(0, 1));
+            ps.Add(attackPoint + new Vector2(0, -1));
+            ps.Add(attackPoint + new Vector2(1, 0));
+            ps.Add(attackPoint + new Vector2(-1, 0));
+
+            var myPos = Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition());
+            var isInAttackPos = ps.Any(a => a == myPos);
+
+            if (isInAttackPos)
+            {
+                character.Attack(base.Atk);
+                Console.WriteLine("Attacked");
+            }
+            else
+            {
+                float minLength = float.PositiveInfinity;
+                foreach (var pos in ps)
+                {
+                    if (Map.CurrentMap.Exists(pos) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
+                    {
+                        var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
+                        var length = (worldPos - MyInfo.GetPosition()).Length();
+                        if (length < minLength)
+                        {
+                            minLength = length;
+                            attackPoint = worldPos;
+                        }
+                    }
+                }
+
+                //Console.WriteLine(attackPoint);
+                // PATHFINDING
+                MyInfo.SetPathFinding(attackPoint);
+            }
         }
     }
 }

@@ -39,6 +39,7 @@ namespace WaveProject
         private bool IsFormationMode = false;
         private bool Shoot = false;
         private float TimeToUpdateInfluence = 0f;
+        private float TimeToHeal = 0f;
         private Thread CurrentThread = null;
 
         public GameController(Kinematic mouse)
@@ -257,12 +258,23 @@ namespace WaveProject
             {
                 if (CurrentThread == null || !CurrentThread.IsAlive)
                 {
+                    Entity[] entities = EntityManager.AllEntities.ToArray();
+                    InfluenceMap.Influence.Entities = entities;
                     InfluenceMap.Influence.Texture.IsUploaded = false;
                     CurrentThread = new Thread(InfluenceMap.Influence.GenerateInfluenteMap);
                     CurrentThread.Start();
                 }
                 TimeToUpdateInfluence = 1f;
             }
+
+            TimeToHeal -= (float)gameTime.TotalSeconds;
+            if (TimeToHeal <= 0f)
+            {
+                Heal();
+                TimeToHeal = 0.3f;
+            }
+
+            Death();
 
             LastMousePosition = Mouse.Position;
             Debug.Controller = this;
@@ -278,6 +290,36 @@ namespace WaveProject
             }
             if (ActiveFormation != null)
                 ActiveFormation.Draw(lb);
+        }
+
+        private void Heal()
+        {
+            var chars = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo)).ToArray();
+            var characters = chars.Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo);
+
+            foreach (var character in characters)
+            {
+                if (Map.CurrentMap.IsInHealArea(character))
+                {
+                    character.Heal(1);
+                }
+            }
+        }
+
+        private void Death()
+        {
+            var characters = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo) && (w.Components.First(f => f is ICharacterInfo) as ICharacterInfo).IsDead()).ToArray();
+
+            foreach (var character in characters)
+            {
+                if (character.FindComponent<PlayableCharacter>() != null)
+                {
+                    SelectedCharacters.Remove(character.FindComponent<PlayableCharacter>());
+                }
+                (character.Components.First(f => f is ICharacterInfo) as ICharacterInfo).Dispose();
+                if (character != null)
+                    EntityManager.Remove(character);
+            }
         }
     }
 

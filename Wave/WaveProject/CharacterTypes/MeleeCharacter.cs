@@ -119,7 +119,7 @@ namespace WaveProject.CharacterTypes
 
             if (isInAttackPos)
             {
-                character.Attack(base.Atk);
+                character.ReceiveAttack(base.Atk);
             }
             else
             {

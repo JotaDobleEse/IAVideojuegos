@@ -196,16 +196,21 @@ namespace WaveProject
             PathFollowing.SetPath(path);
         }
 
-        public void Heal(int hp)
+        public void ReceiveHeal(int hp)
         {
             Type.HP = Math.Min(Type.HP + hp, Type.MaxHP);
         }
 
-        public void Attack(int atk)
+        public void ReceiveAttack(int atk)
         {
             float damage = (atk / (float)Type.Def) * 10;
             Type.HP = Math.Max(Type.HP - (int)damage, 0);
             Console.WriteLine(Type.HP);
+        }
+
+        public void Attack(ICharacterInfo target)
+        {
+            Type.Attack(target);
         }
 
         public bool IsDead()

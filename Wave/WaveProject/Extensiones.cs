@@ -8,6 +8,7 @@ using WaveEngine.Common.Math;
 using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
+using WaveEngine.Framework.Managers;
 using WaveEngine.Framework.Services;
 using WaveEngine.TiledMap;
 using WaveProject.Steerings.Pathfinding;
@@ -349,6 +350,35 @@ namespace WaveProject
         public static bool Exists(this Node[,] array, Vector2 position)
         {
             return array.Exists(position.X(), position.Y());
+        }
+        #endregion
+
+        #region EntityManager
+        public static Entity[] AllEntitiesByComponentType(this EntityManager entityManager, Type type)
+        {
+            var chars = entityManager.AllEntities.Where(w => w.Components.Any(a => a.GetType() == type));
+            return chars.ToArray();
+        }
+
+        public static ICharacterInfo[] AllCharacters(this EntityManager entityManager)
+        {
+            var chars = entityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo))
+                .Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo);
+            return chars.ToArray();
+        }
+
+        public static Entity[] AllCharactersEntity(this EntityManager entityManager)
+        {
+            var chars = entityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo));
+            return chars.ToArray();
+        }
+
+        public static ICharacterInfo[] AllCharactersByTeam(this EntityManager entityManager, int team)
+        {
+            var chars = entityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo))
+                .Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo)
+                .Where(w => w.GetTeam() == team);
+            return chars.ToArray();
         }
         #endregion
     }

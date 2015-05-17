@@ -83,6 +83,9 @@ namespace WaveProject
             Kinematic.Position = Transform.Position;
             Kinematic.Orientation = Transform.Rotation;
 
+            Terrain terrain = Map.CurrentMap.TerrainOnWorldPosition(Kinematic.Position);
+            Kinematic.MaxVelocity = Type.MaxVelocity(terrain);
+
             SteeringOutput output = Steering.GetSteering();
             Kinematic.Update(dt, output);
 
@@ -167,12 +170,12 @@ namespace WaveProject
             PathFollowing.SetPath(path);
         }
 
-        public void Heal(int hp)
+        public void ReceiveHeal(int hp)
         {
             Type.HP = Math.Min(Type.HP + hp, Type.MaxHP);
         }
 
-        public void Attack(int atk)
+        public void ReceiveAttack(int atk)
         {
             float damage = (atk / (float)Type.Def) * 10;
             Type.HP = Math.Max(Type.HP - (int)damage, 0);

@@ -15,7 +15,7 @@ namespace WaveProject
     {
         [RequiredComponent]
         public Camera2D Camera { get; set; }
-        private float Velocity = 50f;
+        private float Velocity = 80f;
         private bool PressedMouse = false;
         private Vector2 LastPositionMouse;
 
@@ -33,7 +33,7 @@ namespace WaveProject
             Vector2 Speed = Vector2.Zero;
             // Keyboard
             var keyboard = WaveServices.Input.KeyboardState;
-            /*if (keyboard.W == ButtonState.Pressed)
+            if (keyboard.W == ButtonState.Pressed)
             {
                 Speed -= new Vector2(0f, Velocity);
             }
@@ -48,7 +48,7 @@ namespace WaveProject
             else if (keyboard.D == ButtonState.Pressed)
             {
                 Speed += new Vector2(Velocity, 0f);
-            }*/
+            }
 
             if (WaveServices.Input.MouseState.Wheel > 0)
             {

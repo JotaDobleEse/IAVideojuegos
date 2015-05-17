@@ -16,8 +16,8 @@ namespace WaveProject
         EnumeratedCharacterType GetCharacterType();
         void SetTarget(Kinematic target);
         void SetPathFinding(Vector2 target);
-        void Heal(int hp);
-        void Attack(int atk);
+        void ReceiveHeal(int hp);
+        void ReceiveAttack(int atk);
         bool IsDead();
     }
 }

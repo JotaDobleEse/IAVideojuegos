@@ -37,7 +37,6 @@ namespace WaveProject
         private bool ControlSelect = false;
         private RectangleF MouseRectangle;
         private bool IsFormationMode = false;
-        private bool Shoot = false;
         private float TimeToUpdateInfluence = 0f;
         private float TimeToHeal = 0f;
         private Thread CurrentThread = null;
@@ -116,8 +115,23 @@ namespace WaveProject
 
         protected override void Update(TimeSpan gameTime)
         {
-            Mouse.Update((float)gameTime.TotalSeconds, new Steerings.SteeringOutput());
+            float dt = (float)gameTime.TotalSeconds;
+            Mouse.Update(dt, new Steerings.SteeringOutput());
 
+            SelectCharactersAndFormations(dt);
+
+            UpdateInfluenceMap(dt);
+
+            Heal(dt);
+
+            Death();
+
+            LastMousePosition = Mouse.Position;
+            Debug.Controller = this;
+        }
+
+        private void SelectCharactersAndFormations(float dt)
+        {
             // Si el botón izquierdo del ratón no está pultado y la tecla estaba pulsada
             if ((WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release && ControlSelect))
             {
@@ -147,8 +161,7 @@ namespace WaveProject
                 if (WaveServices.Input.KeyboardState.LeftControl == WaveEngine.Common.Input.ButtonState.Pressed && !ControlSelect)
                 {
                     ControlSelect = true;
-                    IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
-                    .Where(w => w.FindComponent<PlayableCharacter>() != null)
+                    IEnumerable<PlayableCharacter> characters = EntityManager.AllEntitiesByComponentType(typeof(PlayableCharacter))
                     .Select(s => s.FindComponent<PlayableCharacter>());
 
                     var selectedCharacter = characters
@@ -177,8 +190,7 @@ namespace WaveProject
             {
                 MouseRectangle.Width = Mouse.Position.X - MouseRectangle.X;
                 MouseRectangle.Height = Mouse.Position.Y - MouseRectangle.Y;
-                IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
-                    .Where(w => w.FindComponent<PlayableCharacter>() != null)
+                IEnumerable<PlayableCharacter> characters = EntityManager.AllEntitiesByComponentType(typeof(PlayableCharacter))
                     .Select(s => s.FindComponent<PlayableCharacter>());
 
                 SelectedCharacters = characters.Where(w => w.Kinematic.Position.IsContent(MouseRectangle.Center, new Vector2(MouseRectangle.Width.Abs(), MouseRectangle.Height.Abs()))).ToList();
@@ -196,42 +208,31 @@ namespace WaveProject
                 }
                 else
                 {
-                    foreach (var selectedCharacter in SelectedCharacters)
+                    var enemyTarget = EntityManager.AllCharactersByTeam(2)
+                        .Where(w => w is CharacterNPC).Select(s => (s as CharacterNPC))
+                        .FirstOrDefault(f => Mouse.Position.IsContent(f.Kinematic.Position, new Vector2(f.Texture.Texture.Width, f.Texture.Texture.Height)));
+                    if (enemyTarget != null)
                     {
-                        LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
-                        if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
+                        foreach (var selectedCharacter in SelectedCharacters)
                         {
-                            LastStartTile = lrta.StartPos;
-                            LastEndTile = lrta.EndPos;
-                            List<Vector2> path = lrta.Execute();
-                            selectedCharacter.SetPath(path);
-                            Debug.Path = path;
+                            selectedCharacter.Attack(enemyTarget);
                         }
                     }
-                }
-            }
-
-            if (WaveServices.Input.KeyboardState.S == WaveEngine.Common.Input.ButtonState.Pressed && SelectedCharacters.Count > 0 && !Shoot)
-            {
-                var target = SelectedCharacters[0].Type.FindEnemyNear();
-                SelectedCharacters[0].Type.Attack(target);
-                Shoot = true;
-            }
-            else if (WaveServices.Input.KeyboardState.S == WaveEngine.Common.Input.ButtonState.Release && Shoot)
-            {
-                Shoot = false;
-            }
-
-            // R para eliminar personajes
-            if (WaveServices.Input.KeyboardState.R == WaveEngine.Common.Input.ButtonState.Pressed && SelectedCharacters.Count > 0)
-            {
-                foreach (var character in SelectedCharacters.ToArray())
-                {
-                    var entity = EntityManager.AllEntities.FirstOrDefault(w => w.FindComponent<PlayableCharacter>() != null && w.FindComponent<PlayableCharacter>() == character);
-                    if (entity != null)
-                        EntityManager.Remove(entity);
-                    SelectedCharacters.Remove(character);
-                    character.Dispose();
+                    else
+                    {
+                        foreach (var selectedCharacter in SelectedCharacters)
+                        {
+                            LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
+                            if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
+                            {
+                                LastStartTile = lrta.StartPos;
+                                LastEndTile = lrta.EndPos;
+                                List<Vector2> path = lrta.Execute();
+                                selectedCharacter.SetPath(path);
+                                Debug.Path = path;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -249,10 +250,13 @@ namespace WaveProject
                 }
 
                 if (ActiveFormation != null)
-                    ActiveFormation.Update((float)gameTime.TotalSeconds);
+                    ActiveFormation.Update(dt);
             }
+        }
 
-            TimeToUpdateInfluence -= (float)gameTime.TotalSeconds;
+        private void UpdateInfluenceMap(float dt)
+        {
+            TimeToUpdateInfluence -= dt;
 
             if (TimeToUpdateInfluence <= 0f)
             {
@@ -266,18 +270,41 @@ namespace WaveProject
                 }
                 TimeToUpdateInfluence = 1f;
             }
+        }
 
-            TimeToHeal -= (float)gameTime.TotalSeconds;
+        private void Heal(float dt)
+        {
+            TimeToHeal -= dt;
             if (TimeToHeal <= 0f)
             {
-                Heal();
+                var characters = EntityManager.AllCharacters();
+
+                foreach (var character in characters)
+                {
+                    if (Map.CurrentMap.IsInHealArea(character))
+                    {
+                        character.ReceiveHeal(1);
+                    }
+                }
                 TimeToHeal = 0.3f;
             }
+            
+        }
 
-            Death();
+        private void Death()
+        {
+            var characters = EntityManager.AllCharactersEntity().Where(w => (w.Components.First(f => f is ICharacterInfo) as ICharacterInfo).IsDead()).ToArray();
 
-            LastMousePosition = Mouse.Position;
-            Debug.Controller = this;
+            foreach (var character in characters)
+            {
+                if (character.FindComponent<PlayableCharacter>() != null)
+                {
+                    SelectedCharacters.Remove(character.FindComponent<PlayableCharacter>());
+                }
+                (character.Components.First(f => f is ICharacterInfo) as ICharacterInfo).Dispose();
+                if (character != null)
+                    EntityManager.Remove(character);
+            }
         }
 
         public void Draw(LineBatch2D lb)
@@ -290,36 +317,6 @@ namespace WaveProject
             }
             if (ActiveFormation != null)
                 ActiveFormation.Draw(lb);
-        }
-
-        private void Heal()
-        {
-            var chars = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo)).ToArray();
-            var characters = chars.Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo);
-
-            foreach (var character in characters)
-            {
-                if (Map.CurrentMap.IsInHealArea(character))
-                {
-                    character.Heal(1);
-                }
-            }
-        }
-
-        private void Death()
-        {
-            var characters = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo) && (w.Components.First(f => f is ICharacterInfo) as ICharacterInfo).IsDead()).ToArray();
-
-            foreach (var character in characters)
-            {
-                if (character.FindComponent<PlayableCharacter>() != null)
-                {
-                    SelectedCharacters.Remove(character.FindComponent<PlayableCharacter>());
-                }
-                (character.Components.First(f => f is ICharacterInfo) as ICharacterInfo).Dispose();
-                if (character != null)
-                    EntityManager.Remove(character);
-            }
         }
     }
 

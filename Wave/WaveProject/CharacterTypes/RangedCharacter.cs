@@ -103,7 +103,7 @@ namespace WaveProject.CharacterTypes
             if (character == null)
                 return;
             EntityManager.Add(EntityFactory.Shoot(MyInfo.GetPosition(), character.GetPosition()));
-            character.Attack(base.Atk);
+            character.ReceiveAttack(base.Atk);
             MyInfo.SetPathFinding(MyInfo.GetPosition());
         }
     }

@@ -320,6 +320,7 @@ namespace WaveProject
 
             EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED));
             EntityManager.Add(EntityFactory.Character(800, 800, 2, EnumeratedCharacterType.MELEE));
+            EntityManager.Add(EntityFactory.Character(800, 700, 2, EnumeratedCharacterType.EXPLORER));
 
             Entity influenceMap = new Entity("InfluenceMap")
                 .AddComponent(new Transform2D())

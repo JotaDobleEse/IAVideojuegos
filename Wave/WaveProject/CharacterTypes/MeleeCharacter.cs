@@ -120,7 +120,6 @@ namespace WaveProject.CharacterTypes
             if (isInAttackPos)
             {
                 character.Attack(base.Atk);
-                Console.WriteLine("Attacked");
             }
             else
             {

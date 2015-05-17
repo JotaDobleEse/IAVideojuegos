@@ -90,7 +90,7 @@ namespace WaveProject.CharacterTypes
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
-                    return GoToHeal;
+                    return GoToWaypoint;
                 }
                 //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
                 //GoToNextWaypoint()

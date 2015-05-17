@@ -22,6 +22,7 @@ namespace WaveProject.CharacterTypes
         public int Def { get; set; }
         public float VisibilityRadius { get; set; }
         public ICharacterInfo MyInfo { get; set; }
+        private Vector2 LastWaypoint = Vector2.Zero;
         //definir RAngo de ataque, Arquero tendra mayor rango
 
         public CharacterType(ICharacterInfo myInfo, EntityManager entityManager, int hp = 0, int atk = 0, int def = 0, float visibilityRadius = 0f)
@@ -77,6 +78,10 @@ namespace WaveProject.CharacterTypes
                 ps.Add(healpoint + new Vector2(Map.HealRatio, -Map.HealRatio));
                 ps.Add(healpoint + new Vector2(-Map.HealRatio, Map.HealRatio));
                 ps.Add(healpoint + new Vector2(-Map.HealRatio, -Map.HealRatio));
+                ps.Add(healpoint + new Vector2(0, Map.HealRatio));
+                ps.Add(healpoint + new Vector2(0, -Map.HealRatio));
+                ps.Add(healpoint + new Vector2(Map.HealRatio, 0));
+                ps.Add(healpoint + new Vector2(-Map.HealRatio, 0));
 
                 float minLength = float.PositiveInfinity;
                 foreach (var pos in ps)
@@ -101,16 +106,20 @@ namespace WaveProject.CharacterTypes
 
         public void GoToEnemyBase()
         {
-            var healpoint = Map.CurrentMap.HealPoints.Where(w => w.Team != MyInfo.GetTeam())
+            var enemyBase = Map.CurrentMap.HealPoints.Where(w => w.Team != MyInfo.GetTeam())
                 .Select(s => s.Position)
                 .OrderBy(o => (Map.CurrentMap.WorldPositionByTilePosition(o) - MyInfo.GetPosition()).Length())
                 .FirstOrDefault();
 
             List<Vector2> ps = new List<Vector2>();
-            ps.Add(healpoint + new Vector2(Map.HealRatio, Map.HealRatio));
-            ps.Add(healpoint + new Vector2(Map.HealRatio, -Map.HealRatio));
-            ps.Add(healpoint + new Vector2(-Map.HealRatio, Map.HealRatio));
-            ps.Add(healpoint + new Vector2(-Map.HealRatio, -Map.HealRatio));
+            ps.Add(enemyBase + new Vector2(1, 1));
+            ps.Add(enemyBase + new Vector2(1, -1));
+            ps.Add(enemyBase + new Vector2(-1, 1));
+            ps.Add(enemyBase + new Vector2(-1, -1));
+            ps.Add(enemyBase + new Vector2(0, 1));
+            ps.Add(enemyBase + new Vector2(0, -1));
+            ps.Add(enemyBase + new Vector2(1, 0));
+            ps.Add(enemyBase + new Vector2(-1, 0));
 
             float minLength = float.PositiveInfinity;
             foreach (var pos in ps)
@@ -122,31 +131,35 @@ namespace WaveProject.CharacterTypes
                     if (length < minLength)
                     {
                         minLength = length;
-                        healpoint = worldPos;
+                        enemyBase = worldPos;
                     }
                 }
             }
 
             //Console.WriteLine(healpoint);
             // PATHFINDING
-            MyInfo.SetPathFinding(healpoint);
+            MyInfo.SetPathFinding(enemyBase);
         }
 
         public void GoToMyBase()
         {
-            var healpoint = Map.CurrentMap.GetBestHealPoinPosition(MyInfo);
+            var myBase = Map.CurrentMap.GetBestHealPoinPosition(MyInfo);
 
-            if ((healpoint - MyInfo.GetPosition()).Length() < Map.HealRatio)
+            if ((myBase - MyInfo.GetPosition()).Length() < Map.HealRatio)
             {
                 HP = Math.Max(HP + 1, MaxHP);
             }
             else
             {
                 List<Vector2> ps = new List<Vector2>();
-                ps.Add(healpoint + new Vector2(1, 1));
-                ps.Add(healpoint + new Vector2(1, -1));
-                ps.Add(healpoint + new Vector2(-1, 1));
-                ps.Add(healpoint + new Vector2(-1, -1));
+                ps.Add(myBase + new Vector2( 1,  1));
+                ps.Add(myBase + new Vector2( 1, -1));
+                ps.Add(myBase + new Vector2(-1,  1));
+                ps.Add(myBase + new Vector2(-1, -1));
+                ps.Add(myBase + new Vector2( 0,  1));
+                ps.Add(myBase + new Vector2( 0, -1));
+                ps.Add(myBase + new Vector2( 1,  0));
+                ps.Add(myBase + new Vector2(-1,  0));
 
                 float minLength = float.PositiveInfinity;
                 foreach (var pos in ps)
@@ -158,21 +171,25 @@ namespace WaveProject.CharacterTypes
                         if (length < minLength)
                         {
                             minLength = length;
-                            healpoint = worldPos;
+                            myBase = worldPos;
                         }
                     }
                 }
 
                 //Console.WriteLine(healpoint);
                 // PATHFINDING
-                MyInfo.SetPathFinding(healpoint);
+                MyInfo.SetPathFinding(myBase);
             }
         }
 
         public void GoToWaypoint()
         {
-            var waypoint = Map.CurrentMap.Waypoints.Where(w => Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition()) != w)
-                .OrderBy(o => (o - Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition())).Length())
+            var mapPos = Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition());
+            if (Map.CurrentMap.Waypoints.Any(a => mapPos == a))
+                LastWaypoint = mapPos;
+
+            var waypoint = Map.CurrentMap.Waypoints.Where(w => mapPos != w && LastWaypoint != w)
+                .OrderBy(o => (o - mapPos).Length())
                 .FirstOrDefault();
 
             MyInfo.SetPathFinding(Map.CurrentMap.WorldPositionByTilePosition(waypoint));

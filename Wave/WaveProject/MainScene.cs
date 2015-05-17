@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace WaveProject
 {
-    public class MyScene : Scene
+    public class MainScene : Scene
     {
         TiledMap TiledMap;
         DebugLines MyDebug;

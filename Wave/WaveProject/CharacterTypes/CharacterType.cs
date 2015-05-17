@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Managers;
+using WaveProject.Characters;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes

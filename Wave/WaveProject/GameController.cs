@@ -11,6 +11,7 @@ using WaveEngine.Components.UI;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
+using WaveProject.Characters;
 using WaveProject.Steerings.Combined;
 using WaveProject.Steerings.Coordinated;
 using WaveProject.Steerings.Delegated;
@@ -117,6 +118,13 @@ namespace WaveProject
         {
             float dt = (float)gameTime.TotalSeconds;
             Mouse.Update(dt, new Steerings.SteeringOutput());
+
+            if (WaveServices.Input.KeyboardState.C == WaveEngine.Common.Input.ButtonState.Pressed)
+            {
+                ScreenContext screenContext = new ScreenContext(new FlockingScene());
+                WaveServices.ScreenContextManager.To(screenContext);
+            }
+
 
             SelectCharactersAndFormations(dt);
 

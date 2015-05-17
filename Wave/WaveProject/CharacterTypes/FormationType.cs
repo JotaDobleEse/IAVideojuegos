@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveProject.Characters;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes

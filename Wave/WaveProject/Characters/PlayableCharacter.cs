@@ -8,17 +8,15 @@ using WaveEngine.Common.Math;
 using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
-using WaveEngine.Framework.Services;
 using WaveProject.CharacterTypes;
-using WaveProject.DecisionManager;
 using WaveProject.Steerings;
 using WaveProject.Steerings.Combined;
 using WaveProject.Steerings.Delegated;
 using WaveProject.Steerings.Pathfinding;
 
-namespace WaveProject
+namespace WaveProject.Characters
 {
-    public class CharacterNPC : Behavior, ICharacterInfo
+    public class PlayableCharacter : Behavior, ICharacterInfo
     {
         private bool disposed = false;
         [RequiredComponent]
@@ -30,16 +28,17 @@ namespace WaveProject
         public Steering Steering { get; set; }
         public FollowPath PathFollowing { get; set; }
         public CharacterType Type { get; private set; }
-        public ActionManager ActionManager { get; set; }
         public int Team { get; set; }
+        private ICharacterInfo Target = null;
+        public const float ExecutionTime = 0.3f;
+        private float CurrentTime = 0f;
 
-        public CharacterNPC(Kinematic kinematic, EnumeratedCharacterType type, int team/*, Color color*/)
+        public PlayableCharacter(Kinematic kinematic, EnumeratedCharacterType type, int team)
         {
             Kinematic = kinematic;
             Kinematic.MaxVelocity = 30;
-            //Steering = steering;
             Team = team;
-            ActionManager = new ActionManager();
+
             switch (type)
             {
                 case EnumeratedCharacterType.EXPLORER:
@@ -56,11 +55,16 @@ namespace WaveProject
                     break;
             }
 
-            if (team == 1)
+            //Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.3f };
+            ////Steering = new FollowPath() { Character = Kinematic };
+            //PathFollowing = (PredictivePathFollowing)Steering;
+
+            if (Team == 1)
                 Color = Color.Cyan;
-            if (team == 2)
+            else if (Team == 2)
                 Color = Color.Red;
-            //Color = color;
+
+            SetPathFollowing();
         }
 
         protected override void Initialize()
@@ -71,15 +75,41 @@ namespace WaveProject
             Type.EntityManager = EntityManager;
         }
 
+        public void SetPathFollowing()
+        {
+            if (Steering != null)
+                Steering.Dispose();
+            BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
+            Steering = new BlendedSteering(behaviors);
+            PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
+        }
+
+        public void SetPath(List<Vector2> path)
+        {
+            PathFollowing.SetPath(path);
+        }
+
+        public void Draw(LineBatch2D lb)
+        {
+            lb.DrawCircleVM(Kinematic.Position, Math.Max(Texture.Texture.Width, Texture.Texture.Height) / 1.8f, Color.Cyan, 1f);
+        }
+
         protected override void Update(TimeSpan gameTime)
         {
             float dt = (float)gameTime.TotalSeconds;
-            Action newAction = Type.Update();
-            ActionManager.ScheduleAction(new GenericAction(1f, 1, true, newAction));
-            ActionManager.Execute(dt);
+            CurrentTime += dt;
+            if (CurrentTime >= ExecutionTime)
+            {
+                if (Target != null)
+                {
+                    if (Target.IsDisposed())
+                        Target = null;
+                    else
+                        Type.Attack(Target);
+                }
+                CurrentTime = 0f;
+            }
 
-            if (Steering == null)
-                return;
             Kinematic.Position = Transform.Position;
             Kinematic.Orientation = Transform.Rotation;
 
@@ -91,7 +121,7 @@ namespace WaveProject
 
             Transform.Position = Kinematic.Position;
             Transform.Rotation = Kinematic.Orientation;
-
+            
             #region Escenario circular
             if (Transform.Position.X > Map.CurrentMap.TotalWidth)
             {
@@ -112,6 +142,28 @@ namespace WaveProject
             #endregion
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                Kinematic.Dispose();
+                Kinematic = null;
+                Steering = null;
+                PathFollowing = null;
+                Type = null;
+            }
+
+            disposed = true;
+        }
+
         public Vector2 GetPosition()
         {
             return Kinematic.Position;
@@ -126,27 +178,6 @@ namespace WaveProject
         {
             return Type.GetCharacterType();
         }
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
-
-            if (disposing)
-            {
-                Steering.Dispose();
-                Kinematic.Dispose();
-                Kinematic = null;
-                Steering = null;
-                Type = null;
-            }
-
-            disposed = true;
-        }
 
         public Vector2 GetVelocity()
         {
@@ -155,9 +186,19 @@ namespace WaveProject
 
         public void SetTarget(Kinematic target)
         {
-            Steering.SetTarget(target);
+            Steering.Dispose();
+            BehaviorAndWeight[] behaviors = SteeringsFactory.CollisionPrevent(Kinematic);
+            List<BehaviorAndWeight> allBehaviors = new List<BehaviorAndWeight>(behaviors);
+            allBehaviors.Add(new BehaviorAndWeight()
+            {
+                Behavior = Steering = new Arrive() { Character = Kinematic, Target = target },
+                Weight = 1.0f
+            });
+            Steering = new BlendedSteering(allBehaviors.ToArray());
+            //Steering.SetTarget(target);
         }
-        
+
+
         public void SetPathFinding(Vector2 target)
         {
             if (Steering != null)
@@ -181,6 +222,12 @@ namespace WaveProject
             float damage = (atk / (float)Type.Def) * 10;
             Type.HP = Math.Max(Type.HP - (int)damage, 0);
             Console.WriteLine(Type.HP);
+        }
+
+        public void Attack(ICharacterInfo target)
+        {
+            Target = target;
+            //Type.Attack(target);
         }
 
         public bool IsDead()

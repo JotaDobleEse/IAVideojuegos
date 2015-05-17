@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
+using WaveProject.Characters;
 using WaveProject.CharacterTypes;
 using WaveProject.Steerings.Delegated;
 using WaveProject.Steerings.Pathfinding;

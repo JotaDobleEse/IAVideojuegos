@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveProject.CharacterTypes;
 
-namespace WaveProject
+namespace WaveProject.Characters
 {
     public interface ICharacterInfo : IDisposable
     {

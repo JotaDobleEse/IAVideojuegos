@@ -23,7 +23,7 @@ namespace WaveProject.Steerings.Group
         {
             Threshold = 50f;
             DecayCoefficient = 200f;
-            MaxAcceleration = 10f;
+            MaxAcceleration = 20f;
         }
 
 

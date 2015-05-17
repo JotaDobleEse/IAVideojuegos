@@ -12,6 +12,7 @@ using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Managers;
 using WaveEngine.Framework.Services;
+using WaveProject.Characters;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject

@@ -10,6 +10,7 @@ using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.TiledMap;
+using WaveProject.Characters;
 using WaveProject.CharacterTypes;
 using WaveProject.Steerings.Pathfinding;
 

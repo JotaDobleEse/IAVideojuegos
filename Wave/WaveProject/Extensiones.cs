@@ -11,6 +11,7 @@ using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Managers;
 using WaveEngine.Framework.Services;
 using WaveEngine.TiledMap;
+using WaveProject.Characters;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject

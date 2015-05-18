@@ -72,9 +72,11 @@ namespace WaveProject
             };
             text.IsVisible = true;
 
+            DebugLines.Debug.Text = text;
+
             // Create a 2D camera
             var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.Black }
-                .Entity.AddComponent(MyDebug = new DebugLines(text))
+                .Entity.AddComponent(MyDebug = DebugLines.Debug)
                 .AddComponent(new CameraController());
 
             EntityManager.Add(camera2D);
@@ -320,9 +322,36 @@ namespace WaveProject
                 EntityManager.Add(EntityFactory.PlayableCharacterRandom(1));
             }
 
-            EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED));
-            EntityManager.Add(EntityFactory.Character(800, 800, 2, EnumeratedCharacterType.MELEE));
-            EntityManager.Add(EntityFactory.Character(800, 700, 2, EnumeratedCharacterType.EXPLORER));
+            TextBlock text1 = new TextBlock()
+            {
+                Foreground = Color.Cyan,
+                BorderColor = Color.Black,
+                IsBorder = true,
+                FontPath = "Content/Fonts/verdana.wpk",
+                IsVisible = true
+            };
+            TextBlock text2 = new TextBlock()
+            {
+                Foreground = Color.Cyan,
+                BorderColor = Color.Black,
+                IsBorder = true,
+                FontPath = "Content/Fonts/verdana.wpk",
+                IsVisible = true
+            };
+            TextBlock text3 = new TextBlock()
+            {
+                Foreground = Color.Cyan,
+                BorderColor = Color.Black,
+                IsBorder = true,
+                FontPath = "Content/Fonts/verdana.wpk",
+                IsVisible = true
+            };
+            EntityManager.Add(text1);
+            EntityManager.Add(text2);
+            EntityManager.Add(text3);
+            EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED, text1));
+            EntityManager.Add(EntityFactory.Character(800, 800, 2, EnumeratedCharacterType.MELEE, text2));
+            EntityManager.Add(EntityFactory.Character(800, 700, 2, EnumeratedCharacterType.EXPLORER, text3));
 
             Entity influenceMap = new Entity("InfluenceMap")
                 .AddComponent(new Transform2D())
@@ -357,8 +386,6 @@ namespace WaveProject
                     }
                 }
             }
-
-            Controller.Debug = MyDebug;
         }
     }
 }

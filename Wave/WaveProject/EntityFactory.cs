@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Components.Graphics2D;
+using WaveEngine.Components.UI;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
@@ -95,7 +96,7 @@ namespace WaveProject
             return character;
         }
 
-        public static Entity Character(float x, float y, int team, EnumeratedCharacterType type)
+        public static Entity Character(float x, float y, int team, EnumeratedCharacterType type, TextBlock textBlock = null)
         {
             Kinematic position = new Kinematic(true) { Position = new Vector2(x, y) };
             string texture = "";
@@ -119,7 +120,7 @@ namespace WaveProject
                  .AddComponent(new Transform2D() { Position = position.Position })
                  .AddComponent(new Sprite("Content/Textures/" + texture))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
-                 .AddComponent(new CharacterNPC(position, type, team));
+                 .AddComponent(new CharacterNPC(position, type, team) { Text = textBlock });
 
             return character;
         }

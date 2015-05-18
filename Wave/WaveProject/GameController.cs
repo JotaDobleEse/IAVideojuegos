@@ -32,7 +32,6 @@ namespace WaveProject
         Button FormationMode;
         Button DecisionalIA;
         DistanceAlgorith CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
-        public DebugLines Debug { get; set; }
         private List<PlayableCharacter> SelectedCharacters;
         private FormationManager ActiveFormation;
         private bool MousePressed = false;
@@ -164,8 +163,8 @@ namespace WaveProject
             int v = Victory();
 
             LastMousePosition = Mouse.Position;
-            Debug.Controller = this;
-            Debug.Victory = v;
+            DebugLines.Debug.Controller = this;
+            DebugLines.Debug.Victory = v;
         }
 
         private void SelectCharactersAndFormations(float dt)
@@ -269,7 +268,7 @@ namespace WaveProject
                                 List<Vector2> path = lrta.Execute();
                                 selectedCharacter.SetPath(path);
                             }
-                            Debug.Path = lrta2.Execute();
+                            DebugLines.Debug.Path = lrta2.Execute();
                         }
                     }
                 }

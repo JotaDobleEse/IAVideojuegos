@@ -18,25 +18,26 @@ namespace WaveProject
 {
     public class DebugLines : Drawable2D
     {
+        private static DebugLines debug = new DebugLines();
+        public static DebugLines Debug { get { return debug; } }
         private IEnumerable<Steering> Steerings;
         private Camera2D Camera;
-        public TextBlock Text { get; private set; }
+        public TextBlock Text { get; set; }
         public List<Vector2> Path { get; set; }
         public GameController Controller { get; set; }
         public int Victory { get; set; }
 
         private bool DEBUG = true;
-        public DebugLines(TextBlock text)
+        private DebugLines()
         {
-            Path = new List<Vector2>();
-            Text = text;
-            Text.Foreground = Color.White;
-            Victory = 0;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
+            Path = new List<Vector2>();
+            Text.Foreground = Color.White;
+            Victory = 0;
             try
             {
                 Steerings = Steering.Steerings;

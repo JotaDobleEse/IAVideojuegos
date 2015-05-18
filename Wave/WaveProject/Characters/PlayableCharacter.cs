@@ -221,7 +221,7 @@ namespace WaveProject.Characters
         {
             float damage = (atk / (float)Type.Def) * 10;
             Type.HP = Math.Max(Type.HP - (int)damage, 0);
-            Console.WriteLine(Type.HP);
+            //Console.WriteLine(Type.HP);
         }
 
         public void Attack(ICharacterInfo target)

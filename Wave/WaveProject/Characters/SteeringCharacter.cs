@@ -16,7 +16,6 @@ namespace WaveProject.Characters
 {
     public class SteeringCharacter : Behavior
     {
-        private bool disposed = false;
         [RequiredComponent]
         public Transform2D Transform { get; private set; }
         [RequiredComponent]

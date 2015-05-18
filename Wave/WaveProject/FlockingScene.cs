@@ -19,7 +19,7 @@ namespace WaveProject
 
             EntityManager.Add(camera2D);
 
-            for (int i = 0; i < 200; i++)
+            for (int i = 0; i < 300; i++)
             {
                 EntityManager.Add(EntityFactory.FlockingRandom());
             }

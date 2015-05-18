@@ -183,6 +183,21 @@ namespace WaveProject
             ejeY = (center.Y - widthHeight.Y / 2 < v1.Y && v1.Y < center.Y + widthHeight.Y / 2);
             return ejeX && ejeY;
         }
+
+        /// <summary>
+        /// Devuelve la posición del vector relativa a la cámara especificada.
+        /// </summary>
+        /// <param name="mouse"></param>
+        /// <param name="camera">Cámara en base a la que se va a rectificar la posición del vector.</param>
+        /// <returns></returns>
+        public static Vector2 PositionUnproject(this Vector2 vector, Camera camera)
+        {
+            Vector3 mousePosition = new Vector3(vector, 0f);
+            Vector3 project = camera.Project(ref mousePosition);
+            Vector2 projectMouse = project.ToVector2();
+            WaveServices.ViewportManager.RecoverPosition(ref projectMouse);
+            return projectMouse;
+        }
         #endregion
 
         #region float

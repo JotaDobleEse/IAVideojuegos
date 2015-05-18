@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
 using WaveEngine.Components.Graphics2D;
+using WaveEngine.Components.UI;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
 using WaveEngine.Framework.Services;
@@ -31,6 +32,7 @@ namespace WaveProject.Characters
         public FollowPath PathFollowing { get; set; }
         public CharacterType Type { get; private set; }
         public ActionManager ActionManager { get; set; }
+        public TextBlock Text { get; set; }
         public int Team { get; set; }
         private bool IsActiveIA = false;
 
@@ -78,6 +80,12 @@ namespace WaveProject.Characters
             if (IsActiveIA)
             {
                 Action newAction = Type.Update();
+                if (Text != null)
+                {
+                    var transform = Text.Entity.FindComponent<Transform2D>();
+                    transform.Position = Transform.Position.PositionUnproject(CameraController.CurrentCamera);
+                    Text.Text = newAction.Method.ToString().Split(' ')[1];
+                }
                 ActionManager.ScheduleAction(new GenericAction(1f, 1, true, newAction));
                 ActionManager.Execute(dt);
             }
@@ -185,7 +193,7 @@ namespace WaveProject.Characters
         {
             float damage = (atk / (float)Type.Def) * 10;
             Type.HP = Math.Max(Type.HP - (int)damage, 0);
-            Console.WriteLine(Type.HP);
+            //Console.WriteLine(Type.HP);
         }
 
         public bool IsDead()

@@ -15,7 +15,7 @@ namespace WaveProject.Steerings
 
         public VelocityMatching()
         {
-            TimeToTarget = 0.1f;
+            TimeToTarget = 1f;
         }
 
         public override SteeringOutput GetSteering()

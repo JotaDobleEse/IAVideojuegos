@@ -29,6 +29,7 @@ namespace WaveProject.Steerings.Pathfinding
         private int ScaleHeight;
         public Vector2 StartPos { get; private set; }
         public Vector2 EndPos { get; private set; }
+        public bool UseInfluence { get; set; }
 
         public LRTA(Vector2 startPos, Vector2 endPos, CharacterType character, DistanceAlgorith algorithm = DistanceAlgorith.EUCLIDEAN)
         {
@@ -259,9 +260,14 @@ namespace WaveProject.Steerings.Pathfinding
         private float NodeCost(Node node)
         {
             float n_t = Character.Cost(node.Terrain);
-            float n_i = (node.InfluenceTeam[Character.MyInfo.GetTeam() % 2]) / 20f;
+            float n_i = 0;
+            if (Character.MyInfo.GetTeam() == 1)
+                n_i = (Map.CurrentMap.InfluenceMap[node.X, node.Y].Team2) / 10f;
+            else
+                n_i = (Map.CurrentMap.InfluenceMap[node.X, node.Y].Team1) / 10f;
             float res = n_t * 0.4f + n_i * 0.6f;
-            return n_t;// res;
+            //Console.WriteLine("Sin influencia: {0}, con: {1}", n_t, res);
+            return UseInfluence ? res : n_t;
         }
 
         /// <summary>
@@ -346,7 +352,7 @@ namespace WaveProject.Steerings.Pathfinding
             Vector2 factor = new Vector2(diff.X / max, diff.Y / max);
 
             //float lastCost = Character.Cost(NodeMap[p1.X(), p1.Y()].Terrain);
-            float lastCost = NodeCost(NodeMap[p1.X(), p1.Y()]);
+            float lastCost = (float)Math.Round(NodeCost(NodeMap[p1.X(), p1.Y()]), 0);
             Vector2 pAux = p1 + factor;
             Vector2 pAuxTile1 = new Vector2((int)Math.Ceiling(pAux.X), (int)Math.Ceiling(pAux.Y));
             Vector2 pAuxTile2 = new Vector2((int)Math.Floor(pAux.X), (int)Math.Floor(pAux.Y));
@@ -355,8 +361,8 @@ namespace WaveProject.Steerings.Pathfinding
             {
                 if (NodeMap[pAuxTile1.X(), pAuxTile1.Y()].Passable && NodeMap[pAuxTile2.X(), pAuxTile2.Y()].Passable)
                 {
-                    float cost1 = NodeCost(NodeMap[pAuxTile1.X(), pAuxTile1.Y()]);
-                    float cost2 = NodeCost(NodeMap[pAuxTile2.X(), pAuxTile2.Y()]);
+                    float cost1 = (float)Math.Round(NodeCost(NodeMap[pAuxTile1.X(), pAuxTile1.Y()]), 0);
+                    float cost2 = (float)Math.Round(NodeCost(NodeMap[pAuxTile2.X(), pAuxTile2.Y()]), 0);
                     //float cost1 = Character.Cost(NodeMap[pAuxTile1.X(), pAuxTile1.Y()].Terrain);
                     //float cost2 = Character.Cost(NodeMap[pAuxTile2.X(), pAuxTile2.Y()].Terrain);
                     float cost = Math.Min(cost1, cost2);

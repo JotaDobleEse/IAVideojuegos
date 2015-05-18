@@ -8,6 +8,7 @@ using WaveEngine.Common.Math;
 using WaveEngine.Components.Graphics2D;
 using WaveEngine.Framework;
 using WaveEngine.Framework.Graphics;
+using WaveEngine.Framework.Services;
 using WaveProject.Characters;
 using WaveProject.CharacterTypes;
 using WaveProject.Steerings.Combined;
@@ -125,13 +126,13 @@ namespace WaveProject
 
         public static Entity FlockingRandom()
         {
-            float x = Rand.Next(1000);
-            float y = Rand.Next(800);
+            float x = Rand.Next(WaveServices.Platform.ScreenWidth) + WaveServices.Platform.ScreenWidth / 2;
+            float y = Rand.Next(WaveServices.Platform.ScreenHeight) + WaveServices.Platform.ScreenHeight / 2;
 
-            Kinematic position = new Kinematic(true) { Position = new Vector2(x, y) };
+            Kinematic position = new Kinematic(true) { Position = new Vector2(x, y)/*, Rotation = (float)Math.PI/2*/ };
            
             Entity character = new Entity()
-                 .AddComponent(new Transform2D() { Position = position.Position })
+                 .AddComponent(new Transform2D() { Position = position.Position, Rotation = position.Rotation })
                  .AddComponent(new Sprite("Content/Textures/soldado"))
                  .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
                  .AddComponent(new SteeringCharacter(position, EnumeratedCharacterType.RANGED, new BlendedSteering(SteeringsFactory.Flocking(position))));

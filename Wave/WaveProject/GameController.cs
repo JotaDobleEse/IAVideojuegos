@@ -30,6 +30,7 @@ namespace WaveProject
         Button LRTAChevychev;
         Button LRTAEuclidean;
         Button FormationMode;
+        Button DecisionalIA;
         DistanceAlgorith CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
         public DebugLines Debug { get; set; }
         private List<PlayableCharacter> SelectedCharacters;
@@ -41,6 +42,9 @@ namespace WaveProject
         private float TimeToUpdateInfluence = 0f;
         private float TimeToHeal = 0f;
         private Thread CurrentThread = null;
+        private bool IsActiveIA = false;
+        public const float ExecutionLRTATime = 0.3f;
+        private float CurrentLRTATime = 0f;
 
         public GameController(Kinematic mouse)
         {
@@ -57,6 +61,7 @@ namespace WaveProject
             LRTAChevychev = EntityManager.Find<Button>("LRTA_Chevychev");
             LRTAEuclidean = EntityManager.Find<Button>("LRTA_Euclidean");
             FormationMode = EntityManager.Find<Button>("FormationMode");
+            DecisionalIA = EntityManager.Find<Button>("DecisionalIA");
             
             float width = WaveServices.ViewportManager.ScreenWidth;
             float height = WaveServices.ViewportManager.ScreenHeight;
@@ -64,6 +69,7 @@ namespace WaveProject
             LRTAChevychev.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAChevychev.Width - 10, 100);
             LRTAEuclidean.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAEuclidean.Width - 10, 150);
             FormationMode.Entity.FindComponent<Transform2D>().Position = new Vector2(width - FormationMode.Width - 10, 200);
+            DecisionalIA.Entity.FindComponent<Transform2D>().Position = new Vector2(width - DecisionalIA.Width - 10, 250);
 
             LRTAManhattan.Click += (s, e) =>
             {
@@ -102,11 +108,31 @@ namespace WaveProject
                     FormationMode.Text = "Enable Formation Mode";
                     FormationMode.BackgroundColor = Color.Green;
                     ActiveFormation = null;
-                    
+
                     foreach (var character in EntityManager.AllEntities.Where(w => w.FindComponent<PlayableCharacter>() != null).Select(sel => sel.FindComponent<PlayableCharacter>()))
                     {
                         character.SetPathFollowing();
                     }
+                }
+            };
+
+            DecisionalIA.Click += (s, e) =>
+            {
+                IsActiveIA = !IsActiveIA;
+                if (IsActiveIA)
+                {
+                    DecisionalIA.Text = "Disable Decisional IA";
+                    DecisionalIA.BackgroundColor = Color.Red;
+                }
+                else
+                {
+                    DecisionalIA.Text = "Enable Decisional IA";
+                    DecisionalIA.BackgroundColor = Color.Green;
+                }
+
+                foreach (var character in EntityManager.AllEntitiesByComponentType(typeof(CharacterNPC)).Select(sel => sel.FindComponent<CharacterNPC>()))
+                {
+                    character.SetIA(IsActiveIA);
                 }
             };
 
@@ -117,6 +143,7 @@ namespace WaveProject
         protected override void Update(TimeSpan gameTime)
         {
             float dt = (float)gameTime.TotalSeconds;
+            CurrentLRTATime += dt;
             Mouse.Update(dt, new Steerings.SteeringOutput());
 
             if (WaveServices.Input.KeyboardState.C == WaveEngine.Common.Input.ButtonState.Pressed)
@@ -134,8 +161,11 @@ namespace WaveProject
 
             Death();
 
+            int v = Victory();
+
             LastMousePosition = Mouse.Position;
             Debug.Controller = this;
+            Debug.Victory = v;
         }
 
         private void SelectCharactersAndFormations(float dt)
@@ -205,7 +235,7 @@ namespace WaveProject
             }
 
             // Si está pulsado el botón derecho del ratón y está en una posición valida del mapa
-            if (WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && Map.CurrentMap.PositionInMap(Mouse.Position))
+            if (CurrentLRTATime >= ExecutionLRTATime && WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && Map.CurrentMap.PositionInMap(Mouse.Position))
             {
                 if (IsFormationMode)
                 {
@@ -230,18 +260,20 @@ namespace WaveProject
                     {
                         foreach (var selectedCharacter in SelectedCharacters)
                         {
-                            LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm);
+                            LRTA lrta = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm) { UseInfluence = false };
+                            LRTA lrta2 = new LRTA(selectedCharacter.Kinematic.Position, Mouse.Position, selectedCharacter.Type, CurrentLrtaAlgorithm) { UseInfluence = true };
                             if (LastStartTile != lrta.StartPos || LastEndTile != lrta.EndPos)
                             {
                                 LastStartTile = lrta.StartPos;
                                 LastEndTile = lrta.EndPos;
                                 List<Vector2> path = lrta.Execute();
                                 selectedCharacter.SetPath(path);
-                                Debug.Path = path;
                             }
+                            Debug.Path = lrta2.Execute();
                         }
                     }
                 }
+                CurrentLRTATime = 0f;
             }
 
             if (IsFormationMode)
@@ -276,7 +308,7 @@ namespace WaveProject
                     CurrentThread = new Thread(InfluenceMap.Influence.GenerateInfluenteMap);
                     CurrentThread.Start();
                 }
-                TimeToUpdateInfluence = 1f;
+                TimeToUpdateInfluence = 2f;
             }
         }
 
@@ -315,6 +347,13 @@ namespace WaveProject
             }
         }
 
+        private int Victory()
+        {
+            bool anyT1 = EntityManager.AllCharacters().Any(a => a.GetTeam() == 1);
+            bool anyT2 = EntityManager.AllCharacters().Any(a => a.GetTeam() == 2);
+            return anyT1 ? (anyT2 ? 0 : 1) : 2;
+        }
+
         public void Draw(LineBatch2D lb)
         {
             lb.DrawRectangleVM(MouseRectangle, Color.Green, 1f);
@@ -326,6 +365,7 @@ namespace WaveProject
             if (ActiveFormation != null)
                 ActiveFormation.Draw(lb);
         }
+
     }
 
    

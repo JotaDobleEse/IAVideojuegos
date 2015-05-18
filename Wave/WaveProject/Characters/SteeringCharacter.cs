@@ -28,7 +28,7 @@ namespace WaveProject.Characters
         public SteeringCharacter(Kinematic kinematic, EnumeratedCharacterType type, Steering steering = null)
         {
             Kinematic = kinematic;
-            Kinematic.MaxVelocity = 100;
+            Kinematic.MaxVelocity = 500;
             Steering = steering;
         }
 
@@ -51,8 +51,8 @@ namespace WaveProject.Characters
             Transform.Position = Kinematic.Position;
             Transform.Rotation = Kinematic.Orientation;
 
-            var width = WaveServices.Platform.ScreenWidth;
-            var height = WaveServices.Platform.ScreenHeight;
+            var width = WaveServices.Platform.ScreenWidth * 2;
+            var height = WaveServices.Platform.ScreenHeight * 2;
             #region Escenario circular
             if (Transform.Position.X > width)
             {

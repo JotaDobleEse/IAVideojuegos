@@ -18,8 +18,8 @@ namespace WaveProject
             ViewportManager vm = WaveServices.ViewportManager;
             vm.Activate(1280, 720, ViewportManager.StretchMode.Uniform);
 
-            //ScreenContext screenContext = new ScreenContext(new MainScene());
-            ScreenContext screenContext = new ScreenContext(new FlockingScene());
+            ScreenContext screenContext = new ScreenContext(new MainScene());
+            //ScreenContext screenContext = new ScreenContext(new FlockingScene());
             WaveServices.ScreenContextManager.To(screenContext);
         }
     }

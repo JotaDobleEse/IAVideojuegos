@@ -32,6 +32,7 @@ namespace WaveProject.Characters
         public CharacterType Type { get; private set; }
         public ActionManager ActionManager { get; set; }
         public int Team { get; set; }
+        private bool IsActiveIA = false;
 
         public CharacterNPC(Kinematic kinematic, EnumeratedCharacterType type, int team/*, Color color*/)
         {
@@ -74,9 +75,12 @@ namespace WaveProject.Characters
         protected override void Update(TimeSpan gameTime)
         {
             float dt = (float)gameTime.TotalSeconds;
-            Action newAction = Type.Update();
-            ActionManager.ScheduleAction(new GenericAction(1f, 1, true, newAction));
-            ActionManager.Execute(dt);
+            if (IsActiveIA)
+            {
+                Action newAction = Type.Update();
+                ActionManager.ScheduleAction(new GenericAction(1f, 1, true, newAction));
+                ActionManager.Execute(dt);
+            }
 
             if (Steering == null)
                 return;
@@ -138,7 +142,8 @@ namespace WaveProject.Characters
 
             if (disposing)
             {
-                Steering.Dispose();
+                if (Steering != null)
+                    Steering.Dispose();
                 Kinematic.Dispose();
                 Kinematic = null;
                 Steering = null;
@@ -191,6 +196,11 @@ namespace WaveProject.Characters
         public bool IsDisposed()
         {
             return disposed;
+        }
+
+        public void SetIA(bool isActiveIA)
+        {
+            IsActiveIA = isActiveIA;
         }
     }
 }

@@ -47,11 +47,13 @@ namespace WaveProject
             Button LRTAChevychev = new Button("LRTA_Chevychev") { BackgroundColor = Color.Gray, Text = "LRTA Chevychev", Width = 150, IsBorder = false };
             Button LRTAEuclidean = new Button("LRTA_Euclidean") { BackgroundColor = Color.Gray, Text = "LRTA Euclidean", Width = 150, IsBorder = false };
             Button FormationMode = new Button("FormationMode") { BackgroundColor = Color.Green, Text = "Enable Formation Mode", Width = 200, IsBorder = false };
+            Button DecisionalIA = new Button("DecisionalIA") { BackgroundColor = Color.Green, Text = "Enable Decisional IA", Width = 200, IsBorder = false };
 
             EntityManager.Add(LRTAManhattan);
             EntityManager.Add(LRTAChevychev);
             EntityManager.Add(LRTAEuclidean);
             EntityManager.Add(FormationMode);
+            EntityManager.Add(DecisionalIA);
 
             Entity map = new Entity("mapa")
                 .AddComponent(new Transform2D())
@@ -318,8 +320,8 @@ namespace WaveProject
                 EntityManager.Add(EntityFactory.PlayableCharacterRandom(1));
             }
 
-            //EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED));
-            //EntityManager.Add(EntityFactory.Character(800, 800, 2, EnumeratedCharacterType.MELEE));
+            EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED));
+            EntityManager.Add(EntityFactory.Character(800, 800, 2, EnumeratedCharacterType.MELEE));
             EntityManager.Add(EntityFactory.Character(800, 700, 2, EnumeratedCharacterType.EXPLORER));
 
             Entity influenceMap = new Entity("InfluenceMap")

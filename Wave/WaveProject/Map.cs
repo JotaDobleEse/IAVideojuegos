@@ -29,6 +29,8 @@ namespace WaveProject
 
         public TiledMap TiledMap { get; private set; }
         public Node[,] NodeMap { get; private set; }
+        public InfluenceNode[,] InfluenceMap { get; set; }
+
         public const int HealRatio = 10;
 
         public List<HealPoint> HealPoints { get; private set; }
@@ -59,6 +61,7 @@ namespace WaveProject
             TextInfo textInfo = cultureInfo.TextInfo;
 
             NodeMap = new Node[TiledMap.Width, TiledMap.Height];
+            InfluenceMap = new InfluenceNode[TiledMap.Width, TiledMap.Height];
 
             // Obtenemos la posición del tile objetivo para generar los valores heuristicos iniciales
             var layer = TiledMap.TileLayers.First().Value;
@@ -95,6 +98,7 @@ namespace WaveProject
 
                     // Guardamos el nodo en la matriz
                     NodeMap[node.X, node.Y] = node;
+                    InfluenceMap[node.X, node.Y] = new InfluenceNode() { Team1 = 0, Team2 = 0 };
                 }
                 catch (Exception)
                 {
@@ -177,7 +181,9 @@ namespace WaveProject
 
         public bool Exists(Vector2 position)
         {
-            return NodeMap.Exists(position);
+            if (position.X() < 0 || position.Y() < 0 || position.X() >= Width || position.Y() >= Height)
+                return false;
+            return true;
         }
 
         public void Draw(LineBatch2D lb)

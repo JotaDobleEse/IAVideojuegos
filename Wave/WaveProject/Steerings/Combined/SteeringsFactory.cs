@@ -21,10 +21,10 @@ namespace WaveProject.Steerings.Combined
         {
             BehaviorAndWeight[] behaviors = new BehaviorAndWeight[4];
 
-            behaviors[0] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character, Threshold = 100f }, Weight = 1f };
-            behaviors[1] = new BehaviorAndWeight() { Behavior = new Cohesion() { Character = character }, Weight = 0.1f };
+            behaviors[0] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character }, Weight = 100f };
+            behaviors[1] = new BehaviorAndWeight() { Behavior = new Cohesion() { Character = character }, Weight = 0.4f };
             behaviors[2] = new BehaviorAndWeight() { Behavior = new Alignment() { Character = character }, Weight = 1f };
-            behaviors[3] = new BehaviorAndWeight() { Behavior = new Wander() { Character = character }, Weight = 1f };
+            behaviors[3] = new BehaviorAndWeight() { Behavior = new Wander() { Character = character }, Weight = 3f };
 
             return behaviors;
         }
@@ -74,7 +74,7 @@ namespace WaveProject.Steerings.Combined
             BehaviorAndWeight[] behaviors = new BehaviorAndWeight[4];
 
             behaviors[0] = new BehaviorAndWeight() { Behavior = new CollisionAvoidance() { Character = character }, Weight = 0.2f };
-            behaviors[1] = new BehaviorAndWeight() { Behavior = new WallAvoidance() { Character = character, LookAhead = 30f }, Weight = 0.2f };
+            behaviors[1] = new BehaviorAndWeight() { Behavior = new WallAvoidance() { Character = character, LookAhead = 30f }, Weight = 0.7f };
             behaviors[2] = new BehaviorAndWeight() { Behavior = new CollisionAvoidanceRT(true) { Character = character, Radius = 40f }, Weight = 0.7f };
             behaviors[3] = new BehaviorAndWeight() { Behavior = new FollowPath(true) { Character = character }, Weight = 1.0f };
 

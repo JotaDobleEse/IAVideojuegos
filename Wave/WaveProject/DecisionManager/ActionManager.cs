@@ -90,7 +90,7 @@ namespace WaveProject.DecisionManager
                     Active.Add(action);
                 }
 
-                Active = Active.Where(w => !w.IsComplete()).ToList();
+                Active = Active.Where(w => w != null && !w.IsComplete()).ToList();
 
                 foreach (var activeAction in Active)
                 {

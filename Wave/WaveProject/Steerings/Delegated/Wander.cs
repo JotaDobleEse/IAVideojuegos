@@ -31,13 +31,13 @@ namespace WaveProject.Steerings.Delegated
 
             float targetOrientation = WanderOrientation + Character.Orientation;
 
-            Vector2 targetPosition = Character.Position + WanderOffset * Character.RotationAsVector();
+            Vector2 targetPosition = Character.Position + WanderOffset * Character.OrientationAsVector();
             targetPosition += WanderRadius * targetOrientation.RotationToVector();
 
             Face face = new Face();
             face.Character = Character;
             face.Target = new Kinematic() { Position = targetPosition };
-            SteeringOutput steering = new SteeringOutput() { Linear = MaxAcceleration * Character.RotationAsVector() };
+            SteeringOutput steering = new SteeringOutput() { Linear = MaxAcceleration * Character.OrientationAsVector() };
             return face.GetSteering() + steering;
         }
 

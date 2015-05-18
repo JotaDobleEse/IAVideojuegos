@@ -23,14 +23,7 @@ namespace WaveProject.Steerings.Pathfinding
         public Terrain Terrain { get; set; }
         public bool Passable { get; set; }
 
-        public int[] InfluenceTeam { get; set; }
-
         public Vector2 Position { get { return new Vector2(X, Y); } }
-
-        public Node()
-        {
-            InfluenceTeam = new int[2];
-        }
 
         public static bool operator ==(Node n1, Node n2)
         {
@@ -98,8 +91,6 @@ namespace WaveProject.Steerings.Pathfinding
             n.H = float.PositiveInfinity;
             n.Passable = Passable;
             n.Terrain = Terrain;
-            n.InfluenceTeam[0] = InfluenceTeam[0];
-            n.InfluenceTeam[1] = InfluenceTeam[1];
             return n;
         }
     }

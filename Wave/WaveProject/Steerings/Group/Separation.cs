@@ -21,9 +21,9 @@ namespace WaveProject.Steerings.Group
 
         public Separation()
         {
-            Threshold = 100;
-            DecayCoefficient = 1000;
-            MaxAcceleration = 50f;
+            Threshold = 200f;
+            DecayCoefficient = 1000f;
+            MaxAcceleration = 20f;
         }
 
 

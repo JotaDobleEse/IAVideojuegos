@@ -17,6 +17,17 @@ using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
+    public class InfluenceNode
+    {
+        public int Team1 { get; set; }
+        public int Team2 { get; set; }
+
+        public InfluenceNode Clone()
+        {
+            return new InfluenceNode() { Team1 = this.Team1, Team2 = this.Team2 };
+        }
+    };
+
     public class InfluenceMap
     {
 
@@ -25,6 +36,7 @@ namespace WaveProject
         public const int Scale = 5;
         public const int MaxAlpha = 160;
         public Entity[] Entities { get; set; }
+        private InfluenceNode[,] NodeMap;
 
         private const float Expand = 0.95f;
 
@@ -62,29 +74,29 @@ namespace WaveProject
             }
         }
 
-        private Node[,] Copy(Node[,] nodes)
+        private InfluenceNode[,] Copy(InfluenceNode[,] nodes)
         {
-            Node[,] result = new Node[nodes.GetLength(0), nodes.GetLength(1)];
+            InfluenceNode[,] result = new InfluenceNode[nodes.GetLength(0), nodes.GetLength(1)];
             Parallel.For(0, nodes.GetLength(0), (i) =>
             {
                 for (int j = 0; j < nodes.GetLength(1); j++)
                 {
                     var node = nodes[i, j];
-                    result[i, j] = node.Clone() as Node;
+                    result[i, j] = node.Clone();
                 }
             });
             return result;
         }
 
-        private List<Node> GetNeighbors(Vector2 node, List<Vector2> positions)
+        private List<InfluenceNode> GetNeighbors(Vector2 node, List<Vector2> positions)
         {
-            List<Node> neighbors = new List<Node>();
+            List<InfluenceNode> neighbors = new List<InfluenceNode>();
             // Para cada posición del patrón
             foreach (var posicion in positions)
             {
                 // Si existe un nodo en la posición especificada se añade a la lista
-                if (Map.CurrentMap.NodeMap.Exists(node + posicion))
-                    neighbors.Add(Map.CurrentMap.NodeMap[node.X() + posicion.X(), node.Y() + posicion.Y()]);
+                if (Map.CurrentMap.Exists(node + posicion))
+                    neighbors.Add(NodeMap[node.X() + posicion.X(), node.Y() + posicion.Y()]);
             }
             return neighbors;
         }
@@ -94,62 +106,62 @@ namespace WaveProject
             var team1 = GetTeamCharacters(1);
             var team2 = GetTeamCharacters(2);
 
-            var NodeMap = Map.CurrentMap.NodeMap;
-            for (int i = 0; i < Map.CurrentMap.NodeMap.GetLength(0); i++)
+            NodeMap = Copy(Map.CurrentMap.InfluenceMap);
+            for (int i = 0; i < NodeMap.GetLength(0); i++)
             {
-                for (int j = 0; j < Map.CurrentMap.NodeMap.GetLength(1); j++)
+                for (int j = 0; j < NodeMap.GetLength(1); j++)
                 {
-                    var node = Map.CurrentMap.NodeMap[i, j];
-                    node.InfluenceTeam[0] = 0;
-                    node.InfluenceTeam[1] = 0;
+                    var node = NodeMap[i, j];
+                    node.Team1 = 0;
+                    node.Team2 = 0;
                 }
             }
 
             foreach (var ch1 in team1)
             {
                 var pos = Map.CurrentMap.TilePositionByWolrdPosition(ch1);
-                Map.CurrentMap.NodeMap[pos.X(), pos.Y()].InfluenceTeam[0] = MaxAlpha;
+                NodeMap[pos.X(), pos.Y()].Team1 = MaxAlpha;
             }
 
             foreach (var ch2 in team2)
             {
                 var pos = Map.CurrentMap.TilePositionByWolrdPosition(ch2);
-                Map.CurrentMap.NodeMap[pos.X(), pos.Y()].InfluenceTeam[1] = MaxAlpha;
+                NodeMap[pos.X(), pos.Y()].Team2 = MaxAlpha;
             }
 
             for (int k = 0; k < 40; k++)
             {
-                var nodeAux = Copy(NodeMap);
+                //var nodeAux = Copy(NodeMap);
 
                 //for (int i = 0; i < NodeMap.GetLength(0); i++)
                 Parallel.For(0, NodeMap.GetLength(0), (i) =>
                 {
                     for (int j = 0; j < NodeMap.GetLength(1); j++)
                     {
-                        var node = nodeAux[i, j];
-                        if (node.InfluenceTeam[0] == 0 && node.InfluenceTeam[1] == 0)
+                        var node = NodeMap[i, j];
+                        if (node.Team1 == 0 && node.Team2 == 0)
                             continue;
-                        var neightbors = GetNeighbors(node.Position, StandardLocalSearchPattern);
-                        if (node.InfluenceTeam[0] != 0)
+                        var neightbors = GetNeighbors(new Vector2(i, j), StandardLocalSearchPattern);
+                        if (node.Team1 != 0)
                         {
                             foreach (var n in neightbors)
                             {
                                 //n.InfluenceTeam[0] = Math.Max(node.InfluenceTeam[0] - 1, 0);
-                                n.InfluenceTeam[0] = Math.Min(Math.Max(n.InfluenceTeam[0], (int)(node.InfluenceTeam[0] * Expand)), MaxAlpha);
+                                n.Team1 = Math.Min(Math.Max(n.Team1, (int)(node.Team1 * Expand)), MaxAlpha);
                             }
                         }
-                        if (node.InfluenceTeam[1] != 0)
+                        if (node.Team2 != 0)
                         {
                             foreach (var n in neightbors)
                             {
                                 //n.InfluenceTeam[1] = Math.Max(node.InfluenceTeam[1] - 1, 0);
-                                n.InfluenceTeam[1] = Math.Min(Math.Max(n.InfluenceTeam[1], (int)(node.InfluenceTeam[1] * Expand)), MaxAlpha);
+                                n.Team2 = Math.Min(Math.Max(n.Team2, (int)(node.Team2 * Expand)), MaxAlpha);
                             }
                         }
                     }
                 });
-                NodeMap = Map.CurrentMap.NodeMap;
             }
+            Map.CurrentMap.InfluenceMap = Copy(NodeMap);
         }
 
         public void GenerateInfluenteMap()
@@ -165,22 +177,22 @@ namespace WaveProject
 
             batch.FillRectangle(System.Drawing.Brushes.Black, 0, 0, bitmap.Width, bitmap.Height);
 
-            for (int i = 0; i < Map.CurrentMap.NodeMap.GetLength(0); i++)
+            for (int i = 0; i < Map.CurrentMap.InfluenceMap.GetLength(0); i++)
             {
-                for (int j = 0; j < Map.CurrentMap.NodeMap.GetLength(1); j++)
+                for (int j = 0; j < Map.CurrentMap.InfluenceMap.GetLength(1); j++)
                 {
-                    var node = Map.CurrentMap.NodeMap[i, j];
-                    if (node.InfluenceTeam[0] == 0 && node.InfluenceTeam[1] == 0)
+                    var node = Map.CurrentMap.InfluenceMap[i, j];
+                    if (node.Team1 == 0 && node.Team2 == 0)
                         continue;
-                    var position = node.Position * new Vector2(recWidth, recHeight);
+                    var position = new Vector2(i, j) * new Vector2(recWidth, recHeight);
                     System.Drawing.RectangleF rectangle = new System.Drawing.RectangleF(position.X, Math.Abs(position.Y - bitmap.Height), recWidth, recHeight);
-                    if (node.InfluenceTeam[0] != 0)
+                    if (node.Team1 != 0)
                     {
-                        batch.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(node.InfluenceTeam[0], 255, 0, 0)), rectangle);
+                        batch.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(node.Team1, 255, 0, 0)), rectangle);
                     }
-                    if (node.InfluenceTeam[1] != 0)
+                    if (node.Team2 != 0)
                     {
-                        batch.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(node.InfluenceTeam[1], 0, 0, 255)), rectangle);
+                        batch.FillRectangle(new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(node.Team2, 0, 0, 255)), rectangle);
                     }
                 }
             }

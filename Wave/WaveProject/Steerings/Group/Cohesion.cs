@@ -13,7 +13,7 @@ namespace WaveProject.Steerings.Group
 
         public Cohesion()
         {
-            Threshold = 70;
+            Threshold = 300;
         }
 
         public override SteeringOutput GetSteering()

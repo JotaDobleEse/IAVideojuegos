@@ -85,6 +85,11 @@ namespace WaveProject
             return new Vector2((float)Math.Sin(Rotation), -(float)Math.Cos(Rotation));
         }
 
+        public Vector2 OrientationAsVector()
+        {
+            return new Vector2((float)Math.Sin(Orientation), -(float)Math.Cos(Orientation));
+        }
+
         public Kinematic Clone()
         {
             return new Kinematic(IsStable) { Position = this.Position, LastOutput = this.LastOutput, MaxVelocity = this.MaxVelocity, Orientation = this.Orientation, Rotation = this.Rotation, Velocity = this.Velocity };

@@ -21,6 +21,7 @@ namespace WaveProject
         private static string[] Textures = new string[] { "malabestia", "soldado", "lagarto", "juggernaut" };
         private static System.Random Rand = new System.Random();
 
+        // Genera una entidad disparo
         public static Entity Shoot(Vector2 position, Vector2 target)
         {
             return new Entity()
@@ -30,6 +31,7 @@ namespace WaveProject
                 .AddComponent(new Shoot(position, target));
         }
 
+        // Genera un personaje NPC cualquiera en el bando indicad
         public static Entity CharacterRandom(int team)
         {
             float x = Rand.Next(1000);
@@ -63,6 +65,7 @@ namespace WaveProject
             return character;
         }
 
+        // Genera un personaje controlable cualquiera, en el bando indicado
         public static Entity PlayableCharacterRandom(int team)
         {
             float x = Rand.Next(1000);
@@ -96,6 +99,7 @@ namespace WaveProject
             return character;
         }
 
+        // Genera un personaje NPC con los parámetros especificados
         public static Entity Character(float x, float y, int team, EnumeratedCharacterType type, TextBlock textBlock = null)
         {
             Kinematic position = new Kinematic(true) { Position = new Vector2(x, y) };
@@ -125,6 +129,7 @@ namespace WaveProject
             return character;
         }
 
+        // Genera un personaje controlable con los parámetros especificados
         public static Entity PlayableCharacter(float x, float y, int team, EnumeratedCharacterType type)
         {
             Kinematic position = new Kinematic(true) { Position = new Vector2(x, y) };
@@ -154,6 +159,7 @@ namespace WaveProject
             return character;
         }
 
+        // Genera un personaje aleatorio que ejecuta Flocking
         public static Entity FlockingRandom()
         {
             float x = Rand.Next(WaveServices.Platform.ScreenWidth) + WaveServices.Platform.ScreenWidth / 2;
@@ -170,6 +176,7 @@ namespace WaveProject
             return character;
         }
 
+        // Genera un componente de texto
         public static TextBlock GetTextBlock()
         {
             TextBlock text1 = new TextBlock()

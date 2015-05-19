@@ -370,12 +370,23 @@ namespace WaveProject
         #endregion
 
         #region EntityManager
+        /// <summary>
+        /// Devuelve todas las entidades que contienen un componente del tipo especificado.
+        /// </summary>
+        /// <param name="entityManager"></param>
+        /// <param name="type">Tipo de componente.</param>
+        /// <returns></returns>
         public static Entity[] AllEntitiesByComponentType(this EntityManager entityManager, Type type)
         {
             var chars = entityManager.AllEntities.Where(w => w.Components.Any(a => a.GetType() == type));
             return chars.ToArray();
         }
 
+        /// <summary>
+        /// Devuelve todos los jugadores.
+        /// </summary>
+        /// <param name="entityManager"></param>
+        /// <returns></returns>
         public static ICharacterInfo[] AllCharacters(this EntityManager entityManager)
         {
             var chars = entityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo))
@@ -383,12 +394,23 @@ namespace WaveProject
             return chars.ToArray();
         }
 
+        /// <summary>
+        /// Devuelve todas las entidades que contienen un componente jugador.
+        /// </summary>
+        /// <param name="entityManager"></param>
+        /// <returns></returns>
         public static Entity[] AllCharactersEntity(this EntityManager entityManager)
         {
             var chars = entityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo));
             return chars.ToArray();
         }
 
+        /// <summary>
+        /// Devuelve todos los personajes de un bando.
+        /// </summary>
+        /// <param name="entityManager"></param>
+        /// <param name="team">Bando del jugador.</param>
+        /// <returns></returns>
         public static ICharacterInfo[] AllCharactersByTeam(this EntityManager entityManager, int team)
         {
             var chars = entityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo))

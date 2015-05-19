@@ -7,6 +7,7 @@ using WaveEngine.Common.Math;
 
 namespace WaveProject
 {
+    // Información sobre un muro
     public class Wall : IDisposable
     {
         private static List<Wall> walls = new List<Wall>();

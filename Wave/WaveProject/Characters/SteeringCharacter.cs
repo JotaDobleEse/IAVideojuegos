@@ -14,6 +14,7 @@ using WaveProject.Steerings;
 
 namespace WaveProject.Characters
 {
+    // Personaje que solo se dedica a ejecutar un Steering
     public class SteeringCharacter : Behavior
     {
         [RequiredComponent]

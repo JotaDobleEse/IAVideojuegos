@@ -13,11 +13,15 @@ namespace WaveProject.CharacterTypes
     public class RangedCharacter : CharacterType
     {
         public RangedCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 100, 25, 34, 300)
+            : base(myInfo, entityManager, 100, 25, 34, 200) // Párametros iniciales
         {
-
+            // HP    = 100
+            // Atk   =  25
+            // Def   =  34
+            // Radio = 200
         }
 
+        // Coste del ranged al pasar por un terreno
         public override float Cost(Terrain terrain)
         {
             switch (terrain)
@@ -36,6 +40,7 @@ namespace WaveProject.CharacterTypes
             return 1;
         }
 
+        // Velocidad máxima del ranged al pasar por un terreno
         public override float MaxVelocity(Terrain terrain)
         {
             switch (terrain)
@@ -59,6 +64,7 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.RANGED;
         }
 
+        // Árbol de decisión
         public override GenericAction Update()
         {
             //ATAQUE
@@ -68,13 +74,12 @@ namespace WaveProject.CharacterTypes
 
                 if (enemy != null)
                 {
-                    return new GenericAction(1f, 1, true, AttackEnemyNear);
-                    //Attack(enemy);
+                    return new GenericAction(1f, 1, false, AttackEnemyNear);
                 }
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
-                    return new GenericAction(1f, 1, true, GoToEnemyBase);
+                    return new GenericAction(1f, 1, false, GoToEnemyBase);
                 }
             }
             //DEFENSA
@@ -85,26 +90,24 @@ namespace WaveProject.CharacterTypes
                 //SI ENCONTRAMOS UN ENEMIGO Y NO ES UN ENEMIGO QUE ATAQUE CON RANGO
                 if (enemy != null && enemy.GetCharacterType() != EnumeratedCharacterType.RANGED)
                 {
-                    return new GenericAction(1f, 1, true, AttackEnemyNear);
+                    return new GenericAction(1f, 1, false, AttackEnemyNear);
                 }
-
-                else
-                {
-                    //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
-                    return new GenericAction(1f, 1, true, GoToWaypoint);
-                }
-                //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
-                //GoToNextWaypoint()
+                //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
+                return new GenericAction(1f, 1, false, GoToWaypoint);
             }
-            return new GenericAction(1f, 1, false, GoToMyBase);
+            // EN OTRO CASO VOLVEMOS A LA BASE
+            return new GenericAction(1f, 1, true, GoToMyBase);
         }
 
         public override void Attack(ICharacterInfo character)
         {
             if (character == null)
                 return;
+            // Si tenemos un objetivo es que está a nuestro alcance, creamos una bala
             EntityManager.Add(EntityFactory.Shoot(MyInfo.GetPosition(), character.GetPosition()));
+            // Atacamos al enemigo
             character.ReceiveAttack(base.Atk);
+            // Anulamos el pathfinding mandándolo hacia nuestra propia posición
             MyInfo.SetPathFinding(MyInfo.GetPosition());
         }
     }

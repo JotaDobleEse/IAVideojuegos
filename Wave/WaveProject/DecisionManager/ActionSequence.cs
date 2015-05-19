@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WaveProject.DecisionManager
 {
+    // Secuencia de acciones, tal y como está en el libro
     public class ActionSequence : GenericAction
     {
         public GenericAction[] Actions { get; set; }

@@ -10,6 +10,7 @@ using WaveProject.Steerings;
 
 namespace WaveProject
 {
+    // Representa un disparo del Ranged, su finalidad es meramente visual
     public class Shoot : Behavior
     {
         [RequiredComponent]

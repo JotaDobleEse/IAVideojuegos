@@ -14,11 +14,15 @@ namespace WaveProject.CharacterTypes
     public class ExplorerCharacter : CharacterType
     {
         public ExplorerCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 180, 20, 30, 300)
+            : base(myInfo, entityManager, 180, 20, 30, 340) // Párametros iniciales
         {
-
+            // HP    = 180
+            // Atk   =  20
+            // Def   =  30
+            // Radio = 340
         }
 
+        // Coste del explorador al pasar por un terreno
         public override float Cost(Terrain terrain)
         {
             switch (terrain)
@@ -37,6 +41,7 @@ namespace WaveProject.CharacterTypes
             return 1;
         }
 
+        // Velocidad máxima del explorador al pasar por un terreno
         public override float MaxVelocity(Terrain terrain)
         {
             switch (terrain)
@@ -60,6 +65,7 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.EXPLORER;
         }
 
+        // Árbol de decisión
         public override GenericAction Update()
         {
             //ATAQUE
@@ -68,29 +74,27 @@ namespace WaveProject.CharacterTypes
                 var enemy = FindEnemyNear();
                 if (enemy != null)
                 {
-                    return new GenericAction(1f, 1, true, AttackEnemyNear);
+                    return new GenericAction(1f, 1, false, AttackEnemyNear);
                 }
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
-                    return new GenericAction(1f, 1, true, GoToEnemyBase);
+                    return new GenericAction(1f, 1, false, GoToEnemyBase);
                 }
             }
             //DEFENSA
-            else// if (HP < HP * 0.75)
+            else
             {
                 var enemy = FindEnemyNear();
                 //SI ENCONTRAMOS UN ENEMIGO Y
                 if (enemy != null)
                 {
-                    return new GenericAction(1f, 1, true, GoToWaypoint);
+                    if (Map.CurrentMap.IsInWaypoint(MyInfo.GetPosition()))
+                        return new GenericAction(20f, 1, true, GoToHeal);
+                    return new GenericAction(1f, 1, false, GoToWaypoint);
                 }
-
-                //else
-                //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
-                return new GenericAction(1f, 1, false, GoToHeal);
-                //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
-                //GoToNextWaypoint()
+                //SI NO ENCONTRAMOS ENEMIGO CERCA 
+                return new GenericAction(1f, 1, true, GoToHeal);
             }
         }
 
@@ -99,6 +103,7 @@ namespace WaveProject.CharacterTypes
         {
             if (character == null)
                 return;
+            // Buscamos los tiles alrededor del objetivo
             var attackPoint = Map.CurrentMap.TilePositionByWolrdPosition(character.GetPosition());
             List<Vector2> ps = new List<Vector2>();
             ps.Add(attackPoint + new Vector2(1, 1));
@@ -109,14 +114,17 @@ namespace WaveProject.CharacterTypes
             ps.Add(attackPoint + new Vector2(0, -1));
             ps.Add(attackPoint + new Vector2(1, 0));
             ps.Add(attackPoint + new Vector2(-1, 0));
-
+            
+            // Comprobamos si estamos en uno de ellos
             var myPos = Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition());
             var isInAttackPos = ps.Any(a => a == myPos);
 
+            // Si lo estamos atacamos
             if (isInAttackPos)
             {
                 character.ReceiveAttack(base.Atk);
             }
+            // Sino buscamos el punto mas cercano para atacar
             else
             {
                 float minLength = float.PositiveInfinity;
@@ -134,8 +142,7 @@ namespace WaveProject.CharacterTypes
                     }
                 }
 
-                //Console.WriteLine(attackPoint);
-                // PATHFINDING
+                // Vamos hacia el enemigo
                 MyInfo.SetPathFinding(attackPoint);
             }
         }

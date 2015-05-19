@@ -36,11 +36,6 @@ namespace WaveProject.Steerings.Pathfinding
             Character = character;
             StartPos = startPos;
             EndPos = endPos;
-            
-            // Esto es para que los valores true o false recuperados de los tiles,
-            // se formateen siempre como True o False.
-            CultureInfo cultureInfo = Thread.CurrentThread.CurrentCulture;
-            TextInfo textInfo = cultureInfo.TextInfo;
 
             // Creamos la matriz de nodos con el ancho y alto del mapa
             NodeMap = new Node[Map.CurrentMap.Width, Map.CurrentMap.Height];
@@ -115,7 +110,7 @@ namespace WaveProject.Steerings.Pathfinding
                 // Obtenemos todos los nodos vecinos segun nuestro patrón de espacio de búsqueda local,
                 // depués eliminamos los nodos final y no pasables.
                 var neighbors = GetNeighbors(current, StandardLocalSearchPattern)
-                    .Where(w => w != end && w.Passable);
+                    .Where(w => w != end && w.Passable).ToList();
 
                 // Para cada nodo entre los vecinos guardamos su valor heurístico en Temp,
                 // y ponemos H a infinito.
@@ -261,6 +256,8 @@ namespace WaveProject.Steerings.Pathfinding
         {
             float n_t = Character.Cost(node.Terrain);
             float n_i = 0;
+            if (Character.MyInfo == null)
+                return n_t;
             if (Character.MyInfo.GetTeam() == 1)
                 n_i = (Map.CurrentMap.InfluenceMap[node.X, node.Y].Team2) / 10f;
             else

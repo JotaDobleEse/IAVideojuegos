@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WaveProject.DecisionManager
 {
+    // Acción combinada, tal y como está en el libro
     public class ActionCombination : GenericAction
     {
         public GenericAction[] Actions { get; set; }

@@ -21,33 +21,58 @@ namespace WaveProject
 {
     public class GameController : Behavior
     {
+        // Posición del ratón
         Kinematic Mouse;
+        // Posición anterior del ratón
         Vector2 LastMousePosition;
+        // Último tile de inicio de un pathfinding
         Vector2 LastStartTile;
+        // Último tile de fin de un pathfinding
         Vector2 LastEndTile;
 
+        // Botones
         Button LRTAManhattan;
         Button LRTAChevychev;
         Button LRTAEuclidean;
         Button FormationMode;
         Button DecisionalIA;
         Button FinalBattle;
+        Button SetDebug;
+
+        // Algoritmo (heurístico) que está usando actualmente el pathfinding
         DistanceAlgorith CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
+
+        // Jugadores seleccionados
         private List<PlayableCharacter> SelectedCharacters;
+        // Formación actual
         private FormationManager ActiveFormation;
+        // Si el click izquierdo está pulsado
         private bool MousePressed = false;
+        // Si el botón control está pulsado
         private bool ControlSelect = false;
+        // Rectángulo de selección de jugadores del mouse
         private RectangleF MouseRectangle;
+        // Indica si estamos en modo formación
         private bool IsFormationMode = false;
+        // Contador de tiempo para actualizar el mapa influencia
         private float TimeToUpdateInfluence = 0f;
+        // Contador de tiempo para curar personajes en área de curación
         private float TimeToHeal = 0f;
+        // Hilo en ejecución actual para el mapa de influencia
         private Thread CurrentThread = null;
+        // Indica si la IA está activa
         private bool IsActiveIA = false;
+        // Tiempo para ejecutar de nuevo un LRTA*
         public const float ExecutionLRTATime = 0.3f;
+        // Contador de tiempo restante para ejecutar el LRTA*
         private float CurrentLRTATime = 0f;
+        // Tiempo necesario para conquistar una base y ganar
         public const float TimeToConquer = 20f;
+        // Tiempo restante para conquistar la base del equipo 1
         private float TimeToBaseTeam1 = TimeToConquer;
+        // Tiempo restante para conquistar la base del equipo 2
         private float TimeToBaseTeam2 = TimeToConquer;
+        // Indica si el jeugo ha acabado
         private bool EndGame = false;
 
         public GameController(Kinematic mouse)
@@ -61,13 +86,16 @@ namespace WaveProject
 
         protected override void Initialize()
         {
+            // Buscamos los botones
             LRTAManhattan = EntityManager.Find<Button>("LRTA_Manhattan");
             LRTAChevychev = EntityManager.Find<Button>("LRTA_Chevychev");
             LRTAEuclidean = EntityManager.Find<Button>("LRTA_Euclidean");
             FormationMode = EntityManager.Find<Button>("FormationMode");
             DecisionalIA = EntityManager.Find<Button>("DecisionalIA");
             FinalBattle = EntityManager.Find<Button>("FinalBattle");
+            SetDebug = EntityManager.Find<Button>("SetDebug");
             
+            // Establecemos su posición en la pantalla
             float width = WaveServices.ViewportManager.ScreenWidth;
             float height = WaveServices.ViewportManager.ScreenHeight;
             LRTAManhattan.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAManhattan.Width - 10, 0);
@@ -76,7 +104,9 @@ namespace WaveProject
             FormationMode.Entity.FindComponent<Transform2D>().Position = new Vector2(width - FormationMode.Width - 10, 150);
             DecisionalIA.Entity.FindComponent<Transform2D>().Position = new Vector2(width - DecisionalIA.Width - 10, 200);
             FinalBattle.Entity.FindComponent<Transform2D>().Position = new Vector2(width - FinalBattle.Width - 10, 250);
+            SetDebug.Entity.FindComponent<Transform2D>().Position = new Vector2(width - FinalBattle.Width - 10, 300);
 
+            // Establecemos el comportamiento de los botones
             LRTAManhattan.Click += (s, e) =>
             {
                 CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
@@ -164,35 +194,53 @@ namespace WaveProject
                 }
             };
 
+            SetDebug.Click += (s, e) =>
+            {
+                DebugLines.Debug.IsDebugging = !DebugLines.Debug.IsDebugging;
+                if (DebugLines.Debug.IsDebugging)
+                {
+                    SetDebug.Text = "Disable Debug";
+                    SetDebug.BackgroundColor = Color.Red;
+                }
+                else
+                {
+                    SetDebug.Text = "Enable Debug";
+                    SetDebug.BackgroundColor = Color.Green;
+                }
+            };
+
             LRTAManhattan.IsVisible = false;
+
+            DebugLines.Debug.Controller = this;
             //base.Initialize();
         }
 
         protected override void Update(TimeSpan gameTime)
         {
+            // Si ha acabado el juego salimos del bucle
             if (EndGame) 
                 return;
-            float dt = (float)gameTime.TotalSeconds;
-            CurrentLRTATime += dt;
-            Mouse.Update(dt, new Steerings.SteeringOutput());
 
-            SelectCharactersAndFormations(dt);
+            float dt = (float)gameTime.TotalSeconds; // Establecemos el delta time
+            CurrentLRTATime += dt; // Aumentamos el tiempo que hace desde el último LRTA*
+            Mouse.Update(dt, new Steerings.SteeringOutput()); // Actualizamos la posición del ratón
 
-            UpdateInfluenceMap(dt);
+            SelectCharactersAndFormations(dt); // Ejecutamos el proceso de selección de personajes
 
-            Heal(dt);
+            UpdateInfluenceMap(dt); // Comprobamos si hay que actualizar el mapa de influecia
 
-            Death();
+            Heal(dt); // Comprobamos si hay que curar al algún personaje
 
-            UpdateBases(dt);
+            Death(); // Comprobamos si han muerto personajes y los eliminamos
 
-            int v = Victory();
+            UpdateBases(dt); // Actualizamos los tiempos de conquista de bases
 
-            EndGame = v != 0;
+            int v = Victory(); // Comprobamos si algún bando ha ganado
 
-            LastMousePosition = Mouse.Position;
-            DebugLines.Debug.Controller = this;
-            DebugLines.Debug.Victory = v;
+            EndGame = v != 0; // Se establece el fin del juego en base ha si ha ganado algún bando
+
+            LastMousePosition = Mouse.Position; // Guardamos la última posición del ratón
+            DebugLines.Debug.Victory = v; // Establecemos en el Debug (quién pinta información en pantalla) el ganador
         }
 
         private void SelectCharactersAndFormations(float dt)
@@ -206,17 +254,20 @@ namespace WaveProject
             // Si está suelto el botón izquierdo del raton y antes estaba pulsado
             if (WaveServices.Input.MouseState.LeftButton == WaveEngine.Common.Input.ButtonState.Release && MousePressed)
             {
+                // Obtiene todos los jugadores controlables
                 IEnumerable<PlayableCharacter> characters = EntityManager.AllEntities
                     .Where(w => w.FindComponent<PlayableCharacter>() != null)
                     .Select(s => s.FindComponent<PlayableCharacter>());
 
+                // Se queda con el que está marcado por el ratón
                 var selectedCharacter = characters
                     .FirstOrDefault(f => Mouse.Position.IsContent(f.Kinematic.Position, new Vector2(f.Texture.Texture.Width, f.Texture.Texture.Height)));
 
+                // Si había alguno lo añade a la lista
                 if (selectedCharacter != null)
                     SelectedCharacters.Add(selectedCharacter);
-                MousePressed = false;
-                MouseRectangle = RectangleF.Empty;
+                MousePressed = false; // Establecemos el click izquierdo como liberado
+                MouseRectangle = RectangleF.Empty; // Eliminamos el rectángulo del ratón
             }
 
             // Si está pulsado el botón izquierdo del ratón y antes no estaba pulsado
@@ -261,7 +312,7 @@ namespace WaveProject
                 SelectedCharacters = characters.Where(w => w.Kinematic.Position.IsContent(MouseRectangle.Center, new Vector2(MouseRectangle.Width.Abs(), MouseRectangle.Height.Abs()))).ToList();
             }
 
-            // Si está pulsado el botón derecho del ratón y está en una posición valida del mapa
+            // Si está pulsado el botón derecho del ratón y está en una posición valida del mapa y toca ejecutar LRTA*
             if (CurrentLRTATime >= ExecutionLRTATime && WaveServices.Input.MouseState.RightButton == WaveEngine.Common.Input.ButtonState.Pressed && Map.CurrentMap.PositionInMap(Mouse.Position))
             {
                 if (IsFormationMode)
@@ -325,9 +376,9 @@ namespace WaveProject
         {
             TimeToUpdateInfluence -= dt;
 
-            if (TimeToUpdateInfluence <= 0f)
+            if (TimeToUpdateInfluence <= 0f) // Si toca actualizar el mapa de influencia
             {
-                if (CurrentThread == null || !CurrentThread.IsAlive)
+                if (CurrentThread == null || !CurrentThread.IsAlive) // Comprobamos que el último hilo haya acabado
                 {
                     Entity[] entities = EntityManager.AllEntities.ToArray();
                     InfluenceMap.Influence.Entities = entities;
@@ -335,20 +386,21 @@ namespace WaveProject
                     CurrentThread = new Thread(InfluenceMap.Influence.GenerateInfluenteMap);
                     CurrentThread.Start();
                 }
-                TimeToUpdateInfluence = 2f;
+                TimeToUpdateInfluence = 2f; // Reiniciamos el tiempo para refresco
             }
         }
 
         private void Heal(float dt)
         {
             TimeToHeal -= dt;
-            if (TimeToHeal <= 0f)
+            if (TimeToHeal <= 0f) // Si toca curar personajes
             {
                 var characters = EntityManager.AllCharacters();
 
                 foreach (var character in characters)
                 {
-                    if (Map.CurrentMap.IsInHealArea(character))
+                    // Curamos los que están en el área de curación
+                    if (Map.CurrentMap.IsInHealArea(character)) 
                     {
                         character.ReceiveHeal(1);
                     }
@@ -360,8 +412,10 @@ namespace WaveProject
 
         private void Death()
         {
+            // Cogemos todos los personajes que estén muertos
             var characters = EntityManager.AllCharactersEntity().Where(w => (w.Components.First(f => f is ICharacterInfo) as ICharacterInfo).IsDead()).ToArray();
 
+            // Los eliminamos por completo
             foreach (var character in characters)
             {
                 if (character.FindComponent<PlayableCharacter>() != null)
@@ -376,16 +430,23 @@ namespace WaveProject
 
         private int Victory()
         {
+            // Comprobamos si queda algun personaje del equipo 1
             bool anyT1 = EntityManager.AllCharacters().Any(a => a.GetTeam() == 1);
+            // Comprobamos si queda algun personaje del equipo 2
             bool anyT2 = EntityManager.AllCharacters().Any(a => a.GetTeam() == 2);
+            // Devuelve 1 si no quedan jugadores del equipo 2, y 2 si no quedan jugadores del equipo 1
             int res1 = anyT1 ? (anyT2 ? 0 : 1) : 2;
+            // Devuelve 1 si se ha conquistado la base 2, y 1 si se ha conquistado la base 1
             int res2 = TimeToBaseTeam1 <= 0 ? 2 : (TimeToBaseTeam2 <= 0 ? 1 : 0);
+            // Finalmente, devuelve el número del equipo ganador, o 0 si aún no ha ganado nadie
             return (res1 != 0 ? res1 : res2);
         }
 
         private void UpdateBases(float dt)
         {
+            // Obtiene cuantos personajes del equipo 1 están en la base del equipo 2
             int b1 = EntityManager.AllCharactersByTeam(1).Count(w => Map.CurrentMap.IsInBase(w.GetPosition(), 2));
+            // Obtiene cuantos personajes del equipo 2 están en la base del equipo 1
             int b2 = EntityManager.AllCharactersByTeam(2).Count(w => Map.CurrentMap.IsInBase(w.GetPosition(), 1));
 
             if (b1 == 0)

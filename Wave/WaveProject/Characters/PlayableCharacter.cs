@@ -24,12 +24,19 @@ namespace WaveProject.Characters
         [RequiredComponent]
         public Sprite Texture { get; private set; }
         public Kinematic Kinematic { get; private set; }
+        // Color de la textura
         public Color Color { get; set; }
+        // Steering actual
         public Steering Steering { get; set; }
+        // PathFollowing actual, si lo hay
         public FollowPath PathFollowing { get; set; }
+        // Tipo del personaje
         public CharacterType Type { get; private set; }
+        // Equipo del personaje
         public int Team { get; set; }
+        // Objetivo para atacar
         private ICharacterInfo Target = null;
+        // Tiempo para cada ejecución del comando atacar
         public const float ExecutionTime = 0.5f;
         private float CurrentTime = 0f;
 
@@ -38,7 +45,7 @@ namespace WaveProject.Characters
             Kinematic = kinematic;
             Kinematic.MaxVelocity = 30;
             Team = team;
-
+            // Creamos el TypeCharacter en base al tipo
             switch (type)
             {
                 case EnumeratedCharacterType.EXPLORER:
@@ -55,15 +62,13 @@ namespace WaveProject.Characters
                     break;
             }
 
-            //Steering = new PredictivePathFollowing(true) { Character = Kinematic, PredictTime = 0.3f };
-            ////Steering = new FollowPath() { Character = Kinematic };
-            //PathFollowing = (PredictivePathFollowing)Steering;
-
+            // Establecemos el color de la textura en base al equipo
             if (Team == 1)
                 Color = Color.Cyan;
             else if (Team == 2)
                 Color = Color.Red;
 
+            // Asignamos un Blended Steering para seguir caminos
             SetPathFollowing();
         }
 
@@ -88,11 +93,6 @@ namespace WaveProject.Characters
         public void SetPath(List<Vector2> path)
         {
             PathFollowing.SetPath(path);
-        }
-
-        public void Draw(LineBatch2D lb)
-        {
-            lb.DrawCircleVM(Kinematic.Position, Math.Max(Texture.Texture.Width, Texture.Texture.Height) / 1.8f, Color.Cyan, 1f);
         }
 
         protected override void Update(TimeSpan gameTime)
@@ -143,28 +143,6 @@ namespace WaveProject.Characters
             #endregion
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
-
-            if (disposing)
-            {
-                Kinematic.Dispose();
-                Kinematic = null;
-                Steering = null;
-                PathFollowing = null;
-                Type = null;
-            }
-
-            disposed = true;
-        }
-
         public Vector2 GetPosition()
         {
             return Kinematic.Position;
@@ -187,16 +165,19 @@ namespace WaveProject.Characters
 
         public void SetTarget(Kinematic target)
         {
-            Steering.Dispose();
+            if (Steering != null)
+                Steering.Dispose();
+            // Obtiene un grupo de Steerings para evitar colisiones
             BehaviorAndWeight[] behaviors = SteeringsFactory.CollisionPrevent(Kinematic);
             List<BehaviorAndWeight> allBehaviors = new List<BehaviorAndWeight>(behaviors);
+            // Se añade un Arrive y se establece el objetivo a seguir
             allBehaviors.Add(new BehaviorAndWeight()
             {
                 Behavior = Steering = new Arrive() { Character = Kinematic, Target = target },
                 Weight = 1.0f
             });
+            // Se crea el Blended Steering y se asigna
             Steering = new BlendedSteering(allBehaviors.ToArray());
-            //Steering.SetTarget(target);
         }
 
 
@@ -204,10 +185,12 @@ namespace WaveProject.Characters
         {
             if (Steering != null)
                 Steering.Dispose();
+            // Generamos un BlendedSteering para seguir el camino
             BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
             Steering = new BlendedSteering(behaviors);
             PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
 
+            // Generamos el camino y lo asignamos
             LRTA lrta = new LRTA(Kinematic.Position, target, Type, DistanceAlgorith.CHEVYCHEV) { UseInfluence = true };
             var path = lrta.Execute();
             PathFollowing.SetPath(path);
@@ -222,13 +205,11 @@ namespace WaveProject.Characters
         {
             float damage = (atk / (float)Type.Def) * 10;
             Type.HP = Math.Max(Type.HP - (int)damage, 0);
-            //Console.WriteLine(Type.HP);
         }
 
         public void Attack(ICharacterInfo target)
         {
             Target = target;
-            //Type.Attack(target);
         }
 
         public bool IsDead()
@@ -241,10 +222,38 @@ namespace WaveProject.Characters
             return disposed;
         }
 
+        // Devuelve un personaje NPC en base al personaje controlable
         public CharacterNPC ToCharacterNPC()
         {
             var character = new CharacterNPC(Kinematic, Type.GetCharacterType(), Team);
             return character;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                Kinematic.Dispose();
+                Kinematic = null;
+                Steering = null;
+                PathFollowing = null;
+                Type = null;
+            }
+
+            disposed = true;
+        }
+
+        public void Draw(LineBatch2D lb)
+        {
+            lb.DrawCircleVM(Kinematic.Position, Math.Max(Texture.Texture.Width, Texture.Texture.Height) / 1.8f, Color.Cyan, 1f);
         }
     }
 }

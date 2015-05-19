@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace WaveProject.DecisionManager
 {
+    // Acción
     public class GenericAction
     {
+        // Tiempo para expirar
         public float ExpireTime { get; set; }
+        // Prioridad de ejecución
         public int Priority { get; set; }
+        // Función a ejecutar
         public Action Function { get; set; }
 
+        // Indica si se puede interrumpir la acción
         private bool canInterrupt = true;
+        // Indica si la acción ha sido completada
         private bool isComplete = false;
 
         public GenericAction(float expireTime, int priority, bool canInterrupt, Action action)
@@ -30,15 +36,16 @@ namespace WaveProject.DecisionManager
 
         public virtual bool CanDoBoth(GenericAction otherAction)
         {
+            // Si las dos acciones son del tipo "ir a" no se pueden ejecutar juntas
             if (Function.Method.ToString().Contains("GoTo") && otherAction.Function.Method.ToString().Contains("GoTo"))
                 return false;
+            // Si son iguales no se pueden ejecutar juntas
             return !Function.Method.Equals(otherAction.Function.Method);
-            //return true;
         }
 
         public virtual bool IsComplete()
         {
-            return isComplete;
+            return isComplete || (ExpireTime <= 0);
         }
 
         public virtual void Execute()

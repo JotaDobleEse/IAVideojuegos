@@ -15,6 +15,7 @@ namespace WaveProject
         private static List<Kinematic> kinematics = new List<Kinematic>();
         public static List<Kinematic> Kinematics { get { return kinematics; } }
 
+        // Singleton con la posición del ratón
         private static Kinematic mouse = new MouseKinematic();
         /// <summary>
         /// Kinematic con la posición del ratón, solo se actualiza si algún kinematic pasa por el método Update.
@@ -27,6 +28,7 @@ namespace WaveProject
         public float Rotation { get; set; }
         public float MaxVelocity { get; set; }
         public float BRadius { get; set; }
+        // Se usa para dibujar la aceleración
         public SteeringOutput LastOutput { get; private set; }
 
         public bool IsStable { get; private set; }
@@ -50,12 +52,15 @@ namespace WaveProject
         {
             LastOutput = steering;
 
+            // Actualiza la posición y orientación
             Position += Velocity * deltaTime;
             Orientation += Rotation * deltaTime;
 
+            // Actualiza la velocidad y la rotación
             Velocity += steering.Linear * deltaTime;
             Rotation += steering.Angular * deltaTime;
 
+            // Comprueba que no se supere la velocidad máxima
             if (Velocity.X > MaxVelocity)
                 Velocity = new Vector2(MaxVelocity, Velocity.Y);
             else if (Velocity.X < -MaxVelocity)
@@ -67,6 +72,7 @@ namespace WaveProject
 
         }
 
+        // Transforma la posición como si el kinematic fuese el (0,0)
         public Vector2 ConvertToLocalPos(Vector2 position)
         {
             var localPos = position - Position;
@@ -74,6 +80,7 @@ namespace WaveProject
             return localPos;
         }
 
+        // Transforma la posición local (kinematic = (0,0)) a una posición global
         public Vector2 ConvertToGlobalPos(Vector2 position)
         {
             var localPos = position + Position;
@@ -81,11 +88,13 @@ namespace WaveProject
             return localPos;
         }
 
+        // Rotación como vector
         public Vector2 RotationAsVector()
         {
             return new Vector2((float)Math.Sin(Rotation), -(float)Math.Cos(Rotation));
         }
 
+        // Orientación como vector
         public Vector2 OrientationAsVector()
         {
             return new Vector2((float)Math.Sin(Orientation), -(float)Math.Cos(Orientation));
@@ -101,6 +110,7 @@ namespace WaveProject
             return new Kinematic(stable) { Position = this.Position, LastOutput = this.LastOutput, MaxVelocity = this.MaxVelocity, Orientation = this.Orientation, Rotation = this.Rotation, Velocity = this.Velocity };
         }
 
+        // Kinematic que matiene la posición del ratón
         private class MouseKinematic : Kinematic
         {
             public MouseKinematic()

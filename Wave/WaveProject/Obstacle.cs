@@ -9,6 +9,7 @@ using WaveEngine.Framework.Graphics;
 
 namespace WaveProject
 {
+    // Información necesaria sobre un obstáculo
     public class Obstacle : IDisposable
     {
         private static List<Obstacle> obstacles = new List<Obstacle>();

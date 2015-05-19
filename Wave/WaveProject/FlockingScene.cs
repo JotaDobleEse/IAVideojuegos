@@ -13,12 +13,13 @@ namespace WaveProject
     {
         protected override void CreateScene()
         {
-            // Create a 2D camera
+            // Cámara de juego
             var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.LightBlue }
-                .Entity.AddComponent(new CameraController());
+                .Entity.AddComponent(new CameraController()); // Controlador de cámara
 
             EntityManager.Add(camera2D);
 
+            // Añadimos los personajes
             for (int i = 0; i < 300; i++)
             {
                 EntityManager.Add(EntityFactory.FlockingRandom());

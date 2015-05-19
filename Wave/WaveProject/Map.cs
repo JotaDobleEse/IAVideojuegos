@@ -24,16 +24,22 @@ namespace WaveProject
 
     public class Map
     {
+        // Singleton
         private static Map instance = new Map();
         public static Map CurrentMap { get { return instance; } }
 
+        // Mapa hecho con Tiled
         public TiledMap TiledMap { get; private set; }
+        // Mapa de nodos (pathfinding)
         public Node[,] NodeMap { get; private set; }
+        // Mapa de nodos de influencia
         public InfluenceNode[,] InfluenceMap { get; set; }
 
-        public const int HealRatio = 10;
+        public const int HealRatio = 10; // Radio de curación
 
+        // Lista de HealPoints (bases)
         public List<HealPoint> HealPoints { get; private set; }
+        // Lista de Waypoints
         public List<Vector2> Waypoints { get; private set; }
 
         public int Width { get { return TiledMap.Width; } }
@@ -50,8 +56,10 @@ namespace WaveProject
             HealPoints = new List<HealPoint>();
             Waypoints = new List<Vector2>();
 
+            // Establece el mapa de Tiled
             TiledMap = map;
 
+            // Carga los Waypoints
             LoadWaypoints();
 
             #region Node Map Base
@@ -113,6 +121,23 @@ namespace WaveProject
                 }
             }
             #endregion
+
+            // Carga todas las capas de objeto del mapa como Muros
+            LoadWalls();
+        }
+
+        private void LoadWalls()
+        {
+            if (TiledMap.ObjectLayers.Count > 0)
+            {
+                foreach (var layer1 in TiledMap.ObjectLayers)
+                {
+                    foreach (var wall in layer1.Value.Objects)
+                    {
+                        new Wall(wall.X, wall.Y, wall.Width, wall.Height, true);
+                    }
+                }
+            }
         }
 
         private void LoadWaypoints()
@@ -128,6 +153,7 @@ namespace WaveProject
             }
         }
 
+        // Transforma una coordenada del mundo, a coordenada de tile
         public Vector2 TilePositionByWolrdPosition(Vector2 position)
         {
             var layer = TiledMap.TileLayers.First().Value;
@@ -142,11 +168,13 @@ namespace WaveProject
             }
         }
 
+        // Transforma una coordenada de tile a coordenada del mundo
         public Vector2 WorldPositionByTilePosition(Vector2 position)
         {
             return position * new Vector2(TiledMap.TileWidth, TiledMap.TileHeight);
         }
 
+        // Obtiene un tile a traves de su posición en el mundo
         public LayerTile TileByWolrdPosition(Vector2 position)
         {
             var layer = TiledMap.TileLayers.First().Value;
@@ -160,17 +188,20 @@ namespace WaveProject
             }
         }
 
+        // Obtiene un terreno a través de su posición en el mundo
         public Terrain TerrainOnWorldPosition(Vector2 position)
         {
             Vector2 tilePosition = TilePositionByWolrdPosition(position);
             return NodeMap[tilePosition.X(), tilePosition.Y()].Terrain;
         }
 
+        // Indica si una posición existe en el mapa
         public bool PositionInMap(Vector2 position)
         {
             return TiledMap.PositionInMap(position);
         }
 
+        // Obtiene el HealPoint mas prometedor
         public Vector2 GetBestHealPoinPosition(ICharacterInfo character)
         {
             var hp = HealPoints.Where(w => w.Team == character.GetTeam()).Select(s => s.Position)
@@ -179,6 +210,7 @@ namespace WaveProject
             return hp;
         }
 
+        // Indica si un personaje está en el área de curación
         public bool IsInHealArea(ICharacterInfo character)
         {
             var hp = HealPoints.Where(w => w.Team == character.GetTeam())
@@ -186,19 +218,22 @@ namespace WaveProject
             return hp;
         }
 
+        // Indica si un personaje está en un waypoint
         public bool IsInWaypoint(Vector2 position)
         {
             var pos = TilePositionByWolrdPosition(position);
             return Waypoints.Any(a => a == pos);
         }
 
+        // Indica si un personaje está en la base de un equipo
         public bool IsInBase(Vector2 position, int team)
         {
             var hp = HealPoints.Where(w => w.Team == team)
-                .Any(a => (TilePositionByWolrdPosition(position) - a.Position).Length() <= new Vector2(1.5f, 1.5f).Length());
+                .Any(a => (TilePositionByWolrdPosition(position) - a.Position).Length() <= new Vector2(2f, 2f).Length());
             return hp;
         }
 
+        // Indica si existe una posición en el mapa
         public bool Exists(Vector2 position)
         {
             if (position.X() < 0 || position.Y() < 0 || position.X() >= Width || position.Y() >= Height)
@@ -206,6 +241,7 @@ namespace WaveProject
             return true;
         }
 
+        // Dibuja información de debug
         public void Draw(LineBatch2D lb)
         {
             foreach (var waypoint in Waypoints)

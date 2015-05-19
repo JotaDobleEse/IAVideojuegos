@@ -27,22 +27,30 @@ namespace WaveProject.Characters
         [RequiredComponent]
         public Sprite Texture { get; private set; }
         public Kinematic Kinematic { get; private set; }
+        // Color de la textura
         public Color Color { get; set; }
+        // Steering actual
         public Steering Steering { get; set; }
+        // PathFollowing actual, si lo hay
         public FollowPath PathFollowing { get; set; }
+        // Tipo del personaje
         public CharacterType Type { get; private set; }
+        // Manejador de acciones del personaje
         public ActionManager ActionManager { get; set; }
+        // Texto que muestra la acción que quiere realizar el personaje
         public TextBlock Text { get; set; }
+        // Equipo del personaje
         public int Team { get; set; }
+        // Indica si la IA está activada
         private bool IsActiveIA = false;
 
         public CharacterNPC(Kinematic kinematic, EnumeratedCharacterType type, int team/*, Color color*/)
         {
             Kinematic = kinematic;
             Kinematic.MaxVelocity = 30;
-            //Steering = steering;
             Team = team;
             ActionManager = new ActionManager();
+            // En base al tipo construimos la instancia de TypeCharacter
             switch (type)
             {
                 case EnumeratedCharacterType.EXPLORER:
@@ -59,11 +67,11 @@ namespace WaveProject.Characters
                     break;
             }
 
+            // En base al equipo se establece un color de la textura
             if (team == 1)
                 Color = Color.Cyan;
             if (team == 2)
                 Color = Color.Red;
-            //Color = color;
         }
 
         protected override void Initialize()
@@ -78,25 +86,26 @@ namespace WaveProject.Characters
         protected override void Update(TimeSpan gameTime)
         {
             float dt = (float)gameTime.TotalSeconds;
-            if (IsActiveIA)
+            if (IsActiveIA) // Si la IA está activa pedimos una acción nueva al TypeCharacter
             {
                 GenericAction newAction = Type.Update();
-                if (Text != null)
+                ActionManager.ScheduleAction(newAction);
+                string action = ActionManager.Execute(dt);
+                if (Text != null) // Si existe el componente texto se escribe la acción
                 {
                     var transform = Text.Entity.FindComponent<Transform2D>();
                     transform.Position = Transform.Position.PositionUnproject(CameraController.CurrentCamera);
-                    Text.Text = newAction.Function.Method.ToString().Split(' ')[1];
+                    Text.Text = (!string.IsNullOrEmpty(action) ? action : Text.Text);
                 }
-                ActionManager.ScheduleAction(newAction);
-                ActionManager.Execute(dt);
             }
-            else if (Text != null)
+            else if (Text != null) // Si no hay IA borramos el texto
             {
                 Text.Text = "";
             }
 
-            if (Steering == null)
+            if (Steering == null) // Si no tenemos Steering salimos del método
                 return;
+            // Actualizamos en base al Steering
             Kinematic.Position = Transform.Position;
             Kinematic.Orientation = Transform.Rotation;
 
@@ -158,10 +167,12 @@ namespace WaveProject.Characters
         {
             if (Steering != null)
                 Steering.Dispose();
+            // Generamos un BlendedSteering para seguir el camino
             BehaviorAndWeight[] behaviors = SteeringsFactory.PathFollowing(Kinematic);
             Steering = new BlendedSteering(behaviors);
             PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
 
+            // Generamos el camino y lo asignamos
             LRTA lrta = new LRTA(Kinematic.Position, target, Type, DistanceAlgorith.CHEVYCHEV) { UseInfluence = true };
             var path = lrta.Execute();
             PathFollowing.SetPath(path);
@@ -176,7 +187,6 @@ namespace WaveProject.Characters
         {
             float damage = (atk / (float)Type.Def) * 10;
             Type.HP = Math.Max(Type.HP - (int)damage, 0);
-            //Console.WriteLine(Type.HP);
         }
 
         public bool IsDead()

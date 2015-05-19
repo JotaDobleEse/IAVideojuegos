@@ -17,6 +17,7 @@ using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject
 {
+    // Estructura del Nodo de influencia
     public class InfluenceNode
     {
         public int Team1 { get; set; }
@@ -30,22 +31,30 @@ namespace WaveProject
 
     public class InfluenceMap
     {
-
+        // Singleton
         private static InfluenceMap instance = new InfluenceMap();
         public static InfluenceMap Influence { get { return instance; } }
+
+        // Escala con respecto al mapa
         public const int Scale = 5;
+        // Máximo peso de influencia
         public const int MaxAlpha = 160;
+
+        // Variables auxiliares
         public Entity[] Entities { get; set; }
         private InfluenceNode[,] NodeMap;
 
+        // Peso de expansión
         private const float Expand = 0.95f;
 
-        private List<Vector2> StandardLocalSearchPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
+        // Patrón de expansión
+        private List<Vector2> StandardLocalExpansionPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
+        // Textura donde se dibuja el mapa de influencia
         public Texture2D Texture { get; private set; }
 
         private InfluenceMap()
         {
-            Texture = new Texture2D()
+            Texture = new Texture2D() 
                 {
                     Format = PixelFormat.R8G8B8A8,
                     Levels = 1
@@ -54,6 +63,7 @@ namespace WaveProject
 
         public void Initialize()
         {
+            // Tamaño de la textura = Tamaño del mapa / escala
             Texture.Width = Map.CurrentMap.TotalWidth / Scale;
             Texture.Height = Map.CurrentMap.TotalHeight / Scale;
         }
@@ -62,11 +72,12 @@ namespace WaveProject
         {
             try
             {
-                //var entities = EntityManager.AllEntities.ToArray();
+                // Obtenemos los personajes de un bando
                 var characters = Entities.Where(w => w.Components.Any(a => a is ICharacterInfo))
                     .Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo)
                     .Where(w => w.GetTeam() == team).ToArray();
 
+                // Devolvemos sus posiciones
                 return characters.Select(s => s.GetPosition()).ToList();
             } catch (Exception)
             {
@@ -74,6 +85,7 @@ namespace WaveProject
             }
         }
 
+        // Hace una copia de todos los nodos
         private InfluenceNode[,] Copy(InfluenceNode[,] nodes)
         {
             InfluenceNode[,] result = new InfluenceNode[nodes.GetLength(0), nodes.GetLength(1)];
@@ -88,6 +100,7 @@ namespace WaveProject
             return result;
         }
 
+        // Obtiene los vecinos para la expansión
         private List<InfluenceNode> GetNeighbors(Vector2 node, List<Vector2> positions)
         {
             List<InfluenceNode> neighbors = new List<InfluenceNode>();
@@ -103,10 +116,13 @@ namespace WaveProject
 
         private void UpdateInfluenceNodes()
         {
+            // Obtenemos la posición de los personajes de cada bando
             var team1 = GetTeamCharacters(1);
             var team2 = GetTeamCharacters(2);
 
+            // Copiamos el mapa de influencia actual
             NodeMap = Copy(Map.CurrentMap.InfluenceMap);
+            // Reiniciamos sus valores
             for (int i = 0; i < NodeMap.GetLength(0); i++)
             {
                 for (int j = 0; j < NodeMap.GetLength(1); j++)
@@ -117,18 +133,21 @@ namespace WaveProject
                 }
             }
 
+            // Expandimos los jugadores del equipo 1
             foreach (var ch1 in team1)
             {
                 var pos = Map.CurrentMap.TilePositionByWolrdPosition(ch1);
                 NodeMap[pos.X(), pos.Y()].Team1 = MaxAlpha;
             }
 
+            // Expandimos los jugadores del equipo 2
             foreach (var ch2 in team2)
             {
                 var pos = Map.CurrentMap.TilePositionByWolrdPosition(ch2);
                 NodeMap[pos.X(), pos.Y()].Team2 = MaxAlpha;
             }
 
+            // Expandimos 40 veces el mapa
             for (int k = 0; k < 40; k++)
             {
                 //var nodeAux = Copy(NodeMap);
@@ -141,7 +160,7 @@ namespace WaveProject
                         var node = NodeMap[i, j];
                         if (node.Team1 == 0 && node.Team2 == 0)
                             continue;
-                        var neightbors = GetNeighbors(new Vector2(i, j), StandardLocalSearchPattern);
+                        var neightbors = GetNeighbors(new Vector2(i, j), StandardLocalExpansionPattern);
                         if (node.Team1 != 0)
                         {
                             foreach (var n in neightbors)
@@ -161,20 +180,26 @@ namespace WaveProject
                     }
                 });
             }
+            // Al final guardamos la nueva influencia
             Map.CurrentMap.InfluenceMap = Copy(NodeMap);
         }
 
         public void GenerateInfluenteMap()
         {
+            // Actualizamos la influencia
             UpdateInfluenceNodes();
 
+            // Creamos un bitmap, un batch para dibujar y lo establecemos para que la transparencia no
+            // traspase toda la imagen.
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(Map.CurrentMap.TotalWidth / Scale, Map.CurrentMap.TotalHeight / Scale);
             System.Drawing.Graphics batch = System.Drawing.Graphics.FromImage(bitmap);
             batch.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
 
+            // Ancho y alto del tile escalado al bitmap
             int recWidth = Map.CurrentMap.TileWidth / Scale;
             int recHeight = Map.CurrentMap.TileHeight / Scale;
 
+            // Ponemos el bitmap en negro
             batch.FillRectangle(System.Drawing.Brushes.Black, 0, 0, bitmap.Width, bitmap.Height);
 
             for (int i = 0; i < Map.CurrentMap.InfluenceMap.GetLength(0); i++)
@@ -197,6 +222,7 @@ namespace WaveProject
                 }
             }
 
+            // Se pasa el bitmap a byte[]
             byte[] values = new byte[bitmap.Width * bitmap.Height * 4];
             using (MemoryStream stream = new MemoryStream())
             {
@@ -206,11 +232,13 @@ namespace WaveProject
             }
             bitmap.Dispose();
 
+            // Se asigna el byte[] del bitmap a la textura
             Texture.Data = new byte[1][][];   // only 1 texture part
             Texture.Data[0] = new byte[1][];  // 1 mipmap level
             Texture.Data[0][0] = new byte[values.Length];
             Texture.Data[0][0] = values;
 
+            // Se actualiza la textura si procede
             if (!Texture.IsUploaded)
             {
                 try
@@ -220,7 +248,6 @@ namespace WaveProject
                 {
                     Console.WriteLine(e.Message);
                 }
-                //Console.WriteLine("Updated");
             }
 
         }

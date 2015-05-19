@@ -18,8 +18,8 @@ namespace WaveProject.CharacterTypes
         public override float Cost(Terrain terrain)
         {
             if (terrain == Terrain.WATER)
-                return 5f;
-            return 1f;
+                return 8f;
+            return 2f;
         }
 
         public override float MaxVelocity(Terrain terrain)

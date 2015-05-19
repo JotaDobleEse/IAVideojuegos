@@ -59,7 +59,7 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.RANGED;
         }
 
-        public override Action Update()
+        public override GenericAction Update()
         {
             //ATAQUE
             if (HP > MaxHP *0.60)
@@ -68,13 +68,13 @@ namespace WaveProject.CharacterTypes
 
                 if (enemy != null)
                 {
-                    return AttackEnemyNear;
+                    return new GenericAction(1f, 1, true, AttackEnemyNear);
                     //Attack(enemy);
                 }
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
-                    return GoToEnemyBase;
+                    return new GenericAction(1f, 1, true, GoToEnemyBase);
                 }
             }
             //DEFENSA
@@ -85,18 +85,18 @@ namespace WaveProject.CharacterTypes
                 //SI ENCONTRAMOS UN ENEMIGO Y NO ES UN ENEMIGO QUE ATAQUE CON RANGO
                 if (enemy != null && enemy.GetCharacterType() != EnumeratedCharacterType.RANGED)
                 {
-                    return AttackEnemyNear;
+                    return new GenericAction(1f, 1, true, AttackEnemyNear);
                 }
 
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
-                    return GoToWaypoint;
+                    return new GenericAction(1f, 1, true, GoToWaypoint);
                 }
                 //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
                 //GoToNextWaypoint()
             }
-            return GoToMyBase;
+            return new GenericAction(1f, 1, false, GoToMyBase);
         }
 
         public override void Attack(ICharacterInfo character)

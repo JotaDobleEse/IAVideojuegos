@@ -71,12 +71,13 @@ namespace WaveProject.Steerings.Combined
 
         public static BehaviorAndWeight[] PathFollowing(Kinematic character)
         {
-            BehaviorAndWeight[] behaviors = new BehaviorAndWeight[4];
+            BehaviorAndWeight[] behaviors = new BehaviorAndWeight[5];
 
-            behaviors[0] = new BehaviorAndWeight() { Behavior = new CollisionAvoidance() { Character = character }, Weight = 0.7f };
+            behaviors[0] = new BehaviorAndWeight() { Behavior = new CollisionAvoidance() { Character = character }, Weight = 0.4f };
             behaviors[1] = new BehaviorAndWeight() { Behavior = new WallAvoidance() { Character = character, LookAhead = 30f }, Weight = 0.7f };
             behaviors[2] = new BehaviorAndWeight() { Behavior = new CollisionAvoidanceRT(true) { Character = character, Radius = 40f }, Weight = 0.7f };
-            behaviors[3] = new BehaviorAndWeight() { Behavior = new FollowPath(true) { Character = character }, Weight = 1.0f };
+            behaviors[3] = new BehaviorAndWeight() { Behavior = new Separation() { Character = character, Threshold = 20f }, Weight = 40f };
+            behaviors[4] = new BehaviorAndWeight() { Behavior = new FollowPath(true) { Character = character }, Weight = 1.0f };
 
             return behaviors;
         }

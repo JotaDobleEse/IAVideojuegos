@@ -30,7 +30,7 @@ namespace WaveProject.Characters
         public CharacterType Type { get; private set; }
         public int Team { get; set; }
         private ICharacterInfo Target = null;
-        public const float ExecutionTime = 0.3f;
+        public const float ExecutionTime = 0.5f;
         private float CurrentTime = 0f;
 
         public PlayableCharacter(Kinematic kinematic, EnumeratedCharacterType type, int team)
@@ -208,7 +208,7 @@ namespace WaveProject.Characters
             Steering = new BlendedSteering(behaviors);
             PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
 
-            LRTA lrta = new LRTA(Kinematic.Position, target, Type, DistanceAlgorith.CHEVYCHEV);
+            LRTA lrta = new LRTA(Kinematic.Position, target, Type, DistanceAlgorith.CHEVYCHEV) { UseInfluence = true };
             var path = lrta.Execute();
             PathFollowing.SetPath(path);
         }

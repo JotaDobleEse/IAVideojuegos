@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Managers;
 using WaveProject.Characters;
+using WaveProject.DecisionManager;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
@@ -13,7 +14,7 @@ namespace WaveProject.CharacterTypes
     public class ExplorerCharacter : CharacterType
     {
         public ExplorerCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 180, 20, 30, 150)
+            : base(myInfo, entityManager, 180, 20, 30, 300)
         {
 
         }
@@ -59,7 +60,7 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.EXPLORER;
         }
 
-        public override Action Update()
+        public override GenericAction Update()
         {
             //ATAQUE
             if (HP >= MaxHP * 0.75)
@@ -67,12 +68,12 @@ namespace WaveProject.CharacterTypes
                 var enemy = FindEnemyNear();
                 if (enemy != null)
                 {
-                    return AttackEnemyNear;
+                    return new GenericAction(1f, 1, true, AttackEnemyNear);
                 }
                 else
                 {
                     //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
-                    return GoToEnemyBase;
+                    return new GenericAction(1f, 1, true, GoToEnemyBase);
                 }
             }
             //DEFENSA
@@ -82,12 +83,12 @@ namespace WaveProject.CharacterTypes
                 //SI ENCONTRAMOS UN ENEMIGO Y
                 if (enemy != null)
                 {
-                    return GoToWaypoint;
+                    return new GenericAction(1f, 1, true, GoToWaypoint);
                 }
 
                 //else
                 //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
-                return GoToHeal;
+                return new GenericAction(1f, 1, false, GoToHeal);
                 //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES BASTANTE, VETE A UN WAYPOINT
                 //GoToNextWaypoint()
             }

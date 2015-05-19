@@ -319,18 +319,23 @@ namespace WaveProject
             //EntityManager.Add(follower3);
             #endregion
 
-            for (int i = 0; i < 4; i++)
-            {
-                EntityManager.Add(EntityFactory.PlayableCharacterRandom(1));
-            }
+            EntityManager.Add(EntityFactory.PlayableCharacter(168, 72, 1, EnumeratedCharacterType.RANGED));
+            EntityManager.Add(EntityFactory.PlayableCharacter(264, 72, 1, EnumeratedCharacterType.EXPLORER));
+            EntityManager.Add(EntityFactory.PlayableCharacter(136, 168, 1, EnumeratedCharacterType.EXPLORER));
+            EntityManager.Add(EntityFactory.PlayableCharacter(296, 168, 1, EnumeratedCharacterType.MELEE));
+            EntityManager.Add(EntityFactory.PlayableCharacter(360, 120, 1, EnumeratedCharacterType.MELEE));
 
-            TextBlock text1, text2, text3;
+            TextBlock text1, text2, text3, text4, text5;
             EntityManager.Add(text1 = EntityFactory.GetTextBlock());
             EntityManager.Add(text2 = EntityFactory.GetTextBlock());
             EntityManager.Add(text3 = EntityFactory.GetTextBlock());
-            EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED, text1));
-            EntityManager.Add(EntityFactory.Character(800, 800, 2, EnumeratedCharacterType.MELEE, text2));
-            EntityManager.Add(EntityFactory.Character(800, 700, 2, EnumeratedCharacterType.EXPLORER, text3));
+            EntityManager.Add(text4 = EntityFactory.GetTextBlock());
+            EntityManager.Add(text5 = EntityFactory.GetTextBlock());
+            EntityManager.Add(EntityFactory.Character(1160, 808, 2, EnumeratedCharacterType.RANGED, text1));
+            EntityManager.Add(EntityFactory.Character(1000, 872, 2, EnumeratedCharacterType.MELEE, text2));
+            EntityManager.Add(EntityFactory.Character(1000, 664, 2, EnumeratedCharacterType.MELEE, text3));
+            EntityManager.Add(EntityFactory.Character(888, 840, 2, EnumeratedCharacterType.EXPLORER, text4));
+            EntityManager.Add(EntityFactory.Character(1352, 616, 2, EnumeratedCharacterType.EXPLORER, text5));
 
             Entity influenceMap = new Entity("InfluenceMap")
                 .AddComponent(new Transform2D())

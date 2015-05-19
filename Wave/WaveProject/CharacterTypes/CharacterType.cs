@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Managers;
 using WaveProject.Characters;
+using WaveProject.DecisionManager;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
@@ -31,9 +32,9 @@ namespace WaveProject.CharacterTypes
             Random r = new Random();
             MyInfo = myInfo;
             EntityManager = entityManager;
-            MaxHP = HP = hp + (r.Next(20));
-            Atk = atk + (r.Next(5));
-            Def = def + (r.Next(5));
+            MaxHP = HP = hp + (r.Next(21));
+            Atk = atk + (r.Next(6));
+            Def = def + (r.Next(6));
             VisibilityRadius = visibilityRadius;
         }
 
@@ -42,7 +43,7 @@ namespace WaveProject.CharacterTypes
         public abstract float MaxVelocity(Terrain terrain);
         public abstract EnumeratedCharacterType GetCharacterType();
 
-        public abstract Action Update();
+        public abstract GenericAction Update();
         public abstract void Attack(ICharacterInfo character);
 
         public void AttackEnemyNear()

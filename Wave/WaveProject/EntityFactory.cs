@@ -125,6 +125,35 @@ namespace WaveProject
             return character;
         }
 
+        public static Entity PlayableCharacter(float x, float y, int team, EnumeratedCharacterType type)
+        {
+            Kinematic position = new Kinematic(true) { Position = new Vector2(x, y) };
+            string texture = "";
+            switch (type)
+            {
+                case EnumeratedCharacterType.MELEE:
+                    texture = "malabestia";
+                    break;
+                case EnumeratedCharacterType.RANGED:
+                    texture = "soldado";
+                    break;
+                case EnumeratedCharacterType.EXPLORER:
+                    texture = "lagarto";
+                    break;
+                case EnumeratedCharacterType.NONE:
+                    texture = "juggernaut";
+                    break;
+            }
+
+            Entity character = new Entity()
+                 .AddComponent(new Transform2D() { Position = position.Position })
+                 .AddComponent(new Sprite("Content/Textures/" + texture))
+                 .AddComponent(new SpriteRenderer(DefaultLayers.Alpha))
+                 .AddComponent(new PlayableCharacter(position, type, team));
+
+            return character;
+        }
+
         public static Entity FlockingRandom()
         {
             float x = Rand.Next(WaveServices.Platform.ScreenWidth) + WaveServices.Platform.ScreenWidth / 2;

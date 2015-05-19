@@ -11,7 +11,7 @@ namespace WaveProject.DecisionManager
     {
         public List<GenericAction> Actions { get; set; }
         public List<GenericAction> Active { get; private set; }
-        public const float ExecutionTime = 0.3f;
+        public const float ExecutionTime = 0.5f;
         private float CurrentTime = 0f;
         //public int CurrentTime { get; private set; }
 

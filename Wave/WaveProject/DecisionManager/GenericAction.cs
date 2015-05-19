@@ -30,6 +30,8 @@ namespace WaveProject.DecisionManager
 
         public virtual bool CanDoBoth(GenericAction otherAction)
         {
+            if (Function.Method.ToString().Contains("GoTo") && otherAction.Function.Method.ToString().Contains("GoTo"))
+                return false;
             return !Function.Method.Equals(otherAction.Function.Method);
             //return true;
         }
@@ -42,7 +44,6 @@ namespace WaveProject.DecisionManager
         public virtual void Execute()
         {
             Function.Invoke();
-            isComplete = true;
         }
     }
 }

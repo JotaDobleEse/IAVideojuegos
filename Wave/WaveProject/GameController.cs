@@ -45,6 +45,10 @@ namespace WaveProject
         private bool IsActiveIA = false;
         public const float ExecutionLRTATime = 0.3f;
         private float CurrentLRTATime = 0f;
+        public const float TimeToConquer = 20f;
+        private float TimeToBaseTeam1 = TimeToConquer;
+        private float TimeToBaseTeam2 = TimeToConquer;
+        private bool EndGame = false;
 
         public GameController(Kinematic mouse)
         {
@@ -166,16 +170,11 @@ namespace WaveProject
 
         protected override void Update(TimeSpan gameTime)
         {
+            if (EndGame) 
+                return;
             float dt = (float)gameTime.TotalSeconds;
             CurrentLRTATime += dt;
             Mouse.Update(dt, new Steerings.SteeringOutput());
-
-            if (WaveServices.Input.KeyboardState.C == WaveEngine.Common.Input.ButtonState.Pressed)
-            {
-                ScreenContext screenContext = new ScreenContext(new FlockingScene());
-                WaveServices.ScreenContextManager.To(screenContext);
-            }
-
 
             SelectCharactersAndFormations(dt);
 
@@ -185,7 +184,11 @@ namespace WaveProject
 
             Death();
 
+            UpdateBases(dt);
+
             int v = Victory();
+
+            EndGame = v != 0;
 
             LastMousePosition = Mouse.Position;
             DebugLines.Debug.Controller = this;
@@ -375,7 +378,22 @@ namespace WaveProject
         {
             bool anyT1 = EntityManager.AllCharacters().Any(a => a.GetTeam() == 1);
             bool anyT2 = EntityManager.AllCharacters().Any(a => a.GetTeam() == 2);
-            return anyT1 ? (anyT2 ? 0 : 1) : 2;
+            int res1 = anyT1 ? (anyT2 ? 0 : 1) : 2;
+            int res2 = TimeToBaseTeam1 <= 0 ? 2 : (TimeToBaseTeam2 <= 0 ? 1 : 0);
+            return (res1 != 0 ? res1 : res2);
+        }
+
+        private void UpdateBases(float dt)
+        {
+            int b1 = EntityManager.AllCharactersByTeam(1).Count(w => Map.CurrentMap.IsInBase(w.GetPosition(), 2));
+            int b2 = EntityManager.AllCharactersByTeam(2).Count(w => Map.CurrentMap.IsInBase(w.GetPosition(), 1));
+
+            if (b1 == 0)
+                TimeToBaseTeam2 = TimeToConquer;
+            if (b2 == 0)
+                TimeToBaseTeam1 = TimeToConquer;
+            TimeToBaseTeam1 -= b2 * dt;
+            TimeToBaseTeam2 -= b1 * dt;
         }
 
         public void Draw(LineBatch2D lb)

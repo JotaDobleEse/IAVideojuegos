@@ -80,14 +80,14 @@ namespace WaveProject.Characters
             float dt = (float)gameTime.TotalSeconds;
             if (IsActiveIA)
             {
-                Action newAction = Type.Update();
+                GenericAction newAction = Type.Update();
                 if (Text != null)
                 {
                     var transform = Text.Entity.FindComponent<Transform2D>();
                     transform.Position = Transform.Position.PositionUnproject(CameraController.CurrentCamera);
-                    Text.Text = newAction.Method.ToString().Split(' ')[1];
+                    Text.Text = newAction.Function.Method.ToString().Split(' ')[1];
                 }
-                ActionManager.ScheduleAction(new GenericAction(1f, 1, true, newAction));
+                ActionManager.ScheduleAction(newAction);
                 ActionManager.Execute(dt);
             }
             else if (Text != null)
@@ -162,7 +162,7 @@ namespace WaveProject.Characters
             Steering = new BlendedSteering(behaviors);
             PathFollowing = (FollowPath)behaviors.Select(s => s.Behavior).FirstOrDefault(f => f is FollowPath);
 
-            LRTA lrta = new LRTA(Kinematic.Position, target, Type, DistanceAlgorith.CHEVYCHEV);
+            LRTA lrta = new LRTA(Kinematic.Position, target, Type, DistanceAlgorith.CHEVYCHEV) { UseInfluence = true };
             var path = lrta.Execute();
             PathFollowing.SetPath(path);
         }

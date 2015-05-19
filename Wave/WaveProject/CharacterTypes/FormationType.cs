@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaveProject.Characters;
+using WaveProject.DecisionManager;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
@@ -33,7 +34,7 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.NONE;
         }
 
-        public override Action Update()
+        public override GenericAction Update()
         {
             return null;
         }

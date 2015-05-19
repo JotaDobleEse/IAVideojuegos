@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WaveEngine.Common.Math;
 using WaveEngine.Framework.Managers;
 using WaveProject.Characters;
+using WaveProject.DecisionManager;
 using WaveProject.Steerings.Pathfinding;
 
 namespace WaveProject.CharacterTypes
@@ -13,7 +14,7 @@ namespace WaveProject.CharacterTypes
     public class MeleeCharacter : CharacterType
     {
         public MeleeCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 120, 40, 45, 200)
+            : base(myInfo, entityManager, 120, 40, 45, 250)
         {
 
         }
@@ -59,7 +60,7 @@ namespace WaveProject.CharacterTypes
             return EnumeratedCharacterType.MELEE;
         }
 
-        public override Action Update()
+        public override GenericAction Update()
         {
             //ATAQUE
             if (HP >= MaxHP * 0.40)
@@ -69,11 +70,11 @@ namespace WaveProject.CharacterTypes
                 //SI ENCONTRAMOS UN ENEMIGO
                 if (enemy != null)
                 {
-                    return AttackEnemyNear;
+                    return new GenericAction(1f, 1, true, AttackEnemyNear);
                 }
                 else
                 {
-                    return GoToEnemyBase;
+                    return new GenericAction(1f, 1, true, GoToEnemyBase);
                     //SI NO ENCONTRAMOS ENEMIGO NOS DIRIJIMOS A LA BASE ENEMIGA (o a un waypoint, no se)
                     //GoToBase(otherTeam)
                 }
@@ -86,18 +87,18 @@ namespace WaveProject.CharacterTypes
                 //SI ENCONTRAMOS UN ENEMIGO
                 if (enemy != null)
                 {
-                    return AttackEnemyNear;
+                    return new GenericAction(1f, 1, true, AttackEnemyNear);
                     //Attack(enemy);
                 }
 
                 //else
                 //SI NO ENCONTRAMOS ENEMIGO CERCA Y LA DISTANCIA PARA IR A LA BASE ES PEQUEÑA
                 //GoToBase(myteam)
-                return GoToWaypoint;
+                return new GenericAction(1f, 1, true, GoToWaypoint);
                 //SI NO ENCONTRAMOS ENEMIGOS CERCA Y LA DISTANCIA PARA IR A LA BASE ES CERCA, VETE A UN WAYPOINT
                 //GoToNextWaypoint()
             }
-            return GoToHeal;
+            return new GenericAction(1f, 1, false, GoToHeal);
         }
 
         public override void Attack(ICharacterInfo character)

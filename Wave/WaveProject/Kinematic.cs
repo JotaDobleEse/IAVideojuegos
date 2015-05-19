@@ -26,6 +26,7 @@ namespace WaveProject
         public Vector2 Velocity { get; set; }
         public float Rotation { get; set; }
         public float MaxVelocity { get; set; }
+        public float BRadius { get; set; }
         public SteeringOutput LastOutput { get; private set; }
 
         public bool IsStable { get; private set; }
@@ -69,14 +70,14 @@ namespace WaveProject
         public Vector2 ConvertToLocalPos(Vector2 position)
         {
             var localPos = position - Position;
-            localPos -= Rotation.RotationToVector();
+            localPos += OrientationAsVector();
             return localPos;
         }
 
         public Vector2 ConvertToGlobalPos(Vector2 position)
         {
             var localPos = position + Position;
-            localPos += RotationAsVector();
+            localPos -= OrientationAsVector();
             return localPos;
         }
 

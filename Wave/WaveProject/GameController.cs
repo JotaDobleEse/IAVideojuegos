@@ -31,6 +31,7 @@ namespace WaveProject
         Button LRTAEuclidean;
         Button FormationMode;
         Button DecisionalIA;
+        Button FinalBattle;
         DistanceAlgorith CurrentLrtaAlgorithm = DistanceAlgorith.MANHATTAN;
         private List<PlayableCharacter> SelectedCharacters;
         private FormationManager ActiveFormation;
@@ -61,14 +62,16 @@ namespace WaveProject
             LRTAEuclidean = EntityManager.Find<Button>("LRTA_Euclidean");
             FormationMode = EntityManager.Find<Button>("FormationMode");
             DecisionalIA = EntityManager.Find<Button>("DecisionalIA");
+            FinalBattle = EntityManager.Find<Button>("FinalBattle");
             
             float width = WaveServices.ViewportManager.ScreenWidth;
             float height = WaveServices.ViewportManager.ScreenHeight;
-            LRTAManhattan.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAManhattan.Width - 10, 50);
-            LRTAChevychev.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAChevychev.Width - 10, 100);
-            LRTAEuclidean.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAEuclidean.Width - 10, 150);
-            FormationMode.Entity.FindComponent<Transform2D>().Position = new Vector2(width - FormationMode.Width - 10, 200);
-            DecisionalIA.Entity.FindComponent<Transform2D>().Position = new Vector2(width - DecisionalIA.Width - 10, 250);
+            LRTAManhattan.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAManhattan.Width - 10, 0);
+            LRTAChevychev.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAChevychev.Width - 10, 50);
+            LRTAEuclidean.Entity.FindComponent<Transform2D>().Position = new Vector2(width - LRTAEuclidean.Width - 10, 100);
+            FormationMode.Entity.FindComponent<Transform2D>().Position = new Vector2(width - FormationMode.Width - 10, 150);
+            DecisionalIA.Entity.FindComponent<Transform2D>().Position = new Vector2(width - DecisionalIA.Width - 10, 200);
+            FinalBattle.Entity.FindComponent<Transform2D>().Position = new Vector2(width - FinalBattle.Width - 10, 250);
 
             LRTAManhattan.Click += (s, e) =>
             {
@@ -132,6 +135,28 @@ namespace WaveProject
                 foreach (var character in EntityManager.AllEntitiesByComponentType(typeof(CharacterNPC)).Select(sel => sel.FindComponent<CharacterNPC>()))
                 {
                     character.SetIA(IsActiveIA);
+                }
+            };
+
+            FinalBattle.Click += (s, e) =>
+            {
+                foreach (var character in EntityManager.AllEntitiesByComponentType(typeof(CharacterNPC)).Select(sel => sel.FindComponent<CharacterNPC>()))
+                {
+                    character.SetIA(true);
+                }
+                
+                var charactersEntity = EntityManager.AllEntities.Where(w => w.FindComponent<PlayableCharacter>() != null).ToList();
+                while (charactersEntity.Count > 0)
+                {
+                    TextBlock text = EntityFactory.GetTextBlock();
+                    EntityManager.Add(text);
+                    var character = charactersEntity[0].FindComponent<PlayableCharacter>();
+                    charactersEntity[0].RemoveComponent<PlayableCharacter>();
+                    CharacterNPC npcChar;
+                    charactersEntity[0].AddComponent(npcChar = character.ToCharacterNPC());
+                    npcChar.Text = text;
+                    npcChar.SetIA(true);
+                    charactersEntity.RemoveAt(0);
                 }
             };
 

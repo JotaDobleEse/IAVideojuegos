@@ -73,6 +73,7 @@ namespace WaveProject.Characters
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
             Type.EntityManager = EntityManager;
+            Kinematic.BRadius = Math.Max(Texture.Texture.Width, Texture.Texture.Height) / 1.5f;
         }
 
         public void SetPathFollowing()
@@ -238,6 +239,12 @@ namespace WaveProject.Characters
         public bool IsDisposed()
         {
             return disposed;
+        }
+
+        public CharacterNPC ToCharacterNPC()
+        {
+            var character = new CharacterNPC(Kinematic, Type.GetCharacterType(), Team);
+            return character;
         }
     }
 }

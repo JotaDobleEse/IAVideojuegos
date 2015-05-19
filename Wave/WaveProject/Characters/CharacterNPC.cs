@@ -72,6 +72,7 @@ namespace WaveProject.Characters
             Transform.Origin = Vector2.Center;
             Texture.TintColor = Color;
             Type.EntityManager = EntityManager;
+            Kinematic.BRadius = Math.Max(Texture.Texture.Width, Texture.Texture.Height) / 1.5f;
         }
 
         protected override void Update(TimeSpan gameTime)
@@ -88,6 +89,10 @@ namespace WaveProject.Characters
                 }
                 ActionManager.ScheduleAction(new GenericAction(1f, 1, true, newAction));
                 ActionManager.Execute(dt);
+            }
+            else if (Text != null)
+            {
+                Text.Text = "";
             }
 
             if (Steering == null)
@@ -138,28 +143,6 @@ namespace WaveProject.Characters
         {
             return Type.GetCharacterType();
         }
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-                return;
-
-            if (disposing)
-            {
-                if (Steering != null)
-                    Steering.Dispose();
-                Kinematic.Dispose();
-                Kinematic = null;
-                Steering = null;
-                Type = null;
-            }
-
-            disposed = true;
-        }
 
         public Vector2 GetVelocity()
         {
@@ -209,6 +192,33 @@ namespace WaveProject.Characters
         public void SetIA(bool isActiveIA)
         {
             IsActiveIA = isActiveIA;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (disposing)
+            {
+                if (Steering != null)
+                    Steering.Dispose();
+                if (Text != null)
+                {
+                    EntityManager.Remove(Text);
+                    Text = null;
+                }
+                Kinematic.Dispose();
+                Kinematic = null;
+                Steering = null;
+                Type = null;
+            }
+
+            disposed = true;
         }
     }
 }

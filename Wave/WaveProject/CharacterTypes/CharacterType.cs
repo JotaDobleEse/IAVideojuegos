@@ -186,8 +186,8 @@ namespace WaveProject.CharacterTypes
         public void GoToWaypoint()
         {
             var mapPos = Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition());
-            if (Map.CurrentMap.Waypoints.Any(a => mapPos == a))
-                LastWaypoint = mapPos;
+           /* if (Map.CurrentMap.Waypoints.Any(a => mapPos == a))
+                LastWaypoint = mapPos;*/
 
             var waypoint = Map.CurrentMap.Waypoints.Where(w => mapPos != w && LastWaypoint != w)
                 .OrderBy(o => (o - mapPos).Length())

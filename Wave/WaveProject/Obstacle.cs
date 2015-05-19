@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Graphics;
 using WaveEngine.Common.Math;
+using WaveEngine.Framework.Graphics;
 
 namespace WaveProject
 {
@@ -33,6 +35,11 @@ namespace WaveProject
         public void Dispose()
         {
             obstacles.Remove(this);
+        }
+
+        public void Draw(LineBatch2D lb)
+        {
+            lb.DrawCircleVM(Position, BRadius, Color.Green, 1f);
         }
     }
 }

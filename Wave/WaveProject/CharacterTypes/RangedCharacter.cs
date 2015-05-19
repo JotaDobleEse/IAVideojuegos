@@ -13,7 +13,7 @@ namespace WaveProject.CharacterTypes
     public class RangedCharacter : CharacterType
     {
         public RangedCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 100, 40, 34, 300)
+            : base(myInfo, entityManager, 100, 25, 34, 300)
         {
 
         }

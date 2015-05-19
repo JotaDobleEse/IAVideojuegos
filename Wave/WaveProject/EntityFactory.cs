@@ -140,5 +140,18 @@ namespace WaveProject
 
             return character;
         }
+
+        public static TextBlock GetTextBlock()
+        {
+            TextBlock text1 = new TextBlock()
+            {
+                Foreground = Color.Cyan,
+                //BorderColor = Color.Black,
+                //IsBorder = true,
+                FontPath = "Content/Fonts/verdana.wpk",
+                IsVisible = true
+            };
+            return text1;
+        }
     }
 }

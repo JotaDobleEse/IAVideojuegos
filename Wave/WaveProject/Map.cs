@@ -96,6 +96,13 @@ namespace WaveProject
                         HealPoints.Add(new HealPoint() { Position = new Vector2(tile.X, tile.Y), Team = t });
                     }
 
+                    // Obtenemos el valor que indica si un punto de curación
+                    string obstacle = tile.TilesetTile.Properties["obstacle"];
+                    if (bool.Parse(textInfo.ToTitleCase(obstacle)))
+                    {
+                        new Obstacle(WorldPositionByTilePosition(node.Position) + new Vector2(TileWidth / 2f, TileHeight / 2f), Math.Max(TileWidth, TileHeight) / 1.5f, true);
+                    }
+
                     // Guardamos el nodo en la matriz
                     NodeMap[node.X, node.Y] = node;
                     InfluenceMap[node.X, node.Y] = new InfluenceNode() { Team1 = 0, Team2 = 0 };
@@ -106,6 +113,19 @@ namespace WaveProject
                 }
             }
             #endregion
+        }
+
+        private void LoadWaypoints()
+        {
+            string[] lines = File.ReadAllLines(@"Content\waypoints.txt");
+            foreach (var line in lines)
+            {
+                string[] waypoint = line.Split(',');
+                int x, y;
+                x = int.Parse(waypoint[0]);
+                y = int.Parse(waypoint[1]);
+                Waypoints.Add(new Vector2(x, y));
+            }
         }
 
         public Vector2 TilePositionByWolrdPosition(Vector2 position)
@@ -166,17 +186,17 @@ namespace WaveProject
             return hp;
         }
 
-        private void LoadWaypoints()
+        public bool IsInWaypoint(Vector2 position)
         {
-            string[] lines = File.ReadAllLines(@"Content\waypoints.txt");
-            foreach (var line in lines)
-            {
-                string[] waypoint = line.Split(',');
-                int x, y;
-                x = int.Parse(waypoint[0]);
-                y = int.Parse(waypoint[1]);
-                Waypoints.Add(new Vector2(x, y));
-            }
+            var pos = TilePositionByWolrdPosition(position);
+            return Waypoints.Any(a => a == pos);
+        }
+
+        public bool IsInBase(Vector2 position, int team)
+        {
+            var hp = HealPoints.Where(w => w.Team == team)
+                .Any(a => (TilePositionByWolrdPosition(position) - a.Position).Length() <= new Vector2(1.5f, 1.5f).Length());
+            return hp;
         }
 
         public bool Exists(Vector2 position)

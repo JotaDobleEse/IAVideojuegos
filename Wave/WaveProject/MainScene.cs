@@ -43,17 +43,19 @@ namespace WaveProject
                 .AddComponent(Controller = new GameController(Kinematic.Mouse));
             EntityManager.Add(gameController);
 
-            Button LRTAManhattan = new Button("LRTA_Manhattan") { BackgroundColor = Color.Gray, Text = "LRTA Manhattan", Width = 150, IsBorder = false };
-            Button LRTAChevychev = new Button("LRTA_Chevychev") { BackgroundColor = Color.Gray, Text = "LRTA Chevychev", Width = 150, IsBorder = false };
-            Button LRTAEuclidean = new Button("LRTA_Euclidean") { BackgroundColor = Color.Gray, Text = "LRTA Euclidean", Width = 150, IsBorder = false };
-            Button FormationMode = new Button("FormationMode") { BackgroundColor = Color.Green, Text = "Enable Formation Mode", Width = 200, IsBorder = false };
-            Button DecisionalIA = new Button("DecisionalIA") { BackgroundColor = Color.Green, Text = "Enable Decisional IA", Width = 200, IsBorder = false };
+            Button LRTAManhattan = new Button("LRTA_Manhattan") { BackgroundColor = Color.Gray, Text = "LRTA Manhattan", Width = 210, IsBorder = false };
+            Button LRTAChevychev = new Button("LRTA_Chevychev") { BackgroundColor = Color.Gray, Text = "LRTA Chevychev", Width = 210, IsBorder = false };
+            Button LRTAEuclidean = new Button("LRTA_Euclidean") { BackgroundColor = Color.Gray, Text = "LRTA Euclidean", Width = 210, IsBorder = false };
+            Button FormationMode = new Button("FormationMode") { BackgroundColor = Color.Green, Text = "Enable Formation Mode", Width = 210, IsBorder = false };
+            Button DecisionalIA = new Button("DecisionalIA") { BackgroundColor = Color.Green, Text = "Enable Decisional IA", Width = 210, IsBorder = false };
+            Button FinalBattle = new Button("FinalBattle") { BackgroundColor = Color.Gray, Text = "Final Battle", Width = 210, IsBorder = false };
 
             EntityManager.Add(LRTAManhattan);
             EntityManager.Add(LRTAChevychev);
             EntityManager.Add(LRTAEuclidean);
             EntityManager.Add(FormationMode);
             EntityManager.Add(DecisionalIA);
+            EntityManager.Add(FinalBattle);
 
             Entity map = new Entity("mapa")
                 .AddComponent(new Transform2D())
@@ -322,33 +324,10 @@ namespace WaveProject
                 EntityManager.Add(EntityFactory.PlayableCharacterRandom(1));
             }
 
-            TextBlock text1 = new TextBlock()
-            {
-                Foreground = Color.Cyan,
-                BorderColor = Color.Black,
-                IsBorder = true,
-                FontPath = "Content/Fonts/verdana.wpk",
-                IsVisible = true
-            };
-            TextBlock text2 = new TextBlock()
-            {
-                Foreground = Color.Cyan,
-                BorderColor = Color.Black,
-                IsBorder = true,
-                FontPath = "Content/Fonts/verdana.wpk",
-                IsVisible = true
-            };
-            TextBlock text3 = new TextBlock()
-            {
-                Foreground = Color.Cyan,
-                BorderColor = Color.Black,
-                IsBorder = true,
-                FontPath = "Content/Fonts/verdana.wpk",
-                IsVisible = true
-            };
-            EntityManager.Add(text1);
-            EntityManager.Add(text2);
-            EntityManager.Add(text3);
+            TextBlock text1, text2, text3;
+            EntityManager.Add(text1 = EntityFactory.GetTextBlock());
+            EntityManager.Add(text2 = EntityFactory.GetTextBlock());
+            EntityManager.Add(text3 = EntityFactory.GetTextBlock());
             EntityManager.Add(EntityFactory.Character(900, 700, 2, EnumeratedCharacterType.RANGED, text1));
             EntityManager.Add(EntityFactory.Character(800, 800, 2, EnumeratedCharacterType.MELEE, text2));
             EntityManager.Add(EntityFactory.Character(800, 700, 2, EnumeratedCharacterType.EXPLORER, text3));

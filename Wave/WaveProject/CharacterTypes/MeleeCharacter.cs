@@ -13,7 +13,7 @@ namespace WaveProject.CharacterTypes
     public class MeleeCharacter : CharacterType
     {
         public MeleeCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 120, 60, 45, 200)
+            : base(myInfo, entityManager, 120, 40, 45, 200)
         {
 
         }

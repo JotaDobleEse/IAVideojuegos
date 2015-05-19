@@ -74,12 +74,17 @@ namespace WaveProject
                         steering.Draw(lb);
                     }
 
+                    //foreach (var obstacle in Obstacle.Obstacles)
+                    //{
+                    //    obstacle.Draw(lb);
+                    //}
+
                     Controller.Draw(lb);
 
-                    foreach (var wall in Wall.Walls)
-                    {
-                        lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1f);
-                    }
+                    //foreach (var wall in Wall.Walls)
+                    //{
+                    //    lb.DrawRectangleVM(wall.WallRectangle, Color.Blue, 1f);
+                    //}
 
                     for (int i = 0; i < Path.Count - 1; i++)
                     {

@@ -418,6 +418,24 @@ namespace WaveProject
                 .Where(w => w.GetTeam() == team);
             return chars.ToArray();
         }
+
+        /// <summary>
+        /// Indica si una posición ya está ocupada.
+        /// </summary>
+        /// <param name="entityManager"></param>
+        /// <param name="character">Jugador que solicita la información.</param>
+        /// <returns></returns>
+        public static bool PositionOcupped(this EntityManager entityManager, ICharacterInfo character)
+        {
+            var pos = Map.CurrentMap.TilePositionByWolrdPosition(character.GetPosition());
+            var characters = entityManager.AllCharacters().Where(w => w != character).ToList();
+            foreach (var ch in characters)
+            {
+                if (pos == Map.CurrentMap.TilePositionByWolrdPosition(ch.GetPosition()))
+                    return true;
+            }
+            return false;
+        }
         #endregion
     }
 }

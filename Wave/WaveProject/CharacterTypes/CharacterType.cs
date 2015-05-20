@@ -97,7 +97,7 @@ namespace WaveProject.CharacterTypes
                 {
                     var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
                     var length = (worldPos - MyInfo.GetPosition()).Length();
-                    if (length < minLength)
+                    if (length < minLength && !EntityManager.PositionOcupped(MyInfo))
                     {
                         minLength = length;
                         healpoint = worldPos;
@@ -137,7 +137,7 @@ namespace WaveProject.CharacterTypes
                 {
                     var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
                     var length = (worldPos - MyInfo.GetPosition()).Length();
-                    if (length < minLength)
+                    if (length < minLength && !EntityManager.PositionOcupped(MyInfo))
                     {
                         minLength = length;
                         enemyBase = worldPos;
@@ -173,7 +173,7 @@ namespace WaveProject.CharacterTypes
                 {
                     var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
                     var length = (worldPos - MyInfo.GetPosition()).Length();
-                    if (length < minLength)
+                    if (length < minLength && !EntityManager.PositionOcupped(MyInfo))
                     {
                         minLength = length;
                         myBase = worldPos;

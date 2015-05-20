@@ -49,8 +49,11 @@ namespace WaveProject
         public override void Draw(TimeSpan gameTime)
         {
             if (Victory != 0)
+            {
                 Text.Text = string.Format("Ganador equipo {0}", (Victory == 1 ? "Azul" : "Rojo"));
-            else 
+                Text.Foreground = (Victory == 1 ? Color.Cyan : Color.Red);
+            }
+            else
                 Text.Text = string.Format("Coords. ({0},{1}), FPS: {2}", WaveServices.Input.MouseState.X, WaveServices.Input.MouseState.Y, 1 / (float)gameTime.TotalSeconds);
 
             LineBatch2D lb = RenderManager.LineBatch2D;

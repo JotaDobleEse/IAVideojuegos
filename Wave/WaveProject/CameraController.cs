@@ -15,7 +15,7 @@ namespace WaveProject
     {
         [RequiredComponent]
         public Camera2D Camera { get; set; }
-        private float Velocity = 100f;
+        private float Velocity = 150f;
         private bool PressedMouse = false;
         private Vector2 LastPositionMouse;
 
@@ -25,8 +25,8 @@ namespace WaveProject
         {
             base.Initialize();
             CurrentCamera = Camera;
-            Camera.Zoom *= 3f;
-            Camera.Position += new Vector3(WaveServices.Platform.ScreenWidth * 0.75f, WaveServices.Platform.ScreenHeight * 0.75f, 0);
+            Camera.Zoom *= 1.75f;
+            Camera.Position += new Vector3(WaveServices.Platform.ScreenWidth * 0.25f, WaveServices.Platform.ScreenHeight * 0.25f, 0);
         }
 
         protected override void Update(TimeSpan gameTime)
@@ -36,19 +36,19 @@ namespace WaveProject
             var keyboard = WaveServices.Input.KeyboardState;
             if (keyboard.W == ButtonState.Pressed)
             {
-                Speed -= new Vector2(0f, Velocity);
+                Speed -= new Vector2(0f, Velocity) * Camera.Zoom;
             }
             else if (keyboard.S == ButtonState.Pressed)
             {
-                Speed += new Vector2(0f, Velocity);
+                Speed += new Vector2(0f, Velocity) * Camera.Zoom;
             }
             if (keyboard.A == ButtonState.Pressed)
             {
-                Speed -= new Vector2(Velocity, 0f);
+                Speed -= new Vector2(Velocity, 0f) * Camera.Zoom;
             }
             else if (keyboard.D == ButtonState.Pressed)
             {
-                Speed += new Vector2(Velocity, 0f);
+                Speed += new Vector2(Velocity, 0f) * Camera.Zoom;
             }
 
             if (WaveServices.Input.MouseState.Wheel > 0)

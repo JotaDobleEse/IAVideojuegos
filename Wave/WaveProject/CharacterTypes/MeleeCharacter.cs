@@ -96,7 +96,7 @@ namespace WaveProject.CharacterTypes
                 }
                 //SI NO ENCONTRAMOS ENEMIGO CERCA VAMOS A UN WAYPOINT
                 if (Map.CurrentMap.IsInWaypoint(MyInfo.GetPosition()))
-                    return new GenericAction(20f, 1, true, GoToHeal);
+                    return new GenericAction(30f, 1, true, GoToHeal);
                 return new GenericAction(1f, 1, false, GoToWaypoint);
             }
             return new GenericAction(1f, 1, true, GoToHeal);
@@ -137,7 +137,7 @@ namespace WaveProject.CharacterTypes
                     {
                         var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
                         var length = (worldPos - MyInfo.GetPosition()).Length();
-                        if (length < minLength)
+                        if (length < minLength && !EntityManager.PositionOcupped(MyInfo))
                         {
                             minLength = length;
                             attackPoint = worldPos;

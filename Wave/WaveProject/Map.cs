@@ -214,7 +214,7 @@ namespace WaveProject
         public bool IsInHealArea(ICharacterInfo character)
         {
             var hp = HealPoints.Where(w => w.Team == character.GetTeam())
-                .Any(a => (TilePositionByWolrdPosition(character.GetPosition()) - a.Position).Length() <= new Vector2(HealRatio, HealRatio).Length());
+                .Any(a => (TilePositionByWolrdPosition(character.GetPosition()) - WorldPositionByTilePosition(a.Position)).Length() <= HealRatio * Math.Max(TileWidth, TileHeight));
             return hp;
         }
 

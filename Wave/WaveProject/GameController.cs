@@ -192,6 +192,13 @@ namespace WaveProject
                     npcChar.SetIA(true);
                     charactersEntity.RemoveAt(0);
                 }
+
+                LRTAManhattan.IsVisible = false;
+                LRTAChevychev.IsVisible = false;
+                LRTAEuclidean.IsVisible = false;
+                FormationMode.IsVisible = false;
+                DecisionalIA.IsVisible = false;
+                FinalBattle.IsVisible = false;
             };
 
             SetDebug.Click += (s, e) =>

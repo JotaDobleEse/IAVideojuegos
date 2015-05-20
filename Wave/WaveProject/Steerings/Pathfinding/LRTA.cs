@@ -21,14 +21,32 @@ namespace WaveProject.Steerings.Pathfinding
 
     public class LRTA
     {
+        // Mapa de nodos con información sobre el mapa
         private Node[,] NodeMap;
+        // Tipo de personaje que ejecuta el LRTA*
         private CharacterType Character;
+
+        // Patrones de busqueda
+        // * * *
+        // * X *
+        // * * *
         private List<Vector2> StandardLocalSearchPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
+        //   *   * 
+        // * * * * *
+        //   * X *
+        // * * * * *
+        //   *   *
         private List<Vector2> SharpLocalSearchPattern = new List<Vector2>() { new Vector2(-1, -1), new Vector2(-1, 0), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(0, -1), new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1), new Vector2(-1, 2), new Vector2(1, -2), new Vector2(-2, -1), new Vector2(2, -1), new Vector2(-2, 1), new Vector2(2, 1), new Vector2(-1, 2), new Vector2(1, 2) };
+        
+        // Escala del mapa
         private int ScaleWidth;
         private int ScaleHeight;
+
+        // Posición de inicio
         public Vector2 StartPos { get; private set; }
+        // Posición de fin
         public Vector2 EndPos { get; private set; }
+        // Indica si el LRTA* debe usar el mapa de influencia
         public bool UseInfluence { get; set; }
 
         public LRTA(Vector2 startPos, Vector2 endPos, CharacterType character, DistanceAlgorith algorithm = DistanceAlgorith.EUCLIDEAN)
@@ -79,10 +97,14 @@ namespace WaveProject.Steerings.Pathfinding
         {
             try
             {
+                // Tile de inicio
                 var startTile = Map.CurrentMap.TilePositionByWolrdPosition(StartPos);
+                // Tile de fin
                 var endTile = Map.CurrentMap.TilePositionByWolrdPosition(EndPos);
+                // Si la posición no es pasable salimos
                 if (!NodeMap[startTile.X(), startTile.Y()].Passable || !NodeMap[endTile.X(), endTile.Y()].Passable)
                     return new List<Vector2>();
+                // Sino ejecutamos
                 return Execute(NodeMap[startTile.X(), startTile.Y()], NodeMap[endTile.X(), endTile.Y()]);
             }
             catch(Exception)
@@ -252,6 +274,11 @@ namespace WaveProject.Steerings.Pathfinding
             return current;
         }
 
+        /// <summary>
+        /// Devuelve el coste de un nodo para un personaje usando información del tipo de terreno y la influencia enemiga.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         private float NodeCost(Node node)
         {
             float n_t = Character.Cost(node.Terrain);
@@ -343,40 +370,49 @@ namespace WaveProject.Steerings.Pathfinding
 
         private bool CanGoDirectly(Vector2 p1, Vector2 p2, Vector2 p3)
         {
+            // Diferencia entre origen y destino
             var diff = p3 - p1;
+            // Cogemos el máximo
             var max = Math.Max(Math.Abs(diff.X), Math.Abs(diff.Y));
-            //diff.Normalize();
+            // Normalizamos la diferencia y lo tomamos como distancia entre tiles
             Vector2 factor = new Vector2(diff.X / max, diff.Y / max);
 
-            //float lastCost = Character.Cost(NodeMap[p1.X(), p1.Y()].Terrain);
+            // Cogemos el coste del primer tile
             float lastCost = (float)Math.Round(NodeCost(NodeMap[p1.X(), p1.Y()]), 0);
+            // Avanzamos y establecemos los posibles tiles a los que movernos
             Vector2 pAux = p1 + factor;
             Vector2 pAuxTile1 = new Vector2((int)Math.Ceiling(pAux.X), (int)Math.Ceiling(pAux.Y));
             Vector2 pAuxTile2 = new Vector2((int)Math.Floor(pAux.X), (int)Math.Floor(pAux.Y));
 
+            // Mientras no lleguemos al último tile
             while (pAuxTile1 != p3 && pAuxTile2 != p3)
             {
+                // Si los nodos son pasables
                 if (NodeMap[pAuxTile1.X(), pAuxTile1.Y()].Passable && NodeMap[pAuxTile2.X(), pAuxTile2.Y()].Passable)
                 {
+                    // Obtenemos los costes de los dos posibles tiles objetivo
                     float cost1 = (float)Math.Round(NodeCost(NodeMap[pAuxTile1.X(), pAuxTile1.Y()]), 0);
                     float cost2 = (float)Math.Round(NodeCost(NodeMap[pAuxTile2.X(), pAuxTile2.Y()]), 0);
-                    //float cost1 = Character.Cost(NodeMap[pAuxTile1.X(), pAuxTile1.Y()].Terrain);
-                    //float cost2 = Character.Cost(NodeMap[pAuxTile2.X(), pAuxTile2.Y()].Terrain);
+                    // Nos quedamos con el mínimo coste
                     float cost = Math.Min(cost1, cost2);
-                    if (cost <= lastCost || cost == Character.Cost(NodeMap[p3.X(), p3.Y()].Terrain))
+                    // Si es menor o igual que el último coste obtenido o igual al nodo destino
+                    if (cost <= lastCost || cost == NodeCost(NodeMap[p3.X(), p3.Y()]))
                     {
+                        // Avanzamos y cogemos los siguientes tiles candidatos
                         lastCost = cost;
                         pAux += factor;
                         pAuxTile1 = new Vector2((int)Math.Ceiling(pAux.X), (int)Math.Ceiling(pAux.Y));
                         pAuxTile2 = new Vector2((int)Math.Floor(pAux.X), (int)Math.Floor(pAux.Y));
                     }
+                    // Si los costes no se cumplen devolvemos false
                     else
                         return false;
                 }
+                // Si no son pasables devolvemos false
                 else 
                     return false;
             }
-
+            // Si llegamos hasta el destino que es que podemos eliminar el nodo intermedio
             return true;
         }
         #endregion

@@ -11,11 +11,14 @@ namespace WaveProject.Steerings.Coordinated
     {
         public float CharacterRadius { get; set; }
 
+        // Devuelve el numero de Slots del conjunto, tantos como elemento haya
         public override int CalculateNumberOfSlots(List<SlotAssignment> slotAssignments)
         {
             NumberOfSlots = slotAssignments.Count;
             return NumberOfSlots;
         }
+
+        // Calcula el desplazamiento de las unidades
         public override SlotLocation GetDriftOffset(List<SlotAssignment> slotAssignments)
         {
             var center = new SlotLocation();
@@ -33,6 +36,7 @@ namespace WaveProject.Steerings.Coordinated
             return center;
         }
 
+        // Calcula la posición de una unidad
         public override SlotLocation GetSlotLocation(int slotNumber)
         {
             var rn = NumberOfSlots * CharacterRadius / (float)Math.PI;
@@ -45,6 +49,7 @@ namespace WaveProject.Steerings.Coordinated
             return location;
         }
 
+        // Se adapta hasta "el infinito"
         public override bool SupportSlots(int slotCounts)
         {
             return true;

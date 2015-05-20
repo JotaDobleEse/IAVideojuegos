@@ -9,6 +9,7 @@ using WaveEngine.Framework.Graphics;
 
 namespace WaveProject.Steerings.Delegated
 {
+    // Datos de una colisión, posición de colisión y normal perpendicular al punto
     public class Collision
     {
         public Vector2 Position { get; set; }
@@ -22,9 +23,6 @@ namespace WaveProject.Steerings.Delegated
 
     public class CollisionDetector
     {
-        private static CollisionDetector detector = new CollisionDetector();
-        public static CollisionDetector Detector { get { return detector; } }
-
         private Vector2 posicion = Vector2.Zero;
         private Vector2 movimiento = Vector2.Zero;
         private Vector2 interseccion = Vector2.Zero;
@@ -32,26 +30,22 @@ namespace WaveProject.Steerings.Delegated
 
         public CollisionDetector()
         {
-            //new Wall(200, 200, 50, 200, true);
-            //new Wall(0, 50, 200, 10, true);
-            //new Wall(0, 500, 200, 10, true);
-        }
-
-        public void Draw(LineBatch2D lb)
-        {
-            lb.DrawLineVM(interseccion, normal1 + interseccion, Color.Green, 1);
-            //lb.DrawLineVM(posicion, movimiento, Color.White, 1);
         }
 
         public Collision GetCollision(Vector2 position, Vector2 moveAmount)
         {
             Collision firstCollision = null;
+            // Para cada muro
             foreach (var wall in Wall.Walls)
             {
+                // Creamos una lista de puntos de intersección
                 Vector2 v;
                 List<Vector2> intersections = new List<Vector2>();
+                // Creamos variable para saber cuantos lados del muro colisionan
                 int face1, face2, face3, face4;
                 face1 = face2 = face3 = face4 = 0;
+
+                // Comprobamos si interseca con  cada pared
                 if (LineSegementsIntersect(position, position + moveAmount, wall.P1, wall.P2, out v))
                 {
                     intersections.Add(v.Clone());
@@ -76,21 +70,28 @@ namespace WaveProject.Steerings.Delegated
                 posicion = position;
                 movimiento = posicion + moveAmount;
 
+                // Si hay interseccioes
                 if (intersections.Count > 0)
                 {
+                    // Obtenemos la posición de la intersección mas cercana al personaje
                     var pos = intersections.OrderBy(o => (o - position).Length()).First();
+                    // Sabemos el lado que interseca por su posición en la lista +1
                     int face = intersections.IndexOf(pos) + 1;
-                    //Console.WriteLine("f1: {0}, f2: {1}, f3: {2}, f4: {3}, actual: {4}", face1, face2, face3, face4, face);
+                    // Creamos la normal
                     Vector2 normal = Vector2.Zero;
 
+                    // Calculamos la rotación
                     float rotation = (position - pos).ToRotation();
 
+                    // Si choca con el lado 1 o el 2
                     if (face == face1 || face == face2)
                     {
+                        // Sacamos las dos normales posibles del lado
                         var vect = pos - wall.P2;
-                        var norm1 = vect.Norm1();// +pos;
-                        var norm2 = vect.Norm2();// +pos;
+                        var norm1 = vect.Norm1();
+                        var norm2 = vect.Norm2();
 
+                        // Nos quedamos con la que mira hacia nosotros
                         float r1 = ((norm1 + pos) - position).Length();
                         float r2 = ((norm2 + pos) - position).Length();
                         if (r1 < r2)
@@ -102,12 +103,15 @@ namespace WaveProject.Steerings.Delegated
                             normal = norm2;
                         }
                     }
+                    // Si choca con el lado 3 o el 4
                     else if (face == face3 || face == face4)
                     {
+                        // Sacamos las dos normales posibles del lado
                         var vect = pos - wall.P3;
-                        var norm1 = vect.Norm1();// +pos;
-                        var norm2 = vect.Norm2();// +pos;
+                        var norm1 = vect.Norm1();
+                        var norm2 = vect.Norm2();
 
+                        // Nos quedamos con la que mira hacia nosotros
                         float r1 = ((norm1 + pos) - position).Length();
                         float r2 = ((norm2 + pos) - position).Length();
                         if (r1 < r2)
@@ -119,9 +123,11 @@ namespace WaveProject.Steerings.Delegated
                             normal = norm2;
                         }
                     }
+                    // Guardamos el punto de intersección y la normal
                     interseccion = pos;
                     normal1 = normal;
 
+                    // Nos quedamos con la mejor colisión
                     if (firstCollision == null)
                     {
                         firstCollision = new Collision() { Position = pos, Normal = normal };
@@ -133,11 +139,10 @@ namespace WaveProject.Steerings.Delegated
                     }
                 }
             }
-            //if (firstCollision != null)
-            //    Console.WriteLine(firstCollision);
             return firstCollision;
         }
 
+        // Codigo de intersección sacado de internet
         /// <summary>
         /// Test whether two line segments intersect. If so, calculate the intersection point.
         /// <see cref="http://stackoverflow.com/a/14143738/292237"/>
@@ -199,6 +204,11 @@ namespace WaveProject.Steerings.Delegated
 
             // 5. Otherwise, the two line segments are not parallel but do not intersect.
             return false;
+        }
+
+        public void Draw(LineBatch2D lb)
+        {
+            lb.DrawLineVM(interseccion, normal1 + interseccion, Color.Green, 1);
         }
 
     }

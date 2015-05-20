@@ -64,9 +64,6 @@ namespace WaveProject.CharacterTypes
         {
             // Obtenemos todos los personajes del otro equipo
             var characters = EntityManager.AllCharactersByTeam((MyInfo.GetTeam() % 2) + 1);
-            //var characters = EntityManager.AllEntities.Where(w => w.Components.Any(a => a is ICharacterInfo))
-            //    .Select(s => s.Components.First(f => f is ICharacterInfo) as ICharacterInfo)
-            //    .Where(w => w.GetTeam() == (MyInfo.GetTeam() % 2) + 1);
 
             //Buscamos el mejor objetivo de entre los enemigos, debemos de utilizar la visibilidad para comprobar los enemigos en el grid
             var enemy = characters.Where(w => (w.GetPosition() - MyInfo.GetPosition()).Length() <= VisibilityRadius)

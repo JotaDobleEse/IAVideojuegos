@@ -8,6 +8,7 @@ using WaveProject.Steerings.Delegated;
 
 namespace WaveProject.Steerings.Combined
 {
+    // Blended Steering, sacado directamente del libro
     public class BlendedSteering : Steering
     {
         public BehaviorAndWeight[] Behaviors { get; private set; }

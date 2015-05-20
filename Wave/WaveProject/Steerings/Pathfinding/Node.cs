@@ -7,6 +7,7 @@ using WaveEngine.Common.Math;
 
 namespace WaveProject.Steerings.Pathfinding
 {
+    // Nodo del mapa con la información del mapa y el pathfinding
     public class Node : ICloneable
     {
         public int X { get; set; }

@@ -21,7 +21,7 @@ namespace WaveProject.Steerings.Group
 
         public Separation()
         {
-            Threshold = 200f;
+            Threshold = 100f;
             DecayCoefficient = 1000f;
             MaxAcceleration = 20f;
         }
@@ -29,23 +29,25 @@ namespace WaveProject.Steerings.Group
 
         public override SteeringOutput GetSteering()
         {
+            // HACK
+            if (Character.Velocity == Vector2.Zero)
+                return new SteeringOutput();
+            // END HACK
             var linearAcc = Vector2.Zero;
-
-            //var prueba = EntityManager.AllEntities;
+            // Enemigos en el Threshold
             IEnumerable<Kinematic> Steerings = Kinematic.Kinematics.Where(w => (w.Position - Character.Position).Length() <= Threshold && w != Character);
             foreach (var targets in Steerings)
             {
                 Vector2 direction = targets.Position - Character.Position;
                 var distance = direction.Length();
-                //Calculo de strength
+                // Calculo de strength
                 float strength = Math.Min(DecayCoefficient / (distance * distance), MaxAcceleration) *-1;
 
-                //añadir la aceleracion
+                // Añadir la aceleracion
                 direction.Normalize();
-                // LinearAcc += strength * direction;
                 linearAcc += strength * direction;
             }
-            //A la salida del foreach tendremos en LinearAcc el vector resultante de la suma de los vectores 
+            // A la salida del foreach tendremos en LinearAcc el vector resultante de la suma de los vectores 
             return new SteeringOutput() { Linear = linearAcc };
         }
     }

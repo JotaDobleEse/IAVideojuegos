@@ -20,6 +20,7 @@ namespace WaveProject.Steerings.Group
         {
             int count = 0;
             Vector2 heading = new Vector2(0, 0);
+            // Enemigos en el Threshold
             var targets = Kinematic.Kinematics.Where(w => (w.Position - Character.Position).Length() <= Threshold && w != Character);
             foreach (var target in targets)
             {

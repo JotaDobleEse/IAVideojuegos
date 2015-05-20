@@ -15,12 +15,14 @@ namespace WaveProject.Steerings
         public override SteeringOutput GetSteering()
         {
             SteeringOutput steering = new SteeringOutput();
+            // Seek de Millington
             #region Millington
             /*steering.Linear = Target.Position - Character.Position;
             steering.Linear.Normalize();
             steering.Linear *= MaxAceleration;*/
             #endregion
             
+            // Seek de Craig
             #region Craig
             var direction = Target.Position - Character.Position;
             direction.Normalize();

@@ -38,24 +38,31 @@ namespace WaveProject.Steerings.Delegated
             Obstacle closetObstacle = null;
             float boxLength = MinBoxLength + (Character.Velocity.Length() / new Vector2(Character.MaxVelocity, Character.MaxVelocity).Length()) * MinBoxLength;
             BoxLenght = boxLength;
+            // Obstaculos con los que se puede chocar
             List<Obstacle> obstacles = ObstaclesInRange(boxLength);
             foreach (var obstacle in obstacles)
             {
+                // Posición del obstaculo como si el personaje fuese el (0,0)
                 var localPos = Character.ConvertToLocalPos(obstacle.Position);
+                // Si la posición es menor que 0 no es candidato
                 if (localPos.X >= 0)
                 {
                     PositionsLocals.Add(localPos);
+                    // Se calcula el radio del objeto
                     float objectRadius = obstacle.BRadius;
+                    // Después el radio total, objeto + personaje
                     float sumRadius = objectRadius + Character.BRadius;
+                    // Si colisiona
                     if (Math.Abs(localPos.Y) < sumRadius)
                     {
+                        // Sacamos la distancia de intersección
                         float sqrtPart = (float)Math.Sqrt((sumRadius * sumRadius) - (localPos.Y * localPos.Y));
                         float intersection = localPos.X - sqrtPart;
                         if (intersection <= 0)
                         {
                             intersection = localPos.X + sqrtPart;
                         }
-
+                        // Nos quedamos con la mas cercana
                         if (minIntersection < intersection)
                         {
                             minIntersection = intersection;
@@ -65,12 +72,12 @@ namespace WaveProject.Steerings.Delegated
                 }
             }
 
+            // Si hay colisión esquivamos
             if (closetObstacle != null)
             {
                 Vector2 localPos = Character.ConvertToLocalPos(closetObstacle.Position);
                 float x = localPos.X;
                 float y = localPos.Y;
-                Console.WriteLine(localPos);
 
                 Vector2 steeringLocal = Vector2.Zero;
                 float factorX = 0.2f;
@@ -86,7 +93,6 @@ namespace WaveProject.Steerings.Delegated
 
                 SteeringOutput steering = new SteeringOutput();
                 steering.Linear = repulsion * MaxAcceleration;
-                //Character.Orientation = Character.Velocity.ToRotation(); //Despues
 
                 steering.Angular = 0;
                 return steering;
@@ -104,7 +110,7 @@ namespace WaveProject.Steerings.Delegated
 
         private List<Obstacle> ObstaclesInRange(float boxLength)
         {
-            return Obstacle.Obstacles.Where(w => Character.ConvertToLocalPos(w.Position).X > 0 && Character.ConvertToLocalPos(w.Position).X < 0).ToList();
+            return Obstacle.Obstacles.Where(w => Character.ConvertToLocalPos(w.Position).X >= 0 && Character.ConvertToLocalPos(w.Position).X < boxLength).ToList();
         }
 
         public override void Draw(LineBatch2D lb)

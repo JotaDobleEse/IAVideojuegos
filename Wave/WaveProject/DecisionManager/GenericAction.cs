@@ -16,7 +16,7 @@ namespace WaveProject.DecisionManager
         // Función a ejecutar
         public Action Function { get; set; }
 
-        // Indica si se puede interrumpir la acción
+        // Indica si la acción puede interrumpir
         private bool canInterrupt = true;
         // Indica si la acción ha sido completada
         private bool isComplete = false;

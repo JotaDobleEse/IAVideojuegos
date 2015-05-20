@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaveEngine.Common.Math;
 using WaveEngine.Framework.Managers;
 using WaveProject.Characters;
 using WaveProject.DecisionManager;
@@ -12,13 +13,15 @@ namespace WaveProject.CharacterTypes
 {
     public class RangedCharacter : CharacterType
     {
+        public float AttackRadius { get; private set; }
         public RangedCharacter(ICharacterInfo myInfo, EntityManager entityManager)
-            : base(myInfo, entityManager, 100, 25, 34, 200) // Párametros iniciales
+            : base(myInfo, entityManager, 100, 25, 34, 250) // Párametros iniciales
         {
             // HP    = 100
             // Atk   =  25
             // Def   =  34
             // Radio = 200
+            AttackRadius = 150 + new Random().Next(20);
         }
 
         // Coste del ranged al pasar por un terreno
@@ -103,12 +106,53 @@ namespace WaveProject.CharacterTypes
         {
             if (character == null)
                 return;
-            // Si tenemos un objetivo es que está a nuestro alcance, creamos una bala
-            EntityManager.Add(EntityFactory.Shoot(MyInfo.GetPosition(), character.GetPosition()));
-            // Atacamos al enemigo
-            character.ReceiveAttack(base.Atk);
-            // Anulamos el pathfinding mandándolo hacia nuestra propia posición
-            MyInfo.SetPathFinding(MyInfo.GetPosition());
+            // Buscamos los tiles alrededor del objetivo
+            var attackPoint = Map.CurrentMap.TilePositionByWolrdPosition(character.GetPosition());
+            List<Vector2> ps = new List<Vector2>();
+            ps.Add(attackPoint + new Vector2(1, 1));
+            ps.Add(attackPoint + new Vector2(1, -1));
+            ps.Add(attackPoint + new Vector2(-1, 1));
+            ps.Add(attackPoint + new Vector2(-1, -1));
+            ps.Add(attackPoint + new Vector2(0, 1));
+            ps.Add(attackPoint + new Vector2(0, -1));
+            ps.Add(attackPoint + new Vector2(1, 0));
+            ps.Add(attackPoint + new Vector2(-1, 0));
+
+            // Comprobamos si estamos en uno de ellos
+            var myPos = Map.CurrentMap.TilePositionByWolrdPosition(MyInfo.GetPosition());
+            var isInAttackPos = ps.Any(a => (Map.CurrentMap.WorldPositionByTilePosition(a) - MyInfo.GetPosition()).Length() <= AttackRadius);
+
+            // Si lo estamos atacamos
+            if (isInAttackPos)
+            {
+                // Si tenemos un objetivo es que está a nuestro alcance, creamos una bala
+                EntityManager.Add(EntityFactory.Shoot(MyInfo.GetPosition(), character.GetPosition()));
+                // Atacamos al enemigo
+                character.ReceiveAttack(base.Atk);
+                // Anulamos el pathfinding mandándolo hacia nuestra propia posición
+                MyInfo.SetPathFinding(MyInfo.GetPosition());
+            }
+            // Sino buscamos el punto mas cercano para atacar
+            else
+            {
+                float minLength = float.PositiveInfinity;
+                foreach (var pos in ps)
+                {
+                    if (Map.CurrentMap.Exists(pos) && Map.CurrentMap.NodeMap[pos.X(), pos.Y()].Passable)
+                    {
+                        var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
+                        var length = (worldPos - MyInfo.GetPosition()).Length();
+                        if (length < minLength)
+                        {
+                            minLength = length;
+                            attackPoint = worldPos;
+                        }
+                    }
+                }
+
+                // Vamos hacia el enemigo
+                MyInfo.SetPathFinding(attackPoint);
+            }
         }
     }
 }

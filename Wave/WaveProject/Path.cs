@@ -27,7 +27,7 @@ namespace WaveProject
             float dist1 = (position - GetPosition(lastParam)).Length();
             float dist2 = (position - GetPosition(lastParam + 1)).Length();
             if (dist2 / (dist1 + dist2) < 0.2) // Si falta menos 20% del camino entre dos nodos
-                return Math.Min((lastParam + 1), Points.Count % 1);
+                return Math.Min((lastParam + 1), Points.Count - 1);
             return lastParam;
         }
 

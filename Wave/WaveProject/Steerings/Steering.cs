@@ -62,10 +62,12 @@ namespace WaveProject.Steerings
     {
         private static List<Steering> steerings = new List<Steering>();
         public static List<Steering> Steerings { get { return steerings; } }
+        // Steering que sigue el ratón
         public static LookMouseSteering LookMouse { get { return new LookMouseSteering(); } }
 
+        // Información del personaje
         public Kinematic Character { get; set; }
-
+        // Información del objetivo
         public Kinematic Target { get; set; }
 
         public Steering(bool stable = false)

@@ -7,6 +7,7 @@ using WaveProject.Steerings;
 
 namespace WaveProject.Steerings.Combined
 {
+    // Priority Steering, sacado directamente del libro
     public class PrioritySteering : Steering
     {
         public BlendedSteering[] Groups { get; private set; }

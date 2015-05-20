@@ -428,7 +428,7 @@ namespace WaveProject
         /// <returns></returns>
         public static bool PositionOcupped(this EntityManager entityManager, ICharacterInfo character, Vector2 position)
         {
-            var pos = Map.CurrentMap.TilePositionByWolrdPosition(character.GetPosition());
+            var pos = Map.CurrentMap.TilePositionByWolrdPosition(position);
             var characters = entityManager.AllCharacters().Where(w => w != character).ToList();
             foreach (var ch in characters)
             {

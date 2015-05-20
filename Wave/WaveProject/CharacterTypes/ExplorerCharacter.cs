@@ -34,7 +34,7 @@ namespace WaveProject.CharacterTypes
                 case Terrain.PATH:
                     return 5f;
                 case Terrain.PLAIN:
-                    return 3f;
+                    return 2.5f;
                 case Terrain.WATER:
                     return 8f;
             }
@@ -53,7 +53,7 @@ namespace WaveProject.CharacterTypes
                 case Terrain.PATH:
                     return 20;
                 case Terrain.PLAIN:
-                    return 25;
+                    return 28;
                 case Terrain.WATER:
                     return 10;
             }
@@ -90,7 +90,7 @@ namespace WaveProject.CharacterTypes
                 if (enemy != null)
                 {
                     if (Map.CurrentMap.IsInWaypoint(MyInfo.GetPosition()))
-                        return new GenericAction(30f, 1, true, GoToHeal);
+                        return new GenericAction(60f, 1, true, GoToHeal);
                     return new GenericAction(1f, 1, false, GoToWaypoint);
                 }
                 //SI NO ENCONTRAMOS ENEMIGO CERCA 
@@ -134,7 +134,7 @@ namespace WaveProject.CharacterTypes
                     {
                         var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
                         var length = (worldPos - MyInfo.GetPosition()).Length();
-                        if (length < minLength && !EntityManager.PositionOcupped(MyInfo))
+                        if (length < minLength && !EntityManager.PositionOcupped(MyInfo, worldPos))
                         {
                             minLength = length;
                             attackPoint = worldPos;

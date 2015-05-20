@@ -424,8 +424,9 @@ namespace WaveProject
         /// </summary>
         /// <param name="entityManager"></param>
         /// <param name="character">Jugador que solicita la información.</param>
+        /// <param name="position">Posición que se quiere evaluar</param>
         /// <returns></returns>
-        public static bool PositionOcupped(this EntityManager entityManager, ICharacterInfo character)
+        public static bool PositionOcupped(this EntityManager entityManager, ICharacterInfo character, Vector2 position)
         {
             var pos = Map.CurrentMap.TilePositionByWolrdPosition(character.GetPosition());
             var characters = entityManager.AllCharacters().Where(w => w != character).ToList();

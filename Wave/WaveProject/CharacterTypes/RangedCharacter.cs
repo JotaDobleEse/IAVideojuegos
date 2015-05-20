@@ -142,7 +142,7 @@ namespace WaveProject.CharacterTypes
                     {
                         var worldPos = Map.CurrentMap.WorldPositionByTilePosition(pos);
                         var length = (worldPos - MyInfo.GetPosition()).Length();
-                        if (length < minLength && !EntityManager.PositionOcupped(MyInfo))
+                        if (length < minLength && !EntityManager.PositionOcupped(MyInfo, worldPos))
                         {
                             minLength = length;
                             attackPoint = worldPos;

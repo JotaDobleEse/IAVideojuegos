@@ -25,6 +25,8 @@ namespace WaveProject
         {
             base.Initialize();
             CurrentCamera = Camera;
+            Camera.Zoom *= 3f;
+            Camera.Position += new Vector3(WaveServices.Platform.ScreenWidth * 0.75f, WaveServices.Platform.ScreenHeight * 0.75f, 0);
         }
 
         protected override void Update(TimeSpan gameTime)

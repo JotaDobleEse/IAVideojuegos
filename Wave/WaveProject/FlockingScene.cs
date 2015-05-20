@@ -13,6 +13,10 @@ namespace WaveProject
     {
         protected override void CreateScene()
         {
+            var controller = new Entity()
+                .AddComponent(new FlockingController());
+            EntityManager.Add(controller);
+
             // Cámara de juego
             var camera2D = new FixedCamera2D("Camera2D") { ClearFlags = ClearFlags.All, BackgroundColor = Color.LightBlue }
                 .Entity.AddComponent(new CameraController()); // Controlador de cámara

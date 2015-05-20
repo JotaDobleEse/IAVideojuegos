@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{C3A2E831-0A38-44A4-8BEF-1A53735BC9D2}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Wave</RootNamespace>
     <AssemblyName>Wave</AssemblyName>
@@ -35,7 +35,7 @@
     <ApplicationIcon>Game.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>Wave.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="WaveEngine.Adapter" />
